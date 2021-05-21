@@ -1,0 +1,10 @@
+{
+  "uuid": "%uuid%",
+  "name": "Transporter",
+  "mainClass": "dk.transporter.mads_gamer_dk.TransporterAddon",
+  "description": "Put flere items i din transporter med et klik",
+  "version": 1.2,
+  "author": "Mads_Gamer_DK",
+  "category": 2,
+  "icon": "https://cdn.discordapp.com/attachments/436165208134778880/827448208710959115/Logo.png"
+}
