@@ -1,19 +1,186 @@
 package dk.transporter.mads_gamer_dk;
 
+import com.google.gson.JsonObject;
+import dk.transporter.mads_gamer_dk.Items.Item;
+import dk.transporter.mads_gamer_dk.Items.Items;
+import dk.transporter.mads_gamer_dk.Items.TransporterItems;
 import net.labymod.gui.elements.Scrollbar;
 import net.labymod.main.LabyMod;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentText;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
-public class TransporterGui {
+import java.io.IOException;
 
+public class TransporterGui extends GuiScreen {
 
-    private Scrollbar scrollbar;
+    private Scrollbar scrollbar = new Scrollbar(18);
     private TransporterAddon addon;
-    private Boolean interacted;
+    private Boolean interacted = false;
+
+    public Integer col1;
+    public Integer col2;
+    public Integer col3;
+
+    public Integer xDistance;
+    public Integer yDistance;
+
+    private Items items;
+
+    public TransporterGui(TransporterAddon addon, Items items) {
+        this.addon = addon;
+        this.items = items;
+
+    }
+
+    public void updateScreen() {
+
+    }
+    public void initGui() {
+        super.initGui();
+
+        this.scrollbar.init();
+        this.scrollbar.setPosition(this.width / 2 + 122, 44, this.width / 2 + 126, this.height - 32 - 3);
+
+        Integer buttonWidth = this.width / 20;
+
+        xDistance = this.width / 30;
+
+        yDistance = this.height / 20;
+
+        Integer third = this.width/3;
+
+        col1 = (third)-(third/2)-(buttonWidth/2);
+        col2 = (third*2)-(third/2)-(buttonWidth/2);
+        col3 = (third*3)-(third/2)-(buttonWidth/2);
 
 
-    public static void draw() {
-        System.out.println("OPEN GUI");
-        LabyMod.getInstance().getDrawUtils().drawAutoDimmedBackground(new Scrollbar(18).getScrollY());
+        Integer slot = 0;
+
+        TransporterItems items[] = TransporterItems.values();
+        for(TransporterItems item : items) {
+            if(slot >= 0 && slot <= 10){
+                this.buttonList.add(new GuiButton(10000+slot, col1 - xDistance -(buttonWidth/2), (this.height - (this.height/5))-(slot*yDistance), buttonWidth, 20, "Get"));
+                this.buttonList.add(new GuiButton(11000+slot, col1 + xDistance + (buttonWidth/2), (this.height - (this.height/5))-(slot*yDistance), buttonWidth, 20, "Put"));
+            }else if(slot >= 11 && slot <= 21){
+                this.buttonList.add(new GuiButton(10000+slot, col2 - xDistance -(buttonWidth/2), (this.height - (this.height/5))-((slot-11)*yDistance), buttonWidth, 20, "Get"));
+                this.buttonList.add(new GuiButton(11000+slot, col2 + xDistance + (buttonWidth/2), (this.height - (this.height/5))-((slot-11)*yDistance), buttonWidth, 20, "Put"));
+            }else if(slot >= 22 && slot <= 32){
+                this.buttonList.add(new GuiButton(10000+slot, col3 - xDistance -(buttonWidth/2), (this.height - (this.height/5))-((slot-22)*yDistance), buttonWidth, 20, "Get"));
+                this.buttonList.add(new GuiButton(11000+slot, col3 + xDistance + (buttonWidth/2), (this.height - (this.height/5))-((slot-22)*yDistance), buttonWidth, 20, "Put"));
+            }
+            slot++;
+        }
+
+
+    }
+
+
+    public void onGuiClosed() {
+        Keyboard.enableRepeatEvents(false);
+        if(interacted == false) {
+            JsonObject responseObject = new JsonObject();
+            responseObject.addProperty("type", "transaction_response");
+
+            responseObject.addProperty("accepted", false);new ChatComponentText("§8§l[ §9§lTransporter §8§l]§r §aTest... Test... Test");
+        }
+    }
+
+
+    protected void actionPerformed(GuiButton button) throws IOException {
+        System.out.println("Clicked: Button with id " + button.id);
+        super.actionPerformed(button);
+
+
+        if(button.id >= 10000 && button.id < 11000){
+            Integer index = button.id - 10000;
+            System.out.println("Index: " + index);
+            if(index == 1){
+                Minecraft.getMinecraft().thePlayer.sendChatMessage("/transporter get Sand:1");
+            }
+            System.out.println("Item: " + this.items.getItemByID(index).getItem().toString());
+            Minecraft.getMinecraft().thePlayer.sendChatMessage("/transporter get " + this.items.getItemByID(index).getItem().toString());
+        }
+
+        else if(button.id >= 11000 && button.id < 12000){
+            Integer index = button.id - 11000;
+            if(index == 1){
+                Minecraft.getMinecraft().thePlayer.sendChatMessage("/transporter put Sand:1");
+            }
+            Minecraft.getMinecraft().thePlayer.sendChatMessage("/transporter put " + this.items.getItemByID(index).getItem().toString());
+
+        }
+        interacted = true;
+        Minecraft.getMinecraft().thePlayer.closeScreen();
+
+    }
+
+
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        LabyMod.getInstance().getDrawUtils().drawAutoDimmedBackground(this.scrollbar.getScrollY());
+        double yPos = 45.0D + this.scrollbar.getScrollY() + 3.0D;
+
+        LabyMod.getInstance().getDrawUtils().drawCenteredString("§8§l[ §a§lTRANSPORTER §8§l]", this.width / 2, 20, 2);
+
+        LabyMod.getInstance().getDrawUtils().drawCenteredString("§fKlik på den item du vil tage ud af din transporter! ", this.width / 2, 50, 1);
+
+
+        Integer slot = 0;
+
+        TransporterItems items[] = TransporterItems.values();
+        for(TransporterItems item : items) {
+            if(slot >= 0 && slot <= 10){
+                String name = this.items.getName(item);
+                LabyMod.getInstance().getDrawUtils().drawString("§f" + name, col1, (this.height - (this.height/5))-(slot*yDistance)+5, 1);
+            }else if(slot >= 11 && slot <= 21){
+                String name = this.items.getName(item);
+                LabyMod.getInstance().getDrawUtils().drawString("§f" + name, col2, (this.height - (this.height/5))-((slot-11)*yDistance)+5, 1);
+            }else if(slot >= 22 && slot <= 32){
+                String name = this.items.getName(item);
+                LabyMod.getInstance().getDrawUtils().drawString("§f" + name, col3, (this.height - (this.height/5))-((slot-22)*yDistance)+5, 1);
+            }
+            slot++;
+        }
+
+
+        this.scrollbar.draw();
+
+        Mouse.setGrabbed(false);
+        super.drawScreen(mouseX, mouseY, partialTicks);
+    }
+
+    @Override
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+
+        this.scrollbar.mouseAction(mouseX, mouseY, Scrollbar.EnumMouseAction.CLICKED);
+    }
+
+    @Override
+    public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
+        super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+
+        this.scrollbar.mouseAction(mouseX, mouseY, Scrollbar.EnumMouseAction.DRAGGING);
+    }
+
+    @Override
+    public void mouseReleased(int mouseX, int mouseY, int state) {
+        this.scrollbar.mouseAction(mouseX, mouseY, Scrollbar.EnumMouseAction.RELEASED);
+
+        super.mouseReleased(mouseX, mouseY, state);
+    }
+
+    @Override
+    public void handleMouseInput() throws IOException {
+        super.handleMouseInput();
+
+        this.scrollbar.mouseInput();
     }
 
 
