@@ -1,9 +1,10 @@
-package dk.transporter.mads_gamer_dk;
+package dk.transporter.mads_gamer_dk.guis;
 
 import com.google.gson.JsonObject;
 import dk.transporter.mads_gamer_dk.Items.Item;
 import dk.transporter.mads_gamer_dk.Items.Items;
 import dk.transporter.mads_gamer_dk.Items.TransporterItems;
+import dk.transporter.mads_gamer_dk.TransporterAddon;
 import net.labymod.gui.elements.Scrollbar;
 import net.labymod.main.LabyMod;
 import net.minecraft.block.Block;

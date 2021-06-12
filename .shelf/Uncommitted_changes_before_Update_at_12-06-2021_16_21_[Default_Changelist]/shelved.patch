@@ -1,0 +1,11 @@
+Index: 123.txt
+===================================================================
+diff --git a/123.txt b/123.txt
+deleted file mode 100644
+--- a/123.txt	(revision db816db7abe20ebfddf6c8711fe9c76a7a15c618)
++++ /dev/null	(revision db816db7abe20ebfddf6c8711fe9c76a7a15c618)
+@@ -1,1 +0,0 @@
+-Emil og mads er pro
+\ No newline at end of file
+diff --git a/et eller andet random.txt b/et eller andet random.txt
+deleted file mode 100644

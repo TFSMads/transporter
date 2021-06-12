@@ -1,9 +1,9 @@
 package dk.transporter.mads_gamer_dk;
 
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import dk.transporter.mads_gamer_dk.Items.Items;
 import dk.transporter.mads_gamer_dk.Items.TransporterItems;
+import dk.transporter.mads_gamer_dk.guis.TransporterGui;
 import dk.transporter.mads_gamer_dk.listeners.JoinListener;
 import dk.transporter.mads_gamer_dk.listeners.QuitListener;
 import dk.transporter.mads_gamer_dk.listeners.messageReceiveListener;
@@ -19,8 +19,6 @@ import net.labymod.utils.Consumer;
 import net.labymod.utils.Material;
 import net.labymod.utils.ModColor;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
