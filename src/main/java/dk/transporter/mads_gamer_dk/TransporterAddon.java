@@ -3,6 +3,7 @@ package dk.transporter.mads_gamer_dk;
 
 import dk.transporter.mads_gamer_dk.Items.Items;
 import dk.transporter.mads_gamer_dk.Items.TransporterItems;
+import dk.transporter.mads_gamer_dk.guis.LobbySelecterGui;
 import dk.transporter.mads_gamer_dk.guis.TransporterGui;
 import dk.transporter.mads_gamer_dk.listeners.JoinListener;
 import dk.transporter.mads_gamer_dk.listeners.QuitListener;
@@ -51,6 +52,8 @@ public class TransporterAddon  extends LabyModAddon {
 
     private Integer transporterMenuKeyBind;
 
+    private Integer lobbySelecterKeybind;
+
     private Integer autoTransporterDelay;
 
     private Integer autoTransporterTimer = 0;
@@ -72,6 +75,20 @@ public class TransporterAddon  extends LabyModAddon {
     }
 
     public Items items;
+
+
+    private String server1;
+    private String server2;
+    private String server3;
+    private String server4;
+    private String server5;
+    private String server6;
+    private String server7;
+
+    public String getServerString(Integer server){
+        if(server == 1){ return server1; }else if(server == 2){  return server2; }else if(server == 3){ return server3; }else if(server == 4){ return server4; }else if(server == 5){ return server5; }else if(server == 6){ return server6; }else if(server == 7){ return server7; }
+        return "larmelobby";
+    }
 
     @Override
     public void onEnable() {
@@ -114,12 +131,24 @@ public class TransporterAddon  extends LabyModAddon {
 
         this.autoTransporterKeyBind = getConfig().has( "autoTransporterKeyBind" ) ? getConfig().get( "autoTransporterKeyBind" ).getAsInt() : Keyboard.KEY_P;
 
+        this.lobbySelecterKeybind = getConfig().has( "lobbySelecterKeybind" ) ? getConfig().get( "lobbySelecterKeybind" ).getAsInt() : Keyboard.KEY_Y;
+
+
+
+        this.server1 = getConfig().has( "server1" ) ? getConfig().get( "server1" ).getAsString() : "larmelobby";
+        this.server2 = getConfig().has( "server2" ) ? getConfig().get( "server2" ).getAsString() : "shoppylobby";
+        this.server3 = getConfig().has( "server3" ) ? getConfig().get( "server3" ).getAsString() : "byggelobby";
+        this.server4 = getConfig().has( "server4" ) ? getConfig().get( "server4" ).getAsString() : "maskinrummet";
+        this.server5 = getConfig().has( "server5" ) ? getConfig().get( "server5" ).getAsString() : "maskinrummetlight";
+        this.server6 = getConfig().has( "server6" ) ? getConfig().get( "server6" ).getAsString() : "creepylobby";
+        this.server7 = getConfig().has( "server7" ) ? getConfig().get( "server7" ).getAsString() : "limbo";
+
         //TransporterItems items[] = TransporterItems.values();
         //for(TransporterItems item : items) {
-         //   Boolean bool = getConfig().has( item.toString() ) ? getConfig().get( item.toString()  ).getAsBoolean() : true;
-         //   System.out.println(bool);
+        //   Boolean bool = getConfig().has( item.toString() ) ? getConfig().get( item.toString()  ).getAsBoolean() : true;
+        //   System.out.println(bool);
         //    this.items.setItem(item.toString(),bool);
-       // }
+        // }
     }
 
     private Boolean getItemConfig(String item){
@@ -138,22 +167,108 @@ public class TransporterAddon  extends LabyModAddon {
 
         KeyElement AutoTransporterKeyElement = new KeyElement( "Keybind", new ControlElement.IconData( Material.WOOD_BUTTON ), autoTransporterKeyBind, new Consumer<Integer>() {@Override public void accept( Integer accepted ) { if ( accepted == -1 ) { System.out.println( "Set new key to NONE" );autoTransporterKeyBind = -1;configSave();return; }System.out.println( "Set new key to " + Keyboard.getKeyName( accepted ) );autoTransporterKeyBind = accepted;configSave(); }});
 
-        keyElement.setConfigEntryName("keyBind");
-
-        AutoTransporterKeyElement.setConfigEntryName("autoTransporterKeyBind");
 
         subSettings.add( keyElement );
 
-        KeyElement transporterMenuKeyElement = new KeyElement( "Transporter Menu Keybind", new ControlElement.IconData( Material.STONE_BUTTON ), transporterMenuKeyBind, new Consumer<Integer>() {@Override public void accept( Integer accepted ) { if ( accepted == -1 ) { System.out.println( "Set new key to NONE" );keyBind = -1;configSave();return; }System.out.println( "Set new key to " + Keyboard.getKeyName( accepted ) );keyBind = accepted;configSave(); }});
-
-        transporterMenuKeyElement.setConfigEntryName("transporterMenuKeyElement");
-
+        KeyElement transporterMenuKeyElement = new KeyElement( "Transporter Menu Keybind", new ControlElement.IconData( Material.STONE_BUTTON ), transporterMenuKeyBind, new Consumer<Integer>() {@Override public void accept( Integer accepted ) { if ( accepted == -1 ) { System.out.println( "Set new key to NONE" );transporterMenuKeyBind = -1;configSave();return; }System.out.println( "Set new key to " + Keyboard.getKeyName( accepted ) );transporterMenuKeyBind = accepted;configSave(); }});
 
         subSettings.add( transporterMenuKeyElement );
+
+
+
 
         final DropDownMenu<messageSettings> uploadServiceDropDownMenu = (DropDownMenu<messageSettings>)new DropDownMenu("Beskeder", 0, 0, 0, 0).fill((Object[])messageSettings.values());final DropDownElement<messageSettings> uploadServiceDropDownElement = (DropDownElement<messageSettings>)new DropDownElement("Beskeder", (DropDownMenu)uploadServiceDropDownMenu);uploadServiceDropDownMenu.setSelected(this.MessageSettings);uploadServiceDropDownElement.setChangeListener(Message_Settings -> { this.MessageSettings = Message_Settings;this.getConfig().addProperty("Beskeder", Message_Settings.name());this.saveConfig();updateMessageSettings(); });
 
         subSettings.add((SettingsElement)uploadServiceDropDownElement);
+
+
+
+
+
+        subSettings.add(new HeaderElement(ModColor.cl("a") + "Server Selecter"));
+
+        KeyElement lobbySelecterKeyElement = new KeyElement( "Lobby Menu Keybind", new ControlElement.IconData( Material.STONE_BUTTON ), lobbySelecterKeybind, new Consumer<Integer>() {@Override public void accept( Integer accepted ) { if ( accepted == -1 ) { System.out.println( "Set new key to NONE" );lobbySelecterKeybind = -1;configSave();return; }System.out.println( "Set new key to " + Keyboard.getKeyName( accepted ) );lobbySelecterKeybind = accepted;configSave(); }});
+
+        subSettings.add( lobbySelecterKeyElement );
+
+
+        StringElement serverElement1 = new StringElement( "Server 1." , new ControlElement.IconData( Material.PAPER ), server1, new Consumer<String>() {
+            @Override
+            public void accept( String accepted ) {
+                server1 = accepted;
+                serverConfigSave();
+            }
+        });
+
+        subSettings.add( serverElement1 );
+
+
+        StringElement serverElement2 = new StringElement( "Server 2." , new ControlElement.IconData( Material.PAPER ), server2, new Consumer<String>() {
+            @Override
+            public void accept( String accepted ) {
+                server2 = accepted;
+                serverConfigSave();
+            }
+        });
+
+        subSettings.add( serverElement2 );
+
+
+        StringElement serverElement3 = new StringElement( "Server 3." , new ControlElement.IconData( Material.PAPER ), server3, new Consumer<String>() {
+            @Override
+            public void accept( String accepted ) {
+                server3 = accepted;
+                serverConfigSave();
+            }
+        });
+
+        subSettings.add( serverElement3 );
+
+
+        StringElement serverElement4 = new StringElement( "Server 4." , new ControlElement.IconData( Material.PAPER ), server4, new Consumer<String>() {
+            @Override
+            public void accept( String accepted ) {
+                server4 = accepted;
+                serverConfigSave();
+            }
+        });
+
+        subSettings.add( serverElement4 );
+
+
+        StringElement serverElement5 = new StringElement( "Server 5." , new ControlElement.IconData( Material.PAPER ), server5, new Consumer<String>() {
+            @Override
+            public void accept( String accepted ) {
+                server5 = accepted;
+                serverConfigSave();
+            }
+        });
+
+        subSettings.add( serverElement5 );
+
+
+        StringElement serverElement6 = new StringElement( "Server 6." , new ControlElement.IconData( Material.PAPER ), server6, new Consumer<String>() {
+            @Override
+            public void accept( String accepted ) {
+                server6 = accepted;
+                serverConfigSave();
+            }
+        });
+
+        subSettings.add( serverElement6 );
+
+
+        StringElement serverElement7 = new StringElement( "Server 7." , new ControlElement.IconData( Material.PAPER ), server7, new Consumer<String>() {
+            @Override
+            public void accept( String accepted ) {
+                server7 = accepted;
+                serverConfigSave();
+            }
+        });
+
+        subSettings.add( serverElement7 );
+
+
 
         subSettings.add(new HeaderElement(ModColor.cl("a") + "Auto Transporter"));
 
@@ -191,11 +306,24 @@ public class TransporterAddon  extends LabyModAddon {
 
     private void configSave(){
         getConfig().addProperty("keyBind", this.keyBind);
+        getConfig().addProperty("lobbySelecterKeybind", this.lobbySelecterKeybind);
         getConfig().addProperty("autoTransporterKeyBind", this.autoTransporterKeyBind);
         getConfig().addProperty("transporterMenuKeyBind", this.transporterMenuKeyBind);
         getConfig().addProperty("autoTransporer", this.autoTransporer);
         getConfig().addProperty("autoTransporterDelay", this.autoTransporterDelay);
     }
+
+
+    private void serverConfigSave(){
+        getConfig().addProperty("server1", this.server1);
+        getConfig().addProperty("server2", this.server2);
+        getConfig().addProperty("server3", this.server3);
+        getConfig().addProperty("server4", this.server4);
+        getConfig().addProperty("server5", this.server5);
+        getConfig().addProperty("server6", this.server6);
+        getConfig().addProperty("server7", this.server7);
+    }
+
 
     private void updateMessageSettings(){
         System.out.println("[Debug] " + this.MessageSettings);
@@ -291,6 +419,8 @@ public class TransporterAddon  extends LabyModAddon {
             configSave();
         }else if(Keyboard.isKeyDown(transporterMenuKeyBind)){
             Minecraft.getMinecraft().displayGuiScreen(new TransporterGui(addon,items));
+        }else if(Keyboard.isKeyDown(lobbySelecterKeybind)){
+            Minecraft.getMinecraft().displayGuiScreen(new LobbySelecterGui(addon));
         }
 
 
