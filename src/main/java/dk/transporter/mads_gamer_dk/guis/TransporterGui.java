@@ -1,7 +1,6 @@
 package dk.transporter.mads_gamer_dk.guis;
 
 import com.google.gson.JsonObject;
-import dk.transporter.mads_gamer_dk.Items.Item;
 import dk.transporter.mads_gamer_dk.Items.Items;
 import dk.transporter.mads_gamer_dk.Items.TransporterItems;
 import dk.transporter.mads_gamer_dk.TransporterAddon;
@@ -12,6 +11,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import org.lwjgl.input.Keyboard;
@@ -83,17 +84,6 @@ public class TransporterGui extends GuiScreen {
     }
 
 
-    public void onGuiClosed() {
-        Keyboard.enableRepeatEvents(false);
-        if(interacted == false) {
-            JsonObject responseObject = new JsonObject();
-            responseObject.addProperty("type", "transaction_response");
-
-            responseObject.addProperty("accepted", false);new ChatComponentText("§8§l[ §9§lTransporter §8§l]§r §aTest... Test... Test");
-        }
-    }
-
-
     protected void actionPerformed(GuiButton button) throws IOException {
         System.out.println("Clicked: Button with id " + button.id);
         super.actionPerformed(button);
@@ -127,6 +117,11 @@ public class TransporterGui extends GuiScreen {
         LabyMod.getInstance().getDrawUtils().drawAutoDimmedBackground(this.scrollbar.getScrollY());
         double yPos = 45.0D + this.scrollbar.getScrollY() + 3.0D;
 
+        ItemStack sandStack = new ItemStack(Blocks.sand);
+
+        LabyMod.getInstance().getDrawUtils().drawItem(sandStack, this.width / 2, 100, "");
+
+
         LabyMod.getInstance().getDrawUtils().drawCenteredString("§8§l[ §a§lTRANSPORTER §8§l]", this.width / 2, 20, 2);
 
         LabyMod.getInstance().getDrawUtils().drawCenteredString("§fKlik på den item du vil tage ud af din transporter! ", this.width / 2, 50, 1);
@@ -137,14 +132,59 @@ public class TransporterGui extends GuiScreen {
         TransporterItems items[] = TransporterItems.values();
         for(TransporterItems item : items) {
             if(slot >= 0 && slot <= 10){
-                String name = this.items.getName(item);
-                LabyMod.getInstance().getDrawUtils().drawString("§f" + name, col1, (this.height - (this.height/5))-(slot*yDistance)+5, 1);
+                if(false) {
+                    String name = this.items.getName(item);
+                    LabyMod.getInstance().getDrawUtils().drawString("§f" + name, col1, (this.height - (this.height / 5)) - (slot * yDistance) + 5, 1);
+                }else{
+
+                    ItemStack itemStack = new ItemStack(Blocks.sand);
+                    if(this.items.getItemByID(slot).isInstanceOfBlock()){
+                        Block block = this.items.getItemByID(slot).getBlock();
+                        itemStack = new ItemStack(block);
+                    }else{
+                        Item mItem = this.items.getItemByID(slot).getMItem();
+                        itemStack = new ItemStack(mItem);
+                    }
+
+                    LabyMod.getInstance().getDrawUtils().drawItem(itemStack, col1, (this.height - (this.height / 5)) - (slot * yDistance) + 5, "");
+
+                }
             }else if(slot >= 11 && slot <= 21){
-                String name = this.items.getName(item);
-                LabyMod.getInstance().getDrawUtils().drawString("§f" + name, col2, (this.height - (this.height/5))-((slot-11)*yDistance)+5, 1);
+                if(false) {
+                    String name = this.items.getName(item);
+                    LabyMod.getInstance().getDrawUtils().drawString("§f" + name, col2, (this.height - (this.height / 5)) - ((slot-11) * yDistance) + 5, 1);
+                }else{
+
+                    ItemStack itemStack = new ItemStack(Blocks.sand);
+                    if(this.items.getItemByID(slot).isInstanceOfBlock()){
+                        Block block = this.items.getItemByID(slot).getBlock();
+                        itemStack = new ItemStack(block);
+                    }else{
+                        Item mItem = this.items.getItemByID(slot).getMItem();
+                        itemStack = new ItemStack(mItem);
+                    }
+
+                    LabyMod.getInstance().getDrawUtils().drawItem(itemStack, col2, (this.height - (this.height / 5)) - ((slot-11) * yDistance) + 5, "");
+
+                }
             }else if(slot >= 22 && slot <= 32){
-                String name = this.items.getName(item);
-                LabyMod.getInstance().getDrawUtils().drawString("§f" + name, col3, (this.height - (this.height/5))-((slot-22)*yDistance)+5, 1);
+                if(false) {
+                    String name = this.items.getName(item);
+                    LabyMod.getInstance().getDrawUtils().drawString("§f" + name, col3, (this.height - (this.height / 5)) - ((slot-22) * yDistance) + 5, 1);
+                }else{
+
+                    ItemStack itemStack = new ItemStack(Blocks.sand);
+                    if(this.items.getItemByID(slot).isInstanceOfBlock()){
+                        Block block = this.items.getItemByID(slot).getBlock();
+                        itemStack = new ItemStack(block);
+                    }else{
+                        Item mItem = this.items.getItemByID(slot).getMItem();
+                        itemStack = new ItemStack(mItem);
+                    }
+
+                    LabyMod.getInstance().getDrawUtils().drawItem(itemStack, col3, (this.height - (this.height / 5)) - ((slot-22) * yDistance) + 5, "");
+
+                }
             }
             slot++;
         }

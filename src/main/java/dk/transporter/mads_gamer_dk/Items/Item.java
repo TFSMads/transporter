@@ -1,6 +1,8 @@
 package dk.transporter.mads_gamer_dk.Items;
 
 import net.labymod.utils.Material;
+import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 
 public class Item {
 
@@ -9,20 +11,36 @@ public class Item {
     private Material material;
     private Integer value;
     private String name;
+    private Block block;
+    private net.minecraft.item.Item mitem;
 
     public Item(){
         value = 0;
         material = Material.SAND;
         item = TransporterItems.SAND;
         name = "Sand";
+        block = Blocks.sand;
+        mitem = null;
     }
 
-    public Item(TransporterItems item,Material material,Integer value,String name){
+    public Item(TransporterItems item,Material material,Integer value,String name,Block block){
         this.value = value;
         this.material = material;
         this.item = item;
         this.name = name;
+        this.block = block;
+        this.mitem = null;
     }
+
+    public Item(TransporterItems item, Material material, Integer value, String name, net.minecraft.item.Item mitem){
+        this.value = value;
+        this.material = material;
+        this.item = item;
+        this.name = name;
+        this.block = null;
+        this.mitem = mitem;
+    }
+
 
     public TransporterItems getItem(){
         return this.item;
@@ -54,6 +72,23 @@ public class Item {
 
     public void setName(String name){
         this.name = name;
+    }
+
+    public Boolean isInstanceOfBlock(){
+        if(mitem == null){
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    public net.minecraft.item.Item getMItem(){
+        return this.mitem;
+
+    }
+
+    public Block getBlock(){
+        return this.block;
     }
 
 }
