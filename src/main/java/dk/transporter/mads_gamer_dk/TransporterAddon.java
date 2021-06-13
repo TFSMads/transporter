@@ -3,6 +3,7 @@ package dk.transporter.mads_gamer_dk;
 
 import dk.transporter.mads_gamer_dk.Items.Items;
 import dk.transporter.mads_gamer_dk.Items.TransporterItems;
+import dk.transporter.mads_gamer_dk.api.validateUser;
 import dk.transporter.mads_gamer_dk.guis.LobbySelecterGui;
 import dk.transporter.mads_gamer_dk.guis.TransporterGui;
 import dk.transporter.mads_gamer_dk.listeners.JoinListener;
@@ -26,9 +27,12 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import org.lwjgl.input.Keyboard;
 
+import java.io.IOException;
 import java.util.List;
 
 public class TransporterAddon  extends LabyModAddon {
+
+    public static boolean isEnabled;
 
     public static boolean connectedToSuperawesome;
 
@@ -92,6 +96,7 @@ public class TransporterAddon  extends LabyModAddon {
 
     @Override
     public void onEnable() {
+        isEnabled = false;
         items = new Items();
         addon = this;
         System.out.println("TransporterAddon Enabled!");
@@ -343,6 +348,7 @@ public class TransporterAddon  extends LabyModAddon {
         if(!isInSaLobby){executeCommands = false; LabyMod.getInstance().displayMessageInChat(ModColor.cl("c") + "Din transporter cycle er blevet stoppet."); isInSaLobby = true; return;}
 
         if(!connectedToSuperawesome){ return; }
+        if(!isEnabled){ return; }
 
         if(autoTransporer){
             autoTransporterTimer++;
@@ -362,9 +368,9 @@ public class TransporterAddon  extends LabyModAddon {
                 timer = 0;
                 TransporterItems items[] = TransporterItems.values();
                 if(items[executeState] != null){
-                    System.out.println(getItemConfig(items[executeState].toString()));
+                    //System.out.println(getItemConfig(items[executeState].toString()));
                     while (!getItemConfig(items[executeState].toString())){
-                        System.out.println("WHILTE LOOP:" + getItemConfig(items[executeState].toString()) + " " + executeState);
+                        //System.out.println("WHILTE LOOP:" + getItemConfig(items[executeState].toString()) + " " + executeState);
                         executeState++;
                         if (executeState >= 35){
                             break;
@@ -376,7 +382,7 @@ public class TransporterAddon  extends LabyModAddon {
                     }
                     executeState++;
                     while (!getItemConfig(items[executeState].toString())){
-                        System.out.println("WHILTE LOOP:" + getItemConfig(items[executeState].toString()) + " " + executeState);
+                        //System.out.println("WHILTE LOOP:" + getItemConfig(items[executeState].toString()) + " " + executeState);
                         executeState++;
                         if (executeState >= 35){
                             break;
@@ -399,6 +405,7 @@ public class TransporterAddon  extends LabyModAddon {
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         if(!connectedToSuperawesome){ return; }
+        if(!isEnabled){ return; }
         //System.out.println(Keyboard.getEventKey() + keyBind);
 
         if(autoTransporterKeyBind != null) {
@@ -428,6 +435,12 @@ public class TransporterAddon  extends LabyModAddon {
                 Minecraft.getMinecraft().displayGuiScreen(new LobbySelecterGui(addon));
            }
         }
+
+
+        //TEST KEY
+        //if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD0)){
+
+        //}
 
 
 
