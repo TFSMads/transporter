@@ -372,7 +372,11 @@ public class TransporterAddon  extends LabyModAddon {
 
                     }
                     if (executeState < 35){
-                        Minecraft.getMinecraft().thePlayer.sendChatMessage("/transporter put " + items[executeState].toString());
+                        if(executeState == 1) {
+                            Minecraft.getMinecraft().thePlayer.sendChatMessage("/transporter get Sand:1"); }else{
+                            Minecraft.getMinecraft().thePlayer.sendChatMessage("/transporter put " + items[executeState].toString());
+                        }
+
                     }
                     executeState++;
                     while (!getItemConfig(items[executeState].toString())){

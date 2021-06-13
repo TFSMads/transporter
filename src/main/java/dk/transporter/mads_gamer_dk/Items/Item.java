@@ -13,6 +13,8 @@ public class Item {
     private String name;
     private Block block;
     private net.minecraft.item.Item mitem;
+    private Integer itemDamage;
+
 
     public Item(){
         value = 0;
@@ -21,24 +23,27 @@ public class Item {
         name = "Sand";
         block = Blocks.sand;
         mitem = null;
+        itemDamage = 0;
     }
 
-    public Item(TransporterItems item,Material material,Integer value,String name,Block block){
+    public Item(TransporterItems item,Material material,Integer value,String name,Block block,Integer itemDamage){
         this.value = value;
         this.material = material;
         this.item = item;
         this.name = name;
         this.block = block;
         this.mitem = null;
+        this.itemDamage = itemDamage;
     }
 
-    public Item(TransporterItems item, Material material, Integer value, String name, net.minecraft.item.Item mitem){
+    public Item(TransporterItems item, Material material, Integer value, String name, net.minecraft.item.Item mitem,Integer itemDamage){
         this.value = value;
         this.material = material;
         this.item = item;
         this.name = name;
         this.block = null;
         this.mitem = mitem;
+        this.itemDamage = itemDamage;
     }
 
 
@@ -87,6 +92,10 @@ public class Item {
 
     }
 
+    public Integer getItemDamage(){
+        return this.itemDamage;
+
+    }
     public Block getBlock(){
         return this.block;
     }

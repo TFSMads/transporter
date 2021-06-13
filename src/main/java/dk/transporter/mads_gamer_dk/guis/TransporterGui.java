@@ -126,6 +126,7 @@ public class TransporterGui extends GuiScreen {
 
         Integer slot = 0;
 
+
         TransporterItems items[] = TransporterItems.values();
         for(TransporterItems item : items) {
             if(slot >= 0 && slot <= 10){
@@ -142,6 +143,8 @@ public class TransporterGui extends GuiScreen {
                         Item mItem = this.items.getItemByID(slot).getMItem();
                         itemStack = new ItemStack(mItem);
                     }
+
+                    itemStack.setItemDamage(this.items.getItemByID(slot).getItemDamage());
 
                     LabyMod.getInstance().getDrawUtils().drawItem(itemStack, col1+16, (this.height - (this.height / 5)) - (slot * yDistance) + 5, "");
 
@@ -161,6 +164,8 @@ public class TransporterGui extends GuiScreen {
                         itemStack = new ItemStack(mItem);
                     }
 
+                    itemStack.setItemDamage(this.items.getItemByID(slot).getItemDamage());
+
                     LabyMod.getInstance().getDrawUtils().drawItem(itemStack, col2+16, (this.height - (this.height / 5)) - ((slot-11) * yDistance) + 5, "");
 
                 }
@@ -178,6 +183,8 @@ public class TransporterGui extends GuiScreen {
                         Item mItem = this.items.getItemByID(slot).getMItem();
                         itemStack = new ItemStack(mItem);
                     }
+
+                    itemStack.setItemDamage(this.items.getItemByID(slot).getItemDamage());
 
                     LabyMod.getInstance().getDrawUtils().drawItem(itemStack, col3+16, (this.height - (this.height / 5)) - ((slot-22) * yDistance) + 5, "");
 
