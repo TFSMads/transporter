@@ -6,6 +6,7 @@ import dk.transporter.mads_gamer_dk.Items.TransporterItems;
 import dk.transporter.mads_gamer_dk.TransporterAddon;
 import net.labymod.gui.elements.Scrollbar;
 import net.labymod.main.LabyMod;
+import net.labymod.utils.ModColor;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -117,14 +118,10 @@ public class TransporterGui extends GuiScreen {
         LabyMod.getInstance().getDrawUtils().drawAutoDimmedBackground(this.scrollbar.getScrollY());
         double yPos = 45.0D + this.scrollbar.getScrollY() + 3.0D;
 
-        ItemStack sandStack = new ItemStack(Blocks.sand);
 
-        LabyMod.getInstance().getDrawUtils().drawItem(sandStack, this.width / 2, 100, "");
+        LabyMod.getInstance().getDrawUtils().drawCenteredString(ModColor.cl("8")+ModColor.cl("l")+"["+ModColor.cl("a")+ModColor.cl("l")+" TRANSPORTER "+ModColor.cl("8")+ModColor.cl("l")+"]", this.width / 2, 20, 2);
 
-
-        LabyMod.getInstance().getDrawUtils().drawCenteredString("§8§l[ §a§lTRANSPORTER §8§l]", this.width / 2, 20, 2);
-
-        LabyMod.getInstance().getDrawUtils().drawCenteredString("§fKlik på den item du vil tage ud af din transporter! ", this.width / 2, 50, 1);
+        LabyMod.getInstance().getDrawUtils().drawCenteredString(ModColor.cl("f")+"Klik på den item du vil tage ud af din transporter! ", this.width / 2, 50, 1);
 
 
         Integer slot = 0;

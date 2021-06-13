@@ -6,6 +6,7 @@ import java.io.IOException;
 import net.labymod.gui.elements.Scrollbar;
 import net.labymod.gui.elements.Scrollbar.EnumMouseAction;
 import net.labymod.main.LabyMod;
+import net.labymod.utils.ModColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -63,8 +64,8 @@ public class LobbySelecterGui extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         LabyMod.getInstance().getDrawUtils().drawAutoDimmedBackground(this.scrollbar.getScrollY());
         double yPos = 45.0D + this.scrollbar.getScrollY() + 3.0D;
-        LabyMod.getInstance().getDrawUtils().drawCenteredString("§8§l[ §a§lServer Selecter §8§l]", (double)(this.width / 2), 20.0D, 2.0D);
-        LabyMod.getInstance().getDrawUtils().drawCenteredString("§fKlik på den server du vil tilslutte! ", (double)(this.width / 2), 50.0D, 1.0D);
+        LabyMod.getInstance().getDrawUtils().drawCenteredString(ModColor.cl("8")+ModColor.cl("l")+"["+ModColor.cl("a")+ModColor.cl("l")+" Server Selecter "+ModColor.cl("8")+ModColor.cl("l")+"]", (double)(this.width / 2), 20.0D, 2.0D);
+        LabyMod.getInstance().getDrawUtils().drawCenteredString(ModColor.cl("f")+"Klik på den server du vil tilslutte! ", (double)(this.width / 2), 50.0D, 1.0D);
         this.scrollbar.draw();
         Mouse.setGrabbed(false);
         super.drawScreen(mouseX, mouseY, partialTicks);

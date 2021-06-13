@@ -163,14 +163,14 @@ public class TransporterAddon  extends LabyModAddon {
 
         subSettings.add( new BooleanElement( "Second Click Reset", this, new ControlElement.IconData( "labymod/textures/settings/settings/afecdistancedetection.png" ), "secondClickReset", this.secondClickReset ) );
 
-        KeyElement keyElement = new KeyElement( "Keybind", new ControlElement.IconData( Material.STONE_BUTTON ), keyBind, new Consumer<Integer>() {@Override public void accept( Integer accepted ) { if ( accepted == -1 ) { System.out.println( "Set new key to NONE" );keyBind = -1;configSave();return; }System.out.println( "Set new key to " + Keyboard.getKeyName( accepted ) );keyBind = accepted;configSave(); }});
+        KeyElement keyElement = new KeyElement( "Keybind", new ControlElement.IconData( Material.STONE_BUTTON ), keyBind, new Consumer<Integer>() {@Override public void accept( Integer accepted ) { if ( accepted < 0 ) { System.out.println( "Set new key to NONE" );keyBind = -1;configSave();return; }System.out.println( "Set new key to " + Keyboard.getKeyName( accepted ) );keyBind = accepted;configSave(); }});
 
-        KeyElement AutoTransporterKeyElement = new KeyElement( "Keybind", new ControlElement.IconData( Material.WOOD_BUTTON ), autoTransporterKeyBind, new Consumer<Integer>() {@Override public void accept( Integer accepted ) { if ( accepted == -1 ) { System.out.println( "Set new key to NONE" );autoTransporterKeyBind = -1;configSave();return; }System.out.println( "Set new key to " + Keyboard.getKeyName( accepted ) );autoTransporterKeyBind = accepted;configSave(); }});
+        KeyElement AutoTransporterKeyElement = new KeyElement( "Keybind", new ControlElement.IconData( Material.WOOD_BUTTON ), autoTransporterKeyBind, new Consumer<Integer>() {@Override public void accept( Integer accepted ) { if ( accepted < 0 ) { System.out.println( "Set new key to NONE" );autoTransporterKeyBind = -1;configSave();return; }System.out.println( "Set new key to " + Keyboard.getKeyName( accepted ) );autoTransporterKeyBind = accepted;configSave(); }});
 
 
         subSettings.add( keyElement );
 
-        KeyElement transporterMenuKeyElement = new KeyElement( "Transporter Menu Keybind", new ControlElement.IconData( Material.STONE_BUTTON ), transporterMenuKeyBind, new Consumer<Integer>() {@Override public void accept( Integer accepted ) { if ( accepted == -1 ) { System.out.println( "Set new key to NONE" );transporterMenuKeyBind = -1;configSave();return; }System.out.println( "Set new key to " + Keyboard.getKeyName( accepted ) );transporterMenuKeyBind = accepted;configSave(); }});
+        KeyElement transporterMenuKeyElement = new KeyElement( "Transporter Menu Keybind", new ControlElement.IconData( Material.STONE_BUTTON ), transporterMenuKeyBind, new Consumer<Integer>() {@Override public void accept( Integer accepted ) { if ( accepted < 0 ) { System.out.println( "Set new key to NONE" );transporterMenuKeyBind = -1;configSave();return; }System.out.println( "Set new key to " + Keyboard.getKeyName( accepted ) );transporterMenuKeyBind = accepted;configSave(); }});
 
         subSettings.add( transporterMenuKeyElement );
 
@@ -187,7 +187,7 @@ public class TransporterAddon  extends LabyModAddon {
 
         subSettings.add(new HeaderElement(ModColor.cl("a") + "Server Selecter"));
 
-        KeyElement lobbySelecterKeyElement = new KeyElement( "Lobby Menu Keybind", new ControlElement.IconData( Material.STONE_BUTTON ), lobbySelecterKeybind, new Consumer<Integer>() {@Override public void accept( Integer accepted ) { if ( accepted == -1 ) { System.out.println( "Set new key to NONE" );lobbySelecterKeybind = -1;configSave();return; }System.out.println( "Set new key to " + Keyboard.getKeyName( accepted ) );lobbySelecterKeybind = accepted;configSave(); }});
+        KeyElement lobbySelecterKeyElement = new KeyElement( "Lobby Menu Keybind", new ControlElement.IconData( Material.STONE_BUTTON ), lobbySelecterKeybind, new Consumer<Integer>() {@Override public void accept( Integer accepted ) { if ( accepted < 0 ) { System.out.println( "Set new key to NONE" );lobbySelecterKeybind = -1;configSave();return; }System.out.println( "Set new key to " + Keyboard.getKeyName( accepted ) );lobbySelecterKeybind = accepted;configSave(); }});
 
         subSettings.add( lobbySelecterKeyElement );
 
@@ -400,27 +400,33 @@ public class TransporterAddon  extends LabyModAddon {
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         if(!connectedToSuperawesome){ return; }
         //System.out.println(Keyboard.getEventKey() + keyBind);
-        if (keyBind == null || keyBind == -1) {
-            return;
-        }
 
-        if (Keyboard.isKeyDown(keyBind)) {
-            if(executeCommands) {
-                if (!secondClickReset) {
-                    LabyMod.getInstance().displayMessageInChat(ModColor.cl("c") + "Du er allerede igang med at putte items i din transporter!");
-                    return;
+        if(autoTransporterKeyBind != null) {
+            if (Keyboard.isKeyDown(keyBind)) {
+                if (executeCommands) {
+                    if (!secondClickReset) {
+                        LabyMod.getInstance().displayMessageInChat(ModColor.cl("c") + "Du er allerede igang med at putte items i din transporter!");
+                        return;
+                    }
                 }
+                timer = 0;
+                executeCommands = true;
+                executeState = 0;
             }
-            timer = 0;
-            executeCommands = true;
-            executeState = 0;
-        }else if(Keyboard.isKeyDown(autoTransporterKeyBind)){
-            autoTransporer = !autoTransporer;
-            configSave();
-        }else if(Keyboard.isKeyDown(transporterMenuKeyBind)){
-            Minecraft.getMinecraft().displayGuiScreen(new TransporterGui(addon,items));
-        }else if(Keyboard.isKeyDown(lobbySelecterKeybind)){
-            Minecraft.getMinecraft().displayGuiScreen(new LobbySelecterGui(addon));
+        }if(autoTransporterKeyBind != null) {
+            if(Keyboard.isKeyDown(autoTransporterKeyBind)) {
+                autoTransporer = !autoTransporer;
+                configSave();
+            }
+        }if(transporterMenuKeyBind != null) {
+            if (Keyboard.isKeyDown(transporterMenuKeyBind)) {
+                Minecraft.getMinecraft().displayGuiScreen(new TransporterGui(addon, items));
+            }
+
+        }if(lobbySelecterKeybind != null){
+           if(Keyboard.isKeyDown(lobbySelecterKeybind)){
+                Minecraft.getMinecraft().displayGuiScreen(new LobbySelecterGui(addon));
+           }
         }
 
 
