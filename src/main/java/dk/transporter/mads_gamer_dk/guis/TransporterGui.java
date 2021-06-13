@@ -126,6 +126,7 @@ public class TransporterGui extends GuiScreen {
 
         Integer slot = 0;
 
+
         TransporterItems items[] = TransporterItems.values();
         for(TransporterItems item : items) {
             if(slot >= 0 && slot <= 10){
@@ -143,7 +144,9 @@ public class TransporterGui extends GuiScreen {
                         itemStack = new ItemStack(mItem);
                     }
 
-                    LabyMod.getInstance().getDrawUtils().drawItem(itemStack, col1, (this.height - (this.height / 5)) - (slot * yDistance) + 5, "");
+                    itemStack.setItemDamage(this.items.getItemByID(slot).getItemDamage());
+
+                    LabyMod.getInstance().getDrawUtils().drawItem(itemStack, col1+16, (this.height - (this.height / 5)) - (slot * yDistance) + 5, "");
 
                 }
             }else if(slot >= 11 && slot <= 21){
@@ -161,7 +164,9 @@ public class TransporterGui extends GuiScreen {
                         itemStack = new ItemStack(mItem);
                     }
 
-                    LabyMod.getInstance().getDrawUtils().drawItem(itemStack, col2, (this.height - (this.height / 5)) - ((slot-11) * yDistance) + 5, "");
+                    itemStack.setItemDamage(this.items.getItemByID(slot).getItemDamage());
+
+                    LabyMod.getInstance().getDrawUtils().drawItem(itemStack, col2+16, (this.height - (this.height / 5)) - ((slot-11) * yDistance) + 5, "");
 
                 }
             }else if(slot >= 22 && slot <= 32){
@@ -179,7 +184,9 @@ public class TransporterGui extends GuiScreen {
                         itemStack = new ItemStack(mItem);
                     }
 
-                    LabyMod.getInstance().getDrawUtils().drawItem(itemStack, col3, (this.height - (this.height / 5)) - ((slot-22) * yDistance) + 5, "");
+                    itemStack.setItemDamage(this.items.getItemByID(slot).getItemDamage());
+
+                    LabyMod.getInstance().getDrawUtils().drawItem(itemStack, col3+16, (this.height - (this.height / 5)) - ((slot-22) * yDistance) + 5, "");
 
                 }
             }
