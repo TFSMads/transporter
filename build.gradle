@@ -1,5 +1,11 @@
 
 // For those who want the bleeding edge
+
+apply plugin: 'java'
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
 buildscript {
     repositories {
         jcenter()

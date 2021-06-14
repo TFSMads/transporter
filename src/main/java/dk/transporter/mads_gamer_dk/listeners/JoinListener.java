@@ -22,6 +22,9 @@ public class JoinListener implements Consumer<ServerData>
         }
         if(!TransporterAddon.isEnabled){
             LabyMod.getInstance().displayMessageInChat(ModColor.cl("8") + ModColor.cl("l") + "[ " + ModColor.cl("7") + ModColor.cl("l") +"Transporter " + ModColor.cl("8") + ModColor.cl("l") + "]" + ModColor.cl("c") + " Deaktivere transporter addon. Du har ikke købt adgang!");
+
+
+            LabyMod.getInstance().displayMessageInChat(ModColor.cl("8") + ModColor.cl("l") + "[ " + ModColor.cl("7") + ModColor.cl("l") +"Transporter " + ModColor.cl("8") + ModColor.cl("l") + "]" + ModColor.cl("c") + " Køb adgang på vores discord https://discord.gg/YnAUwqXQwv");
         }else{
             LabyMod.getInstance().displayMessageInChat(ModColor.cl("8") + ModColor.cl("l") + "[ " + ModColor.cl("7") + ModColor.cl("l") +"Transporter " + ModColor.cl("8") + ModColor.cl("l") + "]" + ModColor.cl("a") + " Aktivere transporter addon.");
         }
