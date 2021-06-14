@@ -408,48 +408,58 @@ public class TransporterAddon  extends LabyModAddon {
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
-        if(!connectedToSuperawesome){ return; }
-        if(!isEnabled){ return; }
-        //System.out.println(Keyboard.getEventKey() + keyBind);
+        try {
+            if (!connectedToSuperawesome) {
+                return;
+            }
+            if (!isEnabled) {
+                return;
+            }
+            //System.out.println(Keyboard.getEventKey() + keyBind);
 
-        if(autoTransporterKeyBind != null) {
-            if (Keyboard.isKeyDown(keyBind)) {
-                if (executeCommands) {
-                    if (!secondClickReset) {
-                        LabyMod.getInstance().displayMessageInChat(ModColor.cl("c") + "Du er allerede igang med at putte items i din transporter!");
-                        return;
+            if (autoTransporterKeyBind >= 0) {
+                if (Keyboard.isKeyDown(keyBind)) {
+                    if (executeCommands) {
+                        if (!secondClickReset) {
+                            LabyMod.getInstance().displayMessageInChat(ModColor.cl("c") + "Du er allerede igang med at putte items i din transporter!");
+                            return;
+                        }
                     }
+                    timer = 0;
+                    executeCommands = true;
+                    executeState = 0;
                 }
-                timer = 0;
-                executeCommands = true;
-                executeState = 0;
             }
-        }if(autoTransporterKeyBind != null) {
-            if(Keyboard.isKeyDown(autoTransporterKeyBind)) {
-                autoTransporer = !autoTransporer;
-                configSave();
+            if (autoTransporterKeyBind >= 0) {
+                if (Keyboard.isKeyDown(autoTransporterKeyBind)) {
+                    autoTransporer = !autoTransporer;
+                    configSave();
+                }
             }
-        }if(transporterMenuKeyBind != null) {
-            if (Keyboard.isKeyDown(transporterMenuKeyBind)) {
-                Minecraft.getMinecraft().displayGuiScreen(new TransporterGui(addon, items));
+            if (transporterMenuKeyBind >= 0) {
+                if (Keyboard.isKeyDown(transporterMenuKeyBind)) {
+                    Minecraft.getMinecraft().displayGuiScreen(new TransporterGui(addon, items));
+                }
+
+            }
+            if (lobbySelecterKeybind >= 0) {
+                if (Keyboard.isKeyDown(lobbySelecterKeybind)) {
+                    Minecraft.getMinecraft().displayGuiScreen(new LobbySelecterGui(addon));
+                }
             }
 
-        }if(lobbySelecterKeybind != null){
-           if(Keyboard.isKeyDown(lobbySelecterKeybind)){
-                Minecraft.getMinecraft().displayGuiScreen(new LobbySelecterGui(addon));
-           }
+
+            //TEST KEY
+            //if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD0)){
+
+            //}
+
+
+        } catch (Exception e) {
+            System.out.println(e);
         }
 
-
-        //TEST KEY
-        //if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD0)){
-
-        //}
-
-
-
     }
-
 }
 
 
