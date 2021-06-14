@@ -113,6 +113,10 @@ public class TransporterAddon  extends LabyModAddon {
         return addon;
     }
 
+    public Boolean getExecuteCommands(){
+        return this.executeCommands;
+    }
+
     @Override
     public void loadConfig() {
 

@@ -54,9 +54,12 @@ public class messageReceiveListener implements MessageReceiveEvent {
                 return true;
             }
         }else if(splited[0].equals("Unknown")){
-            if (addon.getTimer() == 0 || addon.getTimer() == 1 || addon.getTimer() == 2|| addon.getTimer() == 3|| addon.getTimer() == 4|| addon.getTimer() == 5|| addon.getTimer() == 6|| addon.getTimer() == 7)
-                addon.setisInSaLobby(false);
+            if(addon.getExecuteCommands() == true){
+                if (addon.getTimer() == 0 || addon.getTimer() == 1 || addon.getTimer() == 2|| addon.getTimer() == 3|| addon.getTimer() == 4|| addon.getTimer() == 5|| addon.getTimer() == 6|| addon.getTimer() == 7)
+                    addon.setisInSaLobby(false);
                 return true;
+            }
+
         }else if(splited[0].equals(">>>")){
             addon.setTimer(addon.getTimer() + 100);
             return true;
