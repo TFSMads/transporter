@@ -31,8 +31,8 @@ public class Items {
             allItems[4] = new Item(TransporterItems.STONEBRICK, Material.SMOOTH_BRICK, 0, "Stonebrick",Blocks.stonebrick,0);
             allItems[5] = new Item(TransporterItems.DIRT, Material.DIRT, 0, "Dirt",Blocks.dirt,0);
             allItems[6] = new Item(TransporterItems.GRASS, Material.GRASS, 0, "Grass",Blocks.grass,0);
-            allItems[7] = new Item(TransporterItems.CHARCOAL, Material.COAL, 0, "Charcoal", net.minecraft.init.Items.coal,0);
-            allItems[8] = new Item(TransporterItems.COAL, Material.COAL, 0, "Coal", net.minecraft.init.Items.coal,1);
+            allItems[7] = new Item(TransporterItems.CHARCOAL, Material.COAL, 0, "Charcoal", net.minecraft.init.Items.coal,1);
+            allItems[8] = new Item(TransporterItems.COAL, Material.COAL, 0, "Coal", net.minecraft.init.Items.coal,0);
             allItems[9] = new Item(TransporterItems.IRONORE, Material.IRON_ORE, 0, "Ironore",Blocks.iron_ore,0);
             allItems[10] = new Item(TransporterItems.GOLDORE, Material.GOLD_ORE, 0, "Goldore",Blocks.gold_ore,0);
             allItems[11] = new Item(TransporterItems.IRONINGOT, Material.IRON_INGOT, 0, "Iron Ingot", net.minecraft.init.Items.iron_ingot,0);

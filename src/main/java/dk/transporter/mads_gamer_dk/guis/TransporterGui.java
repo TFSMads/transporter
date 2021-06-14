@@ -86,6 +86,7 @@ public class TransporterGui extends GuiScreen {
 
 
     protected void actionPerformed(GuiButton button) throws IOException {
+        System.out.println("ACTION PERFOMED!!!!");
         System.out.println("Clicked: Button with id " + button.id);
         super.actionPerformed(button);
 
@@ -94,6 +95,7 @@ public class TransporterGui extends GuiScreen {
             Integer index = button.id - 10000;
             System.out.println("Index: " + index);
             if(index == 1){
+                System.out.println("Index er 1!!!!!");
                 Minecraft.getMinecraft().thePlayer.sendChatMessage("/transporter get Sand:1");
             }
             System.out.println("Item: " + this.items.getItemByID(index).getItem().toString());
@@ -102,7 +104,9 @@ public class TransporterGui extends GuiScreen {
 
         else if(button.id >= 11000 && button.id < 12000){
             Integer index = button.id - 11000;
+            System.out.println("1....: " + index);
             if(index == 1){
+                System.out.println("Index er 1!!!!!");
                 Minecraft.getMinecraft().thePlayer.sendChatMessage("/transporter put Sand:1");
             }
             Minecraft.getMinecraft().thePlayer.sendChatMessage("/transporter put " + this.items.getItemByID(index).getItem().toString());
@@ -211,6 +215,8 @@ public class TransporterGui extends GuiScreen {
     public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
         super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
 
+
+
         this.scrollbar.mouseAction(mouseX, mouseY, Scrollbar.EnumMouseAction.DRAGGING);
     }
 
@@ -218,12 +224,16 @@ public class TransporterGui extends GuiScreen {
     public void mouseReleased(int mouseX, int mouseY, int state) {
         this.scrollbar.mouseAction(mouseX, mouseY, Scrollbar.EnumMouseAction.RELEASED);
 
+
+
         super.mouseReleased(mouseX, mouseY, state);
     }
 
     @Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
+
+
 
         this.scrollbar.mouseInput();
     }
