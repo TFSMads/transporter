@@ -48,7 +48,11 @@ public class TransporterGui extends GuiScreen {
     public void initGui() {
         super.initGui();
 
+
         this.scrollbar.init();
+
+        Mouse.setGrabbed(false);
+
         this.scrollbar.setPosition(this.width / 2 + 122, 44, this.width / 2 + 126, this.height - 32 - 3);
 
         Integer buttonWidth = this.width / 20;

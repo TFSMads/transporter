@@ -34,6 +34,8 @@ public class TransporterAddon  extends LabyModAddon {
 
     public static boolean isEnabled;
 
+    public static boolean isValidVersion;
+
     public static boolean connectedToSuperawesome;
 
     private messageSettings MessageSettings;
@@ -96,6 +98,7 @@ public class TransporterAddon  extends LabyModAddon {
 
     @Override
     public void onEnable() {
+        isValidVersion = false;
         isEnabled = false;
         items = new Items();
         addon = this;
@@ -353,6 +356,7 @@ public class TransporterAddon  extends LabyModAddon {
 
         if(!connectedToSuperawesome){ return; }
         if(!isEnabled){ return; }
+        if(!isValidVersion){ return; }
 
         if(autoTransporer){
             autoTransporterTimer++;
@@ -413,10 +417,14 @@ public class TransporterAddon  extends LabyModAddon {
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         try {
+            //System.out.println("VAlID VERSION: " + isValidVersion + " ENABLED: " + isEnabled + " Connected to SuperAwesome: " + connectedToSuperawesome);
             if (!connectedToSuperawesome) {
                 return;
             }
             if (!isEnabled) {
+                return;
+            }
+            if(!isValidVersion){
                 return;
             }
             //System.out.println(Keyboard.getEventKey() + keyBind);
