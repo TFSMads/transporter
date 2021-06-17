@@ -53,8 +53,6 @@ public class TransporterAddon  extends LabyModAddon {
 
     private boolean executeCommands;
 
-    private boolean secondClickReset;
-
     private boolean autoTransporer;
 
     private int executeState;
@@ -143,8 +141,6 @@ public class TransporterAddon  extends LabyModAddon {
 
         this.autoTransporterDelay = getConfig().has( "autoTransporterDelay" ) ? getConfig().get( "autoTransporterDelay" ).getAsInt() : 30;
 
-        this.secondClickReset = getConfig().has( "secondClickReset" ) ? getConfig().get( "secondClickReset" ).getAsBoolean() : false;
-
         this.autoTransporer = getConfig().has( "autoTransporer" ) ? getConfig().get( "autoTransporer" ).getAsBoolean() : false;
 
 
@@ -193,8 +189,6 @@ public class TransporterAddon  extends LabyModAddon {
 
 
         subSettings.add( new SliderElement( "Delay (Ticks)", this, new ControlElement.IconData( Material.WATCH ), "delay", this.delay ).setRange( 40, 100 ) );
-
-        subSettings.add( new BooleanElement( "Second Click Reset", this, new ControlElement.IconData( "labymod/textures/settings/settings/afecdistancedetection.png" ), "secondClickReset", this.secondClickReset ) );
 
         KeyElement keyElement = new KeyElement( "Slå Transporter Fra", new ControlElement.IconData( Material.STONE_BUTTON ), disableTransporterKeyBind, new Consumer<Integer>() {@Override public void accept( Integer accepted ) { if ( accepted < 0 ) { System.out.println( "Set new key to NONE" );disableTransporterKeyBind = -1;configSave();return; }System.out.println( "Set new key to " + Keyboard.getKeyName( accepted ) );disableTransporterKeyBind = accepted;configSave(); }});
 
