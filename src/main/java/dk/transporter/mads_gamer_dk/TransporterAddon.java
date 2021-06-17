@@ -61,13 +61,13 @@ public class TransporterAddon  extends LabyModAddon {
 
     private int delay;
 
-    private Integer keyBind;
-
     private Integer autoTransporterKeyBind;
 
     private Integer transporterMenuKeyBind;
 
     private Integer lobbySelecterKeybind;
+
+    private Integer disableTransporterKeyBind;
 
     private Integer autoTransporterDelay;
 
@@ -153,7 +153,7 @@ public class TransporterAddon  extends LabyModAddon {
 
         updateMessageSettings();
 
-        this.keyBind = getConfig().has( "keyBind" ) ? getConfig().get( "keyBind" ).getAsInt() : Keyboard.KEY_R;
+        //this.keyBind = getConfig().has( "keyBind" ) ? getConfig().get( "keyBind" ).getAsInt() : Keyboard.KEY_R;
 
         this.transporterMenuKeyBind = getConfig().has( "transporterMenuKeyBind" ) ? getConfig().get( "transporterMenuKeyBind" ).getAsInt() : Keyboard.KEY_L;
 
@@ -161,7 +161,7 @@ public class TransporterAddon  extends LabyModAddon {
 
         this.lobbySelecterKeybind = getConfig().has( "lobbySelecterKeybind" ) ? getConfig().get( "lobbySelecterKeybind" ).getAsInt() : Keyboard.KEY_Y;
 
-
+        this.disableTransporterKeyBind = getConfig().has( "disableAutoTransporterKeyBind" ) ? getConfig().get( "disableAutoTransporterKeyBind" ).getAsInt() : Keyboard.KEY_J;
 
         this.server1 = getConfig().has( "server1" ) ? getConfig().get( "server1" ).getAsString() : "larmelobby";
         this.server2 = getConfig().has( "server2" ) ? getConfig().get( "server2" ).getAsString() : "shoppylobby";
@@ -196,7 +196,7 @@ public class TransporterAddon  extends LabyModAddon {
 
         subSettings.add( new BooleanElement( "Second Click Reset", this, new ControlElement.IconData( "labymod/textures/settings/settings/afecdistancedetection.png" ), "secondClickReset", this.secondClickReset ) );
 
-        KeyElement keyElement = new KeyElement( "Keybind", new ControlElement.IconData( Material.STONE_BUTTON ), keyBind, new Consumer<Integer>() {@Override public void accept( Integer accepted ) { if ( accepted < 0 ) { System.out.println( "Set new key to NONE" );keyBind = -1;configSave();return; }System.out.println( "Set new key to " + Keyboard.getKeyName( accepted ) );keyBind = accepted;configSave(); }});
+        KeyElement keyElement = new KeyElement( "Slå Transporter Fra", new ControlElement.IconData( Material.STONE_BUTTON ), disableTransporterKeyBind, new Consumer<Integer>() {@Override public void accept( Integer accepted ) { if ( accepted < 0 ) { System.out.println( "Set new key to NONE" );disableTransporterKeyBind = -1;configSave();return; }System.out.println( "Set new key to " + Keyboard.getKeyName( accepted ) );disableTransporterKeyBind = accepted;configSave(); }});
 
         KeyElement AutoTransporterKeyElement = new KeyElement( "Keybind", new ControlElement.IconData( Material.WOOD_BUTTON ), autoTransporterKeyBind, new Consumer<Integer>() {@Override public void accept( Integer accepted ) { if ( accepted < 0 ) { System.out.println( "Set new key to NONE" );autoTransporterKeyBind = -1;configSave();return; }System.out.println( "Set new key to " + Keyboard.getKeyName( accepted ) );autoTransporterKeyBind = accepted;configSave(); }});
 
@@ -417,7 +417,6 @@ public class TransporterAddon  extends LabyModAddon {
     }
 
     private void configSave(){
-        getConfig().addProperty("keyBind", this.keyBind);
         getConfig().addProperty("lobbySelecterKeybind", this.lobbySelecterKeybind);
         getConfig().addProperty("autoTransporterKeyBind", this.autoTransporterKeyBind);
         getConfig().addProperty("transporterMenuKeyBind", this.transporterMenuKeyBind);
@@ -535,23 +534,11 @@ public class TransporterAddon  extends LabyModAddon {
             }
             //System.out.println(Keyboard.getEventKey() + keyBind);
 
-            if (autoTransporterKeyBind >= 0) {
-                if (Keyboard.isKeyDown(keyBind)) {
-                    if (executeCommands) {
-                        if (!secondClickReset) {
-                            LabyMod.getInstance().displayMessageInChat(ModColor.cl("c") + "Du er allerede igang med at putte items i din transporter!");
-                            return;
-                        }
-                    }
-                    timer = 0;
-                    executeCommands = true;
-                    executeState = 0;
-                }
-            }
+
             if (autoTransporterKeyBind >= 0) {
                 if (Keyboard.isKeyDown(autoTransporterKeyBind)) {
                     autoTransporer = !autoTransporer;
-                    configSave();
+                    getConfig().addProperty("autoTransporer", this.autoTransporer);
                 }
             }
             if (transporterMenuKeyBind >= 0) {
@@ -565,7 +552,16 @@ public class TransporterAddon  extends LabyModAddon {
                     Minecraft.getMinecraft().displayGuiScreen(new LobbySelecterGui(addon));
                 }
             }
-
+            if (disableTransporterKeyBind >= 0) {
+                if (Keyboard.isKeyDown(disableTransporterKeyBind)) {
+                    if (autoTransporer) {
+                        executeCommands = false;
+                        autoTransporer = false;
+                        getConfig().addProperty("autoTransporer", this.autoTransporer);
+                        LabyMod.getInstance().displayMessageInChat(ModColor.cl("c") + "Din transporter cycle er blevet stoppet.");
+                    }
+                }
+            }
 
             //TEST KEY
             if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD0)){
