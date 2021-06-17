@@ -118,6 +118,17 @@ public class Items {
         return "Fejl";
     }
 
+    public Integer getId(TransporterItems item){
+        Integer id = 0;
+        for(Item i : allItems) {
+            if(i.getItem() == item){
+                return id;
+            }
+            id++;
+        }
+        return 0;
+    }
+
 
 
 }

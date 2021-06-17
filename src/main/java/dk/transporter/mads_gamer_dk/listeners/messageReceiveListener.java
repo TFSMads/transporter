@@ -45,25 +45,16 @@ public class messageReceiveListener implements MessageReceiveEvent {
                 Minecraft.getMinecraft().ingameGUI.setRecordPlaying(ModColor.cl("b") + "Du har ikke noget " + ModColor.cl("3") + splited[4] + ModColor.cl("b") + " i din transporter.", false);
                 return true;
             }
-        }else if(clean.equals("Der er 2 sekunders cooldown på transporteren")){
-            if(message == 1) {
+        }else if(clean.equals("Der er 2 sekunders cooldown på transporteren")) {
+            if (message == 1) {
                 Minecraft.getMinecraft().ingameGUI.setRecordPlaying(ModColor.cl("c") + "Der er 2 sekunders cooldown på transporteren", false);
                 return true;
-            }else if(message == 2){
+            } else if (message == 2) {
                 Minecraft.getMinecraft().ingameGUI.setRecordPlaying(ModColor.cl("c") + "Der er 2 sekunders cooldown på transporteren", false);
                 return true;
             }
-        }else if(splited[0].equals("Unknown")){
-            if(addon.getExecuteCommands() == true){
-                if (addon.getTimer() == 0 || addon.getTimer() == 1 || addon.getTimer() == 2|| addon.getTimer() == 3|| addon.getTimer() == 4|| addon.getTimer() == 5|| addon.getTimer() == 6|| addon.getTimer() == 7)
-                    addon.setisInSaLobby(false);
-                return true;
-            }
-
-        }else if(splited[0].equals(">>>")){
-            addon.setTimer(addon.getTimer() + 100);
-            return true;
         }
+
         return false;
     }
 }

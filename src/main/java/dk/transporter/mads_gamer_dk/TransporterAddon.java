@@ -7,12 +7,16 @@ import dk.transporter.mads_gamer_dk.api.validateUser;
 import dk.transporter.mads_gamer_dk.guis.LobbySelecterGui;
 import dk.transporter.mads_gamer_dk.guis.TransporterGui;
 import dk.transporter.mads_gamer_dk.listeners.JoinListener;
+import dk.transporter.mads_gamer_dk.listeners.OnCommand;
 import dk.transporter.mads_gamer_dk.listeners.QuitListener;
 import dk.transporter.mads_gamer_dk.listeners.messageReceiveListener;
 import dk.transporter.mads_gamer_dk.messageSendingSettings.messageSettings;
 import dk.transporter.mads_gamer_dk.modules.AutoTransporterModule;
+import dk.transporter.mads_gamer_dk.settingelements.DescribedBooleanElement;
+import dk.transporter.mads_gamer_dk.utils.GetAmountOfItemInInventory;
 import net.labymod.api.LabyModAddon;
 import net.labymod.api.events.MessageReceiveEvent;
+import net.labymod.api.events.MessageSendEvent;
 import net.labymod.gui.elements.DropDownMenu;
 import net.labymod.ingamegui.Module;
 import net.labymod.main.LabyMod;
@@ -21,6 +25,10 @@ import net.labymod.utils.Consumer;
 import net.labymod.utils.Material;
 import net.labymod.utils.ModColor;
 import net.minecraft.client.Minecraft;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -91,6 +99,8 @@ public class TransporterAddon  extends LabyModAddon {
     private String server6;
     private String server7;
 
+    private String string1;
+
     public String getServerString(Integer server){
         if(server == 1){ return server1; }else if(server == 2){  return server2; }else if(server == 3){ return server3; }else if(server == 4){ return server4; }else if(server == 5){ return server5; }else if(server == 6){ return server6; }else if(server == 7){ return server7; }
         return "larmelobby";
@@ -104,6 +114,7 @@ public class TransporterAddon  extends LabyModAddon {
         addon = this;
         System.out.println("TransporterAddon Enabled!");
         this.getApi().registerForgeListener(this);
+        this.getApi().getEventManager().register((MessageSendEvent)new OnCommand(this));
 
         this.getApi().getEventManager().register((MessageReceiveEvent)new messageReceiveListener());
 
@@ -155,12 +166,12 @@ public class TransporterAddon  extends LabyModAddon {
         this.server6 = getConfig().has( "server6" ) ? getConfig().get( "server6" ).getAsString() : "creepylobby";
         this.server7 = getConfig().has( "server7" ) ? getConfig().get( "server7" ).getAsString() : "limbo";
 
-        //TransporterItems items[] = TransporterItems.values();
-        //for(TransporterItems item : items) {
-        //   Boolean bool = getConfig().has( item.toString() ) ? getConfig().get( item.toString()  ).getAsBoolean() : true;
-        //   System.out.println(bool);
-        //    this.items.setItem(item.toString(),bool);
-        // }
+        this.string1 = getConfig().has( "string1" ) ? getConfig().get( "server1" ).getAsString() : "larmelobby";
+
+        TransporterItems items[] = TransporterItems.values();
+        for(TransporterItems item : items) {
+            this.items.getItemByID(this.items.getId(item)).setAntalKrævet(getConfig().has( item.toString() + "-Required" ) ? getConfig().get( item.toString() + "-Required").getAsInt() : 64);
+        }
     }
 
     private Boolean getItemConfig(String item){
@@ -187,21 +198,39 @@ public class TransporterAddon  extends LabyModAddon {
         subSettings.add( transporterMenuKeyElement );
 
 
+        subSettings.add(new HeaderElement(ModColor.cl("a") + " "));
+
+
+
+        ListContainerElement listMessages = new ListContainerElement(ModColor.cl("7") + "Beskeder", new ControlElement.IconData(Material.PAPER));
 
 
         final DropDownMenu<messageSettings> uploadServiceDropDownMenu = (DropDownMenu<messageSettings>)new DropDownMenu("Beskeder", 0, 0, 0, 0).fill((Object[])messageSettings.values());final DropDownElement<messageSettings> uploadServiceDropDownElement = (DropDownElement<messageSettings>)new DropDownElement("Beskeder", (DropDownMenu)uploadServiceDropDownMenu);uploadServiceDropDownMenu.setSelected(this.MessageSettings);uploadServiceDropDownElement.setChangeListener(Message_Settings -> { this.MessageSettings = Message_Settings;this.getConfig().addProperty("Beskeder", Message_Settings.name());this.saveConfig();updateMessageSettings(); });
 
-        subSettings.add((SettingsElement)uploadServiceDropDownElement);
+        listMessages.getSubSettings().add((SettingsElement)uploadServiceDropDownElement);
+
+
+        StringElement customChat1 = new StringElement( "Transporter put besked" , new ControlElement.IconData( Material.PAPER ), server1, new Consumer<String>() {
+            @Override
+            public void accept( String accepted ) {
+                server1 = accepted;
+                serverConfigSave();
+            }
+        });
+
+        listMessages.getSubSettings().add( customChat1 );
 
 
 
 
+        ListContainerElement listServerSelector = new ListContainerElement(ModColor.cl("2") + "Server Selector", new ControlElement.IconData(Material.COMPASS));
 
-        subSettings.add(new HeaderElement(ModColor.cl("a") + "Server Selecter"));
 
-        KeyElement lobbySelecterKeyElement = new KeyElement( "Lobby Menu Keybind", new ControlElement.IconData( Material.STONE_BUTTON ), lobbySelecterKeybind, new Consumer<Integer>() {@Override public void accept( Integer accepted ) { if ( accepted < 0 ) { System.out.println( "Set new key to NONE" );lobbySelecterKeybind = -1;configSave();return; }System.out.println( "Set new key to " + Keyboard.getKeyName( accepted ) );lobbySelecterKeybind = accepted;configSave(); }});
+        listServerSelector.getSubSettings().add(new HeaderElement(ModColor.cl("2") + "Server Selecter"));
 
-        subSettings.add( lobbySelecterKeyElement );
+        KeyElement lobbySelecterKeyElement = new KeyElement( "Server Menu Keybind", new ControlElement.IconData( Material.STONE_BUTTON ), lobbySelecterKeybind, new Consumer<Integer>() {@Override public void accept( Integer accepted ) { if ( accepted < 0 ) { System.out.println( "Set new key to NONE" );lobbySelecterKeybind = -1;configSave();return; }System.out.println( "Set new key to " + Keyboard.getKeyName( accepted ) );lobbySelecterKeybind = accepted;configSave(); }});
+
+        listServerSelector.getSubSettings().add( lobbySelecterKeyElement );
 
 
         StringElement serverElement1 = new StringElement( "Server 1." , new ControlElement.IconData( Material.PAPER ), server1, new Consumer<String>() {
@@ -212,7 +241,7 @@ public class TransporterAddon  extends LabyModAddon {
             }
         });
 
-        subSettings.add( serverElement1 );
+        listServerSelector.getSubSettings().add( serverElement1 );
 
 
         StringElement serverElement2 = new StringElement( "Server 2." , new ControlElement.IconData( Material.PAPER ), server2, new Consumer<String>() {
@@ -223,7 +252,7 @@ public class TransporterAddon  extends LabyModAddon {
             }
         });
 
-        subSettings.add( serverElement2 );
+        listServerSelector.getSubSettings().add( serverElement2 );
 
 
         StringElement serverElement3 = new StringElement( "Server 3." , new ControlElement.IconData( Material.PAPER ), server3, new Consumer<String>() {
@@ -234,7 +263,7 @@ public class TransporterAddon  extends LabyModAddon {
             }
         });
 
-        subSettings.add( serverElement3 );
+        listServerSelector.getSubSettings().add( serverElement3 );
 
 
         StringElement serverElement4 = new StringElement( "Server 4." , new ControlElement.IconData( Material.PAPER ), server4, new Consumer<String>() {
@@ -245,7 +274,7 @@ public class TransporterAddon  extends LabyModAddon {
             }
         });
 
-        subSettings.add( serverElement4 );
+        listServerSelector.getSubSettings().add( serverElement4 );
 
 
         StringElement serverElement5 = new StringElement( "Server 5." , new ControlElement.IconData( Material.PAPER ), server5, new Consumer<String>() {
@@ -256,7 +285,7 @@ public class TransporterAddon  extends LabyModAddon {
             }
         });
 
-        subSettings.add( serverElement5 );
+        listServerSelector.getSubSettings().add( serverElement5 );
 
 
         StringElement serverElement6 = new StringElement( "Server 6." , new ControlElement.IconData( Material.PAPER ), server6, new Consumer<String>() {
@@ -267,7 +296,7 @@ public class TransporterAddon  extends LabyModAddon {
             }
         });
 
-        subSettings.add( serverElement6 );
+        listServerSelector.getSubSettings().add( serverElement6 );
 
 
         StringElement serverElement7 = new StringElement( "Server 7." , new ControlElement.IconData( Material.PAPER ), server7, new Consumer<String>() {
@@ -278,15 +307,18 @@ public class TransporterAddon  extends LabyModAddon {
             }
         });
 
-        subSettings.add( serverElement7 );
+        listServerSelector.getSubSettings().add( serverElement7 );
 
 
 
-        subSettings.add(new HeaderElement(ModColor.cl("a") + "Auto Transporter"));
+        ListContainerElement listAutoTransporter = new ListContainerElement(ModColor.cl("a") + "Auto Transporter", new ControlElement.IconData(Material.REDSTONE_COMPARATOR));
 
-        subSettings.add( new BooleanElement( "Auto Transporter", this, new ControlElement.IconData( "labymod/textures/settings/settings/autotext.png" ), "autoTransporer", this.autoTransporer ) );
 
-        subSettings.add( AutoTransporterKeyElement );
+        listAutoTransporter.getSubSettings().add(new HeaderElement(ModColor.cl("a") + "Auto Transporter"));
+
+        listAutoTransporter.getSubSettings().add( new BooleanElement( "Auto Transporter", this, new ControlElement.IconData( "labymod/textures/settings/settings/autotext.png" ), "autoTransporer", this.autoTransporer ) );
+
+        listAutoTransporter.getSubSettings().add( AutoTransporterKeyElement );
 
         NumberElement numberElement = new NumberElement( "Delay (Sekunder)",
                 new ControlElement.IconData( Material.WATCH ) , (autoTransporterDelay/20)  );
@@ -300,17 +332,37 @@ public class TransporterAddon  extends LabyModAddon {
             }
         } );
 
-        subSettings.add( numberElement );
+        listAutoTransporter.getSubSettings().add( numberElement );
 
-        subSettings.add(new HeaderElement(ModColor.cl("c") + "Items"));
+
+
+        ListContainerElement listItems = new ListContainerElement(ModColor.cl("f") + "Items", new ControlElement.IconData(Material.IRON_INGOT));
+
+        listItems.getSubSettings().add(new HeaderElement(ModColor.cl("a") + ModColor.cl("l") + "ITEMS"));
+        listItems.getSubSettings().add(new HeaderElement(ModColor.cl("f") + "Vælg de items du vil putte i din transporter."));
 
         TransporterItems items[] = TransporterItems.values();
         for(TransporterItems item : items) {
             Boolean bool = getItemConfig(item.toString());
             ControlElement.IconData iconData = this.items.getIconData(item);
             String name = this.items.getName(item);
-            subSettings.add( new BooleanElement( name, this, iconData, item.toString(), bool ));
+            Integer antalKrævet = this.items.getItemByID(this.items.getId(item)).getAntalKrævet();
+
+            DescribedBooleanElement itemElement = new DescribedBooleanElement(name, this, iconData, item.toString(), bool, "Slå denne til for at den putter " + name + " i din transporter.");
+            itemElement.getSubSettings().add( new SliderElement( "Antal" + name + " krævet", this, new ControlElement.IconData( Material.DETECTOR_RAIL ), item.toString() + "-Required", antalKrævet).setRange( 1, 64 ).addCallback(new Consumer<Integer>() {
+                @Override
+                public void accept( Integer accepted ) {
+                    System.out.println( "New number: " + accepted );
+                    addon.items.getItemByID(addon.items.getId(item)).setAntalKrævet(accepted);
+                }
+            } ));
+            listItems.getSubSettings().add(itemElement);
         }
+
+        subSettings.add(listMessages);
+        subSettings.add(listServerSelector);
+        subSettings.add(listAutoTransporter);
+        subSettings.add(listItems);
 
 
 
@@ -351,7 +403,6 @@ public class TransporterAddon  extends LabyModAddon {
 
     @SubscribeEvent
     public void onTick(final TickEvent.ClientTickEvent event) {
-
         if(!isInSaLobby){executeCommands = false; LabyMod.getInstance().displayMessageInChat(ModColor.cl("c") + "Din transporter cycle er blevet stoppet."); isInSaLobby = true; return;}
 
         if(!connectedToSuperawesome){ return; }
@@ -371,35 +422,42 @@ public class TransporterAddon  extends LabyModAddon {
         }
 
         if (executeCommands) {
+            if (executeState >= 35) {
+                executeCommands = false;
+            }
             timer++;
             if (timer >= delay) {
                 timer = 0;
                 TransporterItems items[] = TransporterItems.values();
                 if(items[executeState] != null){
                     //System.out.println(getItemConfig(items[executeState].toString()));
-                    while (!getItemConfig(items[executeState].toString())){
-                        //System.out.println("WHILTE LOOP:" + getItemConfig(items[executeState].toString()) + " " + executeState);
+                    while (!getItemConfig(items[executeState].toString()) || GetAmountOfItemInInventory.getAmountOfItem(Minecraft.getMinecraft().thePlayer.inventory, this.items.getItemByID(executeState).getItemDamage(), this.items.getItemByID(executeState).getInventoryItem()) < this.items.getItemByID(executeState).getAntalKrævet()){
+                        System.out.println("WHILTE LOOP:" + getItemConfig(items[executeState].toString()) + " " + executeState);
                         executeState++;
                         if (executeState >= 35){
                             break;
                         }
 
                     }
-                    if (executeState < 35){
+                    //Integer itemAmount = GetAmountOfItemInInventory.getAmountOfItem(Minecraft.getMinecraft().thePlayer.inventory,0, Item.getItemById(12));
+
+                    if (executeState <= 34){
                         if(executeState == 1) {
                             Minecraft.getMinecraft().thePlayer.sendChatMessage("/transporter get Sand:1"); }else{
                             Minecraft.getMinecraft().thePlayer.sendChatMessage("/transporter put " + items[executeState].toString());
                         }
 
                     }
-                    executeState++;
-                    while (!getItemConfig(items[executeState].toString())){
-                        //System.out.println("WHILTE LOOP:" + getItemConfig(items[executeState].toString()) + " " + executeState);
-                        executeState++;
-                        if (executeState >= 35){
-                            break;
+                    if(executeState < 35) {
+                        while (!getItemConfig(items[executeState].toString())) {
+                            System.out.println("WHILTE LOOP:" + getItemConfig(items[executeState].toString()) + " " + executeState);
+                            executeState++;
+                            if (executeState >= 35) {
+                                break;
+                            }
                         }
-
+                    }else{
+                        executeCommands = false;
                     }
                 }else{
                     executeState++;
@@ -462,9 +520,10 @@ public class TransporterAddon  extends LabyModAddon {
 
 
             //TEST KEY
-            //if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD0)){
-
-            //}
+            if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD0)){
+                Integer itemAmount = GetAmountOfItemInInventory.getAmountOfItem(Minecraft.getMinecraft().thePlayer.inventory,0, Item.getItemById(12));
+                System.out.println("Du har " + itemAmount + " sand!");
+            }
 
 
         } catch (Exception e) {

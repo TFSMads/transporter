@@ -14,6 +14,8 @@ public class Item {
     private Block block;
     private net.minecraft.item.Item mitem;
     private Integer itemDamage;
+    private Integer antalKrævet;
+    private Integer amount;
 
 
     public Item(){
@@ -24,6 +26,8 @@ public class Item {
         block = Blocks.sand;
         mitem = null;
         itemDamage = 0;
+        antalKrævet = 0;
+        amount = 0;
     }
 
     public Item(TransporterItems item,Material material,Integer value,String name,Block block,Integer itemDamage){
@@ -34,6 +38,8 @@ public class Item {
         this.block = block;
         this.mitem = null;
         this.itemDamage = itemDamage;
+        this.antalKrævet = 0;
+        this.amount = 0;
     }
 
     public Item(TransporterItems item, Material material, Integer value, String name, net.minecraft.item.Item mitem,Integer itemDamage){
@@ -44,6 +50,8 @@ public class Item {
         this.block = null;
         this.mitem = mitem;
         this.itemDamage = itemDamage;
+        this.antalKrævet = 0;
+        this.amount = 0;
     }
 
 
@@ -98,6 +106,29 @@ public class Item {
     }
     public Block getBlock(){
         return this.block;
+    }
+
+    public net.minecraft.item.Item getInventoryItem(){
+        if(this.isInstanceOfBlock()){
+            return net.minecraft.item.Item.getItemFromBlock(this.block);
+        }
+        return this.mitem;
+    }
+
+    public Integer getAntalKrævet(){
+        return this.antalKrævet;
+    }
+
+    public void setAntalKrævet(Integer antalKrævet){
+        this.antalKrævet = antalKrævet;
+    }
+
+    public Integer getAmount(){
+        return this.amount;
+    }
+
+    public void setAmount(Integer amount){
+        this.amount = amount;
     }
 
 }
