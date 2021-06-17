@@ -14,6 +14,7 @@ import dk.transporter.mads_gamer_dk.messageSendingSettings.messageSettings;
 import dk.transporter.mads_gamer_dk.modules.AutoTransporterModule;
 import dk.transporter.mads_gamer_dk.settingelements.DescribedBooleanElement;
 import dk.transporter.mads_gamer_dk.utils.GetAmountOfItemInInventory;
+import dk.transporter.mads_gamer_dk.utils.MessageHandler;
 import net.labymod.api.LabyModAddon;
 import net.labymod.api.events.MessageReceiveEvent;
 import net.labymod.api.events.MessageSendEvent;
@@ -99,7 +100,8 @@ public class TransporterAddon  extends LabyModAddon {
     private String server6;
     private String server7;
 
-    private String string1;
+
+    private MessageHandler messages;
 
     public String getServerString(Integer server){
         if(server == 1){ return server1; }else if(server == 2){  return server2; }else if(server == 3){ return server3; }else if(server == 4){ return server4; }else if(server == 5){ return server5; }else if(server == 6){ return server6; }else if(server == 7){ return server7; }
@@ -121,6 +123,9 @@ public class TransporterAddon  extends LabyModAddon {
         this.getApi().registerModule((Module)new AutoTransporterModule(this));
         this.getApi().getEventManager().registerOnJoin((Consumer) new JoinListener());
         this.getApi().getEventManager().registerOnQuit((Consumer) new QuitListener());
+
+        messages = new MessageHandler();
+
     }
 
     public static TransporterAddon getAddon(){
@@ -166,7 +171,12 @@ public class TransporterAddon  extends LabyModAddon {
         this.server6 = getConfig().has( "server6" ) ? getConfig().get( "server6" ).getAsString() : "creepylobby";
         this.server7 = getConfig().has( "server7" ) ? getConfig().get( "server7" ).getAsString() : "limbo";
 
-        this.string1 = getConfig().has( "string1" ) ? getConfig().get( "server1" ).getAsString() : "larmelobby";
+        this.messages.setMessageById(0, getConfig().has( "putMessage" ) ? getConfig().get( "putMessage" ).getAsString() : "&bGemmer &3%antal% %item% &bi din transporter. &7(&3%total%&7)");
+        this.messages.setMessageById(1, getConfig().has( "getMessage" ) ? getConfig().get( "getMessage" ).getAsString() : "&bTager &3%antal% %item% &bfra din transporter. &7(&3%total%&7)");
+        this.messages.setMessageById(2, getConfig().has( "putManglerMessage" ) ? getConfig().get( "putManglerMessage" ).getAsString() : "&bDu har ikke noget &3%item%");
+        this.messages.setMessageById(3, getConfig().has( "getManglerMessage" ) ? getConfig().get( "getManglerMessage" ).getAsString() : "&bDu har ikke noget &3%item% &bi din transporter.");
+        this.messages.setMessageById(4, getConfig().has( "delayMessage" ) ? getConfig().get( "delayMessage" ).getAsString() : "&cDer er 2 sekunders cooldown på transporteren.");
+
 
         TransporterItems items[] = TransporterItems.values();
         for(TransporterItems item : items) {
@@ -210,17 +220,55 @@ public class TransporterAddon  extends LabyModAddon {
         listMessages.getSubSettings().add((SettingsElement)uploadServiceDropDownElement);
 
 
-        StringElement customChat1 = new StringElement( "Transporter put besked" , new ControlElement.IconData( Material.PAPER ), server1, new Consumer<String>() {
+        StringElement customChat1 = new StringElement( "Transporter put besked" , new ControlElement.IconData( Material.PAPER ), this.messages.getMessageById(0), new Consumer<String>() {
             @Override
             public void accept( String accepted ) {
-                server1 = accepted;
-                serverConfigSave();
+                addon.messages.setMessageById(0,accepted);
+                getConfig().addProperty("putMessage", accepted);
             }
         });
 
         listMessages.getSubSettings().add( customChat1 );
 
+        StringElement customChat2 = new StringElement( "Transporter get besked" , new ControlElement.IconData( Material.PAPER ), this.messages.getMessageById(1), new Consumer<String>() {
+            @Override
+            public void accept( String accepted ) {
+                addon.messages.setMessageById(1,accepted);
+                getConfig().addProperty("getMessage", accepted);
+            }
+        });
 
+        listMessages.getSubSettings().add( customChat2 );
+
+        StringElement customChat3 = new StringElement( "Put mangler besked" , new ControlElement.IconData( Material.PAPER ), this.messages.getMessageById(2), new Consumer<String>() {
+            @Override
+            public void accept( String accepted ) {
+                addon.messages.setMessageById(2,accepted);
+                getConfig().addProperty("putManglerMessage", accepted);
+            }
+        });
+
+        listMessages.getSubSettings().add( customChat3 );
+
+        StringElement customChat4= new StringElement( "Get mangler besked" , new ControlElement.IconData( Material.PAPER ), this.messages.getMessageById(3), new Consumer<String>() {
+            @Override
+            public void accept( String accepted ) {
+                addon.messages.setMessageById(3,accepted);
+                getConfig().addProperty("getManglerMessage", accepted);
+            }
+        });
+
+        listMessages.getSubSettings().add( customChat4 );
+
+        StringElement customChat5 = new StringElement( "Delay besked" , new ControlElement.IconData( Material.PAPER ), this.messages.getMessageById(4), new Consumer<String>() {
+            @Override
+            public void accept( String accepted ) {
+                addon.messages.setMessageById(4,accepted);
+                getConfig().addProperty("delayMessage", accepted);
+            }
+        });
+
+        listMessages.getSubSettings().add( customChat5 );
 
 
         ListContainerElement listServerSelector = new ListContainerElement(ModColor.cl("2") + "Server Selector", new ControlElement.IconData(Material.COMPASS));
