@@ -74,11 +74,61 @@ public class MessageHandler {
     public String getPutMessage(String item,Integer antal,Integer total){
         String tempMsg = putMessage;
 
-        tempMsg.replace('&','§');
+        tempMsg = tempMsg.replace('&','§');
 
-        tempMsg.replace('%item%', item)
+        tempMsg = tempMsg.replace("%item%", item);
 
+        tempMsg = tempMsg.replace("%antal%", antal.toString());
 
+        tempMsg = tempMsg.replace("%total%", total.toString());
+
+        return tempMsg;
+
+    }
+
+    public String getGetMessage(String item,Integer antal,Integer total){
+        String tempMsg = getMessage;
+
+        tempMsg = tempMsg.replace('&','§');
+
+        tempMsg = tempMsg.replace("%item%", item);
+
+        tempMsg = tempMsg.replace("%antal%", antal.toString());
+
+        tempMsg = tempMsg.replace("%total%", total.toString());
+
+        return tempMsg;
+
+    }
+
+    public String getManglerPutMessage(String item){
+        String tempMsg = putManglerMessage;
+
+        tempMsg = tempMsg.replace('&','§');
+
+        tempMsg = tempMsg.replace("%item%", item);
+
+        return tempMsg;
+
+    }
+
+    public String getManglerGetMessage(String item){
+        String tempMsg = getManglerMessage;
+
+        tempMsg = tempMsg.replace('&','§');
+
+        tempMsg = tempMsg.replace("%item%", item);
+
+        return tempMsg;
+
+    }
+
+    public String getDelayMessage(){
+        String tempMsg = delayMessage;
+
+        tempMsg = tempMsg.replace('&','§');
+
+        return tempMsg;
 
     }
 

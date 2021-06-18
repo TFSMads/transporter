@@ -16,7 +16,7 @@ public class JoinListener implements Consumer<ServerData>
     public void accept(final ServerData serverData) {
         if(!TransporterAddon.isValidVersion){
             try {
-                TransporterAddon.isValidVersion = validateVersion.isValidVersion("1.3");
+                TransporterAddon.isValidVersion = validateVersion.isValidVersion("1.4");
             } catch (Exception e) {
                 e.printStackTrace();
             }

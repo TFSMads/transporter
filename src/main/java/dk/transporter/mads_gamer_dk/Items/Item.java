@@ -7,6 +7,8 @@ import net.minecraft.init.Blocks;
 public class Item {
 
 
+
+
     private TransporterItems item;
     private Material material;
     private Integer value;
@@ -14,8 +16,8 @@ public class Item {
     private Block block;
     private net.minecraft.item.Item mitem;
     private Integer itemDamage;
-    private Integer antalKrævet;
     private Integer amount;
+    private Integer antalKrævet;
 
 
     public Item(){

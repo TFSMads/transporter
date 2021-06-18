@@ -26,10 +26,6 @@ import net.labymod.utils.Consumer;
 import net.labymod.utils.Material;
 import net.labymod.utils.ModColor;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -101,9 +97,22 @@ public class TransporterAddon  extends LabyModAddon {
 
     private MessageHandler messages;
 
+    private Integer antalKrævet;
+
+    private Boolean checkItems;
+
+
+    public MessageHandler getMessages(){
+        return this.messages;
+    }
+
     public String getServerString(Integer server){
         if(server == 1){ return server1; }else if(server == 2){  return server2; }else if(server == 3){ return server3; }else if(server == 4){ return server4; }else if(server == 5){ return server5; }else if(server == 6){ return server6; }else if(server == 7){ return server7; }
         return "larmelobby";
+    }
+
+    public Boolean getCheckItems(){
+        return this.checkItems;
     }
 
     @Override
@@ -114,6 +123,7 @@ public class TransporterAddon  extends LabyModAddon {
         addon = this;
         System.out.println("TransporterAddon Enabled!");
         this.getApi().registerForgeListener(this);
+
         this.getApi().getEventManager().register((MessageSendEvent)new OnCommand(this));
 
         this.getApi().getEventManager().register((MessageReceiveEvent)new messageReceiveListener());
@@ -173,10 +183,12 @@ public class TransporterAddon  extends LabyModAddon {
         this.messages.setMessageById(3, getConfig().has( "getManglerMessage" ) ? getConfig().get( "getManglerMessage" ).getAsString() : "&bDu har ikke noget &3%item% &bi din transporter.");
         this.messages.setMessageById(4, getConfig().has( "delayMessage" ) ? getConfig().get( "delayMessage" ).getAsString() : "&cDer er 2 sekunders cooldown på transporteren.");
 
+        this.antalKrævet = getConfig().has( "antalKrævet" ) ? getConfig().get( "antalKrævet" ).getAsInt() : 1;
+        this.checkItems = getConfig().has( "checkItems" ) ? getConfig().get( "checkItems" ).getAsBoolean() : true;
 
         TransporterItems items[] = TransporterItems.values();
         for(TransporterItems item : items) {
-            this.items.getItemByID(this.items.getId(item)).setAntalKrævet(getConfig().has( item.toString() + "-Required" ) ? getConfig().get( item.toString() + "-Required").getAsInt() : 64);
+            this.items.getItemByID(this.items.getId(item)).setAntalKrævet(getConfig().has( item.toString() + "-Required" ) ? getConfig().get( item.toString() + "-Required").getAsInt() : 1);
         }
     }
 
@@ -384,14 +396,39 @@ public class TransporterAddon  extends LabyModAddon {
         listItems.getSubSettings().add(new HeaderElement(ModColor.cl("f") + "Vælg de items du vil putte i din transporter."));
 
         TransporterItems items[] = TransporterItems.values();
+
+
+
+
+
+
+
+
+        listItems.getSubSettings().add( new BooleanElement( "Tjek efter items.", this, new ControlElement.IconData( Material.DAYLIGHT_DETECTOR ), "checkItems", this.checkItems ) );
+
+        listItems.getSubSettings().add( new SliderElement( "Antal Krævet.", this, new ControlElement.IconData( Material.DETECTOR_RAIL ), "requiredAll", this.antalKrævet ).setRange( 0, 64 ).addCallback(new Consumer<Integer>() {
+            @Override
+            public void accept( Integer accepted ) {
+                getConfig().addProperty("antalKrævet", accepted);
+                for(TransporterItems item : items) {
+                    addon.antalKrævet = accepted;
+                    getConfig().addProperty(item.toString() + "-Required", accepted);
+                    addon.items.getItemByID(addon.items.getId(item)).setAntalKrævet(accepted);
+                }
+            }
+        } ));
+
+        listItems.getSubSettings().add(new HeaderElement(ModColor.cl("a") + " "));
+
+
         for(TransporterItems item : items) {
             Boolean bool = getItemConfig(item.toString());
             ControlElement.IconData iconData = this.items.getIconData(item);
             String name = this.items.getName(item);
-            Integer antalKrævet = this.items.getItemByID(this.items.getId(item)).getAntalKrævet();
+            //Integer antalKrævet = this.items.getItemByID(this.items.getId(item)).getAntalKrævet();
 
             DescribedBooleanElement itemElement = new DescribedBooleanElement(name, this, iconData, item.toString(), bool, "Slå denne til for at den putter " + name + " i din transporter.");
-            itemElement.getSubSettings().add( new SliderElement( "Antal" + name + " krævet", this, new ControlElement.IconData( Material.DETECTOR_RAIL ), item.toString() + "-Required", antalKrævet).setRange( 1, 64 ).addCallback(new Consumer<Integer>() {
+            itemElement.getSubSettings().add( new SliderElement( "Antal " + name + " krævet", this, new ControlElement.IconData( Material.DETECTOR_RAIL ), item.toString() + "-Required", getConfig().get(item.toString() + "-Required").getAsInt()).setRange( 0, 64 ).addCallback(new Consumer<Integer>() {
                 @Override
                 public void accept( Integer accepted ) {
                     System.out.println( "New number: " + accepted );
@@ -444,6 +481,7 @@ public class TransporterAddon  extends LabyModAddon {
 
     @SubscribeEvent
     public void onTick(final TickEvent.ClientTickEvent event) {
+        //System.out.println("Current Time: " + System.currentTimeMillis());
         if(!isInSaLobby){executeCommands = false; LabyMod.getInstance().displayMessageInChat(ModColor.cl("c") + "Din transporter cycle er blevet stoppet."); isInSaLobby = true; return;}
 
         if(!connectedToSuperawesome){ return; }
@@ -467,13 +505,14 @@ public class TransporterAddon  extends LabyModAddon {
                 executeCommands = false;
             }
             timer++;
+            //System.out.println("TIMER: " + timer);
             if (timer >= delay) {
                 timer = 0;
                 TransporterItems items[] = TransporterItems.values();
                 if(items[executeState] != null){
                     //System.out.println(getItemConfig(items[executeState].toString()));
                     while (!getItemConfig(items[executeState].toString()) || GetAmountOfItemInInventory.getAmountOfItem(Minecraft.getMinecraft().thePlayer.inventory, this.items.getItemByID(executeState).getItemDamage(), this.items.getItemByID(executeState).getInventoryItem()) < this.items.getItemByID(executeState).getAntalKrævet()){
-                        System.out.println("WHILTE LOOP:" + getItemConfig(items[executeState].toString()) + " " + executeState);
+                        //System.out.println("WHILTE LOOP:" + getItemConfig(items[executeState].toString()) + " " + executeState);
                         executeState++;
                         if (executeState >= 35){
                             break;
@@ -481,8 +520,9 @@ public class TransporterAddon  extends LabyModAddon {
 
                     }
                     //Integer itemAmount = GetAmountOfItemInInventory.getAmountOfItem(Minecraft.getMinecraft().thePlayer.inventory,0, Item.getItemById(12));
-
+                    Integer temp = -1;
                     if (executeState <= 34){
+                        temp = executeState;
                         if(executeState == 1) {
                             Minecraft.getMinecraft().thePlayer.sendChatMessage("/transporter put Sand:1"); }else{
                             Minecraft.getMinecraft().thePlayer.sendChatMessage("/transporter put " + items[executeState].toString());
@@ -491,7 +531,7 @@ public class TransporterAddon  extends LabyModAddon {
                     }
                     if(executeState < 35) {
                         while (!getItemConfig(items[executeState].toString())) {
-                            System.out.println("WHILTE LOOP:" + getItemConfig(items[executeState].toString()) + " " + executeState);
+                            //System.out.println("WHILTE LOOP2:" + getItemConfig(items[executeState].toString()) + " " + executeState);
                             executeState++;
                             if (executeState >= 35) {
                                 break;
@@ -499,6 +539,9 @@ public class TransporterAddon  extends LabyModAddon {
                         }
                     }else{
                         executeCommands = false;
+                    }
+                    if(temp == executeState){
+                        executeState++;
                     }
                 }else{
                     executeState++;
@@ -558,10 +601,10 @@ public class TransporterAddon  extends LabyModAddon {
             }
 
             //TEST KEY
-            if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD0)){
-                Integer itemAmount = GetAmountOfItemInInventory.getAmountOfItem(Minecraft.getMinecraft().thePlayer.inventory,0, Item.getItemById(12));
-                System.out.println("Du har " + itemAmount + " sand!");
-            }
+            //if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD0)){
+            //    Integer itemAmount = GetAmountOfItemInInventory.getAmountOfItem(Minecraft.getMinecraft().thePlayer.inventory,0, Item.getItemById(12));
+            //    System.out.println("Du har " + itemAmount + " sand!");
+            //}
 
 
         } catch (Exception e) {

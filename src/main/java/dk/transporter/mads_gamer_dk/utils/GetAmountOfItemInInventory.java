@@ -1,5 +1,6 @@
 package dk.transporter.mads_gamer_dk.utils;
 
+import dk.transporter.mads_gamer_dk.TransporterAddon;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -7,6 +8,9 @@ import net.minecraft.item.ItemStack;
 public class GetAmountOfItemInInventory {
 
     public static Integer getAmountOfItem(InventoryPlayer inventory, Integer itemDamage, Item mcItem){
+        if (!TransporterAddon.getAddon().getCheckItems()){
+            return 9999;
+        }
         Integer itemAmount = 0;
         for(ItemStack item : inventory.mainInventory){
             if (item != null){
