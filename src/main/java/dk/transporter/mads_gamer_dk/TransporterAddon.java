@@ -425,10 +425,10 @@ public class TransporterAddon  extends LabyModAddon {
             Boolean bool = getItemConfig(item.toString());
             ControlElement.IconData iconData = this.items.getIconData(item);
             String name = this.items.getName(item);
-            //Integer antalKrævet = this.items.getItemByID(this.items.getId(item)).getAntalKrævet();
+            Integer antalKrævet = this.items.getItemByID(this.items.getId(item)).getAntalKrævet();
 
             DescribedBooleanElement itemElement = new DescribedBooleanElement(name, this, iconData, item.toString(), bool, "Slå denne til for at den putter " + name + " i din transporter.");
-            itemElement.getSubSettings().add( new SliderElement( "Antal " + name + " krævet", this, new ControlElement.IconData( Material.DETECTOR_RAIL ), item.toString() + "-Required", getConfig().get(item.toString() + "-Required").getAsInt()).setRange( 0, 64 ).addCallback(new Consumer<Integer>() {
+            itemElement.getSubSettings().add( new SliderElement( "Antal " + name + " krævet", this, new ControlElement.IconData( Material.DETECTOR_RAIL ), item.toString() + "-Required", antalKrævet).setRange( 0, 64 ).addCallback(new Consumer<Integer>() {
                 @Override
                 public void accept( Integer accepted ) {
                     System.out.println( "New number: " + accepted );
