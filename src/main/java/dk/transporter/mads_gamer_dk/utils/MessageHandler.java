@@ -129,7 +129,6 @@ public class MessageHandler {
         tempMsg = tempMsg.replace('&','§');
 
         return tempMsg;
-
     }
 
 }

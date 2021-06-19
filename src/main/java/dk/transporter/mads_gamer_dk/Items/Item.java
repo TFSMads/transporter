@@ -16,9 +16,9 @@ public class Item {
     private Block block;
     private net.minecraft.item.Item mitem;
     private Integer itemDamage;
-    private Integer amount;
     private Integer antalKrævet;
-
+    private Integer amount;
+    private String saName;
 
     public Item(){
         value = 0;
@@ -30,9 +30,10 @@ public class Item {
         itemDamage = 0;
         antalKrævet = 0;
         amount = 0;
+        saName = "Sand";
     }
 
-    public Item(TransporterItems item,Material material,Integer value,String name,Block block,Integer itemDamage){
+    public Item(TransporterItems item,Material material,Integer value,String name,Block block,Integer itemDamage, Integer amount, String saName){
         this.value = value;
         this.material = material;
         this.item = item;
@@ -41,10 +42,11 @@ public class Item {
         this.mitem = null;
         this.itemDamage = itemDamage;
         this.antalKrævet = 0;
-        this.amount = 0;
+        this.amount = amount;
+        this.saName = saName;
     }
 
-    public Item(TransporterItems item, Material material, Integer value, String name, net.minecraft.item.Item mitem,Integer itemDamage){
+    public Item(TransporterItems item, Material material, Integer value, String name, net.minecraft.item.Item mitem,Integer itemDamage, Integer amount, String saName){
         this.value = value;
         this.material = material;
         this.item = item;
@@ -53,7 +55,8 @@ public class Item {
         this.mitem = mitem;
         this.itemDamage = itemDamage;
         this.antalKrævet = 0;
-        this.amount = 0;
+        this.amount = amount;
+        this.saName = saName;
     }
 
 
@@ -133,4 +136,11 @@ public class Item {
         this.amount = amount;
     }
 
+    public String getSaName(){
+        return this.saName;
+    }
+
+    public void setSaName(String saName){
+        this.saName = saName;
+    }
 }
