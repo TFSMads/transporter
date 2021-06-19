@@ -20,6 +20,8 @@ import net.labymod.api.events.MessageReceiveEvent;
 import net.labymod.api.events.MessageSendEvent;
 import net.labymod.gui.elements.DropDownMenu;
 import net.labymod.ingamegui.Module;
+import net.labymod.ingamegui.ModuleCategory;
+import net.labymod.ingamegui.ModuleCategoryRegistry;
 import net.labymod.main.LabyMod;
 import net.labymod.settings.elements.*;
 import net.labymod.utils.Consumer;
@@ -36,6 +38,8 @@ import java.io.IOException;
 import java.util.List;
 
 public class TransporterAddon  extends LabyModAddon {
+
+    public static final ModuleCategory CATEGORY_TRANSPORTERITEMS = new ModuleCategory("Transporter Items", true, new ControlElement.IconData("transporter/textures/icons/Items.png"));
 
     public static boolean isEnabled;
 
@@ -117,6 +121,8 @@ public class TransporterAddon  extends LabyModAddon {
 
     @Override
     public void onEnable() {
+        ModuleCategoryRegistry.loadCategory(CATEGORY_TRANSPORTERITEMS);
+
         isValidVersion = false;
         isEnabled = false;
         items = new Items();
@@ -189,6 +195,7 @@ public class TransporterAddon  extends LabyModAddon {
         TransporterItems items[] = TransporterItems.values();
         for(TransporterItems item : items) {
             this.items.getItemByID(this.items.getId(item)).setAntalKrævet(getConfig().has( item.toString() + "-Required" ) ? getConfig().get( item.toString() + "-Required").getAsInt() : 1);
+            this.items.getItemByID(this.items.getId(item)).setValue(getConfig().has( item.toString() + "-Value" ) ? getConfig().get( item.toString() + "-Value").getAsInt() : this.items.getItemByID(this.items.getId(item)).getValue());
         }
     }
 
@@ -431,11 +438,27 @@ public class TransporterAddon  extends LabyModAddon {
             itemElement.getSubSettings().add( new SliderElement( "Antal " + name + " krævet", this, new ControlElement.IconData( Material.DETECTOR_RAIL ), item.toString() + "-Required", antalKrævet).setRange( 0, 64 ).addCallback(new Consumer<Integer>() {
                 @Override
                 public void accept( Integer accepted ) {
-                    System.out.println( "New number: " + accepted );
                     addon.items.getItemByID(addon.items.getId(item)).setAntalKrævet(accepted);
                 }
             } ));
+
+            NumberElement valueElement = new NumberElement( "Værdi (Ems)",
+                    new ControlElement.IconData( Material.EMERALD ) , addon.items.getItemByID(addon.items.getId(item)).getValue() );
+
+            valueElement.addCallback( new Consumer<Integer>() {
+                @Override
+                public void accept( Integer accepted ) {
+                    addon.items.getItemByID(addon.items.getId(item)).setValue(accepted);
+                    getConfig().addProperty(item.toString() + "-Value", accepted);
+                    System.out.println(accepted);
+                }
+            } );
+            itemElement.getSubSettings().add(valueElement);
+
+
+
             listItems.getSubSettings().add(itemElement);
+
         }
 
         subSettings.add(listMessages);
