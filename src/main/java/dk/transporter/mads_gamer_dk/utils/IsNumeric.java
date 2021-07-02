@@ -1,5 +1,6 @@
 package dk.transporter.mads_gamer_dk.utils;
 
+
 import java.util.regex.Pattern;
 
 public class IsNumeric {
