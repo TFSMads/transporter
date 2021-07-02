@@ -45,7 +45,7 @@ public class Items {
             allItems[21] = new Item(TransporterItems.BLAZEROD, Material.BLAZE_ROD, 0, "Blaze Rod", net.minecraft.init.Items.blaze_rod,0,0,"blazerod");
             allItems[22] = new Item(TransporterItems.ENDERPEARL, Material.ENDER_PEARL, 0, "Ender Pearl", net.minecraft.init.Items.ender_pearl,0,0,"enderpearl");
             allItems[23] = new Item(TransporterItems.BOOK, Material.BOOK, 0, "Book", net.minecraft.init.Items.book,0,0,"book");
-            allItems[24] = new Item(TransporterItems.SUGARCANE, Material.SUGAR_CANE, 0, "Sugar Cane", net.minecraft.init.Items.sugar,0,0,"sugarcane");
+            allItems[24] = new Item(TransporterItems.SUGARCANE, Material.SUGAR_CANE, 0, "Sugar Cane", net.minecraft.init.Items.reeds,0,0,"sugarcane");
             allItems[25] = new Item(TransporterItems.LEATHER, Material.LEATHER, 0, "Leather", net.minecraft.init.Items.leather,0,0,"leather");
             allItems[26] = new Item(TransporterItems.SPRUCELOG, Material.LOG, 150, "Spruce Log",Blocks.log,1,0,"sprucelog");
             allItems[27] = new Item(TransporterItems.OAKLOG, Material.LOG, 0, "Oak Log",Blocks.log,0,0,"oaklog");

@@ -13,6 +13,7 @@ import dk.transporter.mads_gamer_dk.messageSendingSettings.messageSettings;
 import dk.transporter.mads_gamer_dk.modules.AutoTransporterModule;
 import dk.transporter.mads_gamer_dk.modules.TransporterVærdiModule;
 import dk.transporter.mads_gamer_dk.modules.items.*;
+import dk.transporter.mads_gamer_dk.modules.values.*;
 import dk.transporter.mads_gamer_dk.settingelements.DescribedBooleanElement;
 import dk.transporter.mads_gamer_dk.utils.GetAmountOfItemInInventory;
 import dk.transporter.mads_gamer_dk.utils.MessageHandler;
@@ -40,6 +41,8 @@ import java.util.List;
 public class TransporterAddon  extends LabyModAddon {
 
     public static final ModuleCategory CATEGORY_TRANSPORTERITEMS = new ModuleCategory("Transporter Items", true, new ControlElement.IconData("transporter/textures/icons/Items.png"));
+
+    public static final ModuleCategory CATEGORY_TRANSPORTERITEMSVÆRDI = new ModuleCategory("Transporter Værdier", true, new ControlElement.IconData(Material.EMERALD));
 
     public static boolean isEnabled;
 
@@ -124,6 +127,7 @@ public class TransporterAddon  extends LabyModAddon {
     @Override
     public void onEnable() {
         ModuleCategoryRegistry.loadCategory(CATEGORY_TRANSPORTERITEMS);
+        ModuleCategoryRegistry.loadCategory(CATEGORY_TRANSPORTERITEMSVÆRDI);
 
         isValidVersion = false;
         isEnabled = false;
@@ -141,10 +145,7 @@ public class TransporterAddon  extends LabyModAddon {
         this.getApi().getEventManager().registerOnQuit((Consumer) new QuitListener());
 
         messages = new MessageHandler();
-
-
         this.getApi().registerModule((Module)new TransporterVærdiModule(this));
-
 
         this.getApi().registerModule((Module)new SandModule(this));
         this.getApi().registerModule((Module)new RedSandModule(this));
@@ -183,6 +184,41 @@ public class TransporterAddon  extends LabyModAddon {
         this.getApi().registerModule((Module)new HopperModule(this));
 
 
+        this.getApi().registerModule((Module)new SandValueModule(this));
+        this.getApi().registerModule((Module)new RedSandValueModule(this));
+        this.getApi().registerModule((Module)new StoneValueModule(this));
+        this.getApi().registerModule((Module)new CobblestoneValueModule(this));
+        this.getApi().registerModule((Module)new StonebrickValueModule(this));
+        this.getApi().registerModule((Module)new DirtValueModule(this));
+        this.getApi().registerModule((Module)new GrassValueModule(this));
+        this.getApi().registerModule((Module)new CharcoalValueModule(this));
+        this.getApi().registerModule((Module)new CoalValueModule(this));
+        this.getApi().registerModule((Module)new IronoreValueModule(this));
+        this.getApi().registerModule((Module)new GoldoreValueModule(this));
+        this.getApi().registerModule((Module)new IroningotValueModule(this));
+        this.getApi().registerModule((Module)new GoldingotValueModule(this));
+        this.getApi().registerModule((Module)new BoneValueModule(this));
+        this.getApi().registerModule((Module)new GlowstonedustValueModule(this));
+        this.getApi().registerModule((Module)new GlowstoneValueModule(this));
+        this.getApi().registerModule((Module)new LapislazuliValueModule(this));
+        this.getApi().registerModule((Module)new QuartzValueModule(this));
+        this.getApi().registerModule((Module)new RedstoneValueModule(this));
+        this.getApi().registerModule((Module)new DiamondValueModule(this));
+        this.getApi().registerModule((Module)new ObsidianValueModule(this));
+        this.getApi().registerModule((Module)new BlazerodValueModule(this));
+        this.getApi().registerModule((Module)new EnderpearlValueModule(this));
+        this.getApi().registerModule((Module)new BookValueModule(this));
+        this.getApi().registerModule((Module)new SugarcaneValueModule(this));
+        this.getApi().registerModule((Module)new LeatherValueModule(this));
+        this.getApi().registerModule((Module)new SprucelogValueModule(this));
+        this.getApi().registerModule((Module)new OaklogValueModule(this));
+        this.getApi().registerModule((Module)new BirchlogValueModule(this));
+        this.getApi().registerModule((Module)new JunglelogValueModule(this));
+        this.getApi().registerModule((Module)new SlimeballValueModule(this));
+        this.getApi().registerModule((Module)new GlassValueModule(this));
+        this.getApi().registerModule((Module)new ChestValueModule(this));
+        this.getApi().registerModule((Module)new TrappedchestValueModule(this));
+        this.getApi().registerModule((Module)new HopperValueModule(this));
 
     }
 
