@@ -2,20 +2,28 @@ package dk.transporter.mads_gamer_dk.modules;
 
 import dk.transporter.mads_gamer_dk.Items.Item;
 import dk.transporter.mads_gamer_dk.TransporterAddon;
+import dk.transporter.mads_gamer_dk.utils.Round;
 import net.labymod.ingamegui.ModuleCategory;
 import net.labymod.ingamegui.ModuleCategoryRegistry;
 import net.labymod.ingamegui.moduletypes.SimpleModule;
 import net.labymod.settings.elements.ControlElement;
+import net.labymod.utils.Material;
 import net.labymod.utils.ModColor;
 import net.minecraft.util.ResourceLocation;
 
-public class TransporterVærdiModule extends SimpleModule
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
+
+import static java.lang.Math.floor;
+
+public class TransporterValueModule extends SimpleModule
 {
     private String DisplayValue;
 
     TransporterAddon addon;
 
-    public TransporterVærdiModule(final TransporterAddon addon) {
+    public TransporterValueModule(final TransporterAddon addon) {
         this.addon = addon;
     }
 
@@ -24,17 +32,18 @@ public class TransporterVærdiModule extends SimpleModule
     }
 
     public String getDisplayValue() {
-        Integer value = 0;
-        Integer add = 0;
+        Double value = 0d;
+        Double add = 0d;
         for(Item i : addon.getItems().getAllItems()){
             if(i.getAmount() > 0 && i.getValue() > 0){
-                add = (i.getAmount()/6400)*i.getValue();
+                add = ((i.getAmount().doubleValue())/6400)*(i.getValue().doubleValue());
                 if(add > 0){
                     value = add+value;
                 }
             }
         }
-        DisplayValue = value.toString();
+
+        DisplayValue = Round.round(value, 2) + " Ems";
         return DisplayValue;
     }
 
@@ -43,7 +52,7 @@ public class TransporterVærdiModule extends SimpleModule
     }
 
     public ControlElement.IconData getIconData() {
-        return new ControlElement.IconData(new ResourceLocation("transporter/textures/icons/Birch_Log.png"));
+        return new ControlElement.IconData(Material.EMERALD);
     }
 
     public void loadSettings() {

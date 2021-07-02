@@ -11,7 +11,7 @@ import dk.transporter.mads_gamer_dk.listeners.QuitListener;
 import dk.transporter.mads_gamer_dk.listeners.messageReceiveListener;
 import dk.transporter.mads_gamer_dk.messageSendingSettings.messageSettings;
 import dk.transporter.mads_gamer_dk.modules.AutoTransporterModule;
-import dk.transporter.mads_gamer_dk.modules.TransporterVærdiModule;
+import dk.transporter.mads_gamer_dk.modules.TransporterValueModule;
 import dk.transporter.mads_gamer_dk.modules.items.*;
 import dk.transporter.mads_gamer_dk.settingelements.DescribedBooleanElement;
 import dk.transporter.mads_gamer_dk.utils.GetAmountOfItemInInventory;
@@ -143,7 +143,7 @@ public class TransporterAddon  extends LabyModAddon {
         messages = new MessageHandler();
 
 
-        this.getApi().registerModule((Module)new TransporterVærdiModule(this));
+        this.getApi().registerModule((Module)new TransporterValueModule(this));
 
 
         this.getApi().registerModule((Module)new SandModule(this));
