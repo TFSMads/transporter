@@ -58,7 +58,7 @@ public class MiningRigModule extends SimpleModule {
     }
 
     public String getControlName() {
-        return "birchlog";
+        return "Mining Rig Timer";
     }
 
     public boolean isShown() {
