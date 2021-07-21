@@ -1,42 +1,41 @@
-package dk.transporter.mads_gamer_dk.modules;
+package dk.transporter.mads_gamer_dk.modules.Timers;
 
 import dk.transporter.mads_gamer_dk.TransporterAddon;
+import dk.transporter.mads_gamer_dk.utils.UnixTimestampOfNow;
 import net.labymod.ingamegui.ModuleCategory;
-import net.labymod.ingamegui.ModuleCategoryRegistry;
 import net.labymod.ingamegui.moduletypes.SimpleModule;
 import net.labymod.settings.elements.ControlElement;
 import net.labymod.utils.Material;
-import net.labymod.utils.ModColor;
 
-public class AutoTransporterModule extends SimpleModule
-{
-    private boolean DisplayValue;
+public class MiningRigModule extends SimpleModule {
+    private String DisplayValue;
 
     TransporterAddon addon;
 
-    public AutoTransporterModule(final TransporterAddon addon) {
+    public MiningRigModule(final TransporterAddon addon) {
         this.addon = addon;
     }
 
     public String getDisplayName() {
-        return "AutoTransporter";
+        return "Mining Rig Timer";
     }
 
     public String getDisplayValue() {
-        DisplayValue = addon.getConfig().has( "autoTransporer" ) ? addon.getConfig().get( "autoTransporer" ).getAsBoolean() : false;
-        if(DisplayValue)
-            return ModColor.cl("a") + "Til";
-        else{
-            return ModColor.cl("c") + "Fra";
+        Integer delay = 900 - (UnixTimestampOfNow.getTime() - addon.getTimers().getLastUsed());
+        if(delay < 0){
+            delay = 0;
         }
+        DisplayValue = delay.toString() + " Sekunder";
+        if(delay == 1) DisplayValue = delay.toString() + " Sekundt";
+        return DisplayValue;
     }
 
     public String getDefaultValue() {
-        return "false";
+        return "0";
     }
 
     public ControlElement.IconData getIconData() {
-        return new ControlElement.IconData("labymod/textures/settings/settings/autotext.png");
+        return new ControlElement.IconData(Material.WATCH);
     }
 
     public void loadSettings() {
@@ -47,7 +46,7 @@ public class AutoTransporterModule extends SimpleModule
     }
 
     public String getDescription() {
-        return "Se om autotransporter er slået til.";
+        return "Hvor lang tid til du kan bruge en mining rig.";
     }
 
     public int getSortingId() {
@@ -59,7 +58,7 @@ public class AutoTransporterModule extends SimpleModule
     }
 
     public String getControlName() {
-        return "AutoTransporter";
+        return "birchlog";
     }
 
     public boolean isShown() {

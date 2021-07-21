@@ -2,20 +2,22 @@ package dk.transporter.mads_gamer_dk.listeners;
 
 import dk.transporter.mads_gamer_dk.Items.Item;
 import dk.transporter.mads_gamer_dk.Items.Items;
+import dk.transporter.mads_gamer_dk.TransporterAddon;
 import dk.transporter.mads_gamer_dk.utils.IsNumeric;
+import dk.transporter.mads_gamer_dk.utils.UnixTimestampOfNow;
 import net.labymod.api.events.MessageReceiveEvent;
-import net.labymod.utils.ModColor;
 import net.minecraft.client.Minecraft;
-
-import static dk.transporter.mads_gamer_dk.TransporterAddon.addon;
 
 public class messageReceiveListener implements MessageReceiveEvent {
 
     public static Integer message = 2;
 
+    private TransporterAddon addon;
+
     private Items items;
 
-    public messageReceiveListener(Items items){
+    public messageReceiveListener(Items items, TransporterAddon addon){
+        this.addon = addon;
         this.items = items;
     }
     public boolean onReceive(final String msg, final String clean){
@@ -35,6 +37,10 @@ public class messageReceiveListener implements MessageReceiveEvent {
                     i.setAmount(Integer.parseInt(splited[0]));
                 }
             }
+        }
+
+        if(splited[0].equals("miningrigv2") && splited[1].equals("loaded.") && splited[2].equals("Paste") && splited[3].equals("it") && splited[4].equals("with")){
+            addon.getTimers().setLastUsed(UnixTimestampOfNow.getTime());
         }
 
         if(splited[0].equals("Du") && splited[1].equals("har") && splited[2].equals("ikke") && splited[3].equals("noget") && splited[5].equals("at") && splited[6].equals("putte") && splited[7].equals("i")){

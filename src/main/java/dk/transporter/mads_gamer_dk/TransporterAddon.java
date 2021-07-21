@@ -3,6 +3,7 @@ package dk.transporter.mads_gamer_dk;
 import dk.transporter.mads_gamer_dk.Items.Item;
 import dk.transporter.mads_gamer_dk.Items.Items;
 import dk.transporter.mads_gamer_dk.Items.TransporterItems;
+import dk.transporter.mads_gamer_dk.classes.MiningRigTimers;
 import dk.transporter.mads_gamer_dk.guis.LobbySelecterGui;
 import dk.transporter.mads_gamer_dk.guis.TransporterGui;
 import dk.transporter.mads_gamer_dk.listeners.JoinListener;
@@ -11,9 +12,7 @@ import dk.transporter.mads_gamer_dk.listeners.QuitListener;
 import dk.transporter.mads_gamer_dk.listeners.messageReceiveListener;
 import dk.transporter.mads_gamer_dk.messageSendingSettings.messageSettings;
 import dk.transporter.mads_gamer_dk.modules.AutoTransporterModule;
-import dk.transporter.mads_gamer_dk.modules.TransporterValueModule;
-import dk.transporter.mads_gamer_dk.modules.items.*;
-import dk.transporter.mads_gamer_dk.modules.values.*;
+import dk.transporter.mads_gamer_dk.modules.RegisterModules;
 import dk.transporter.mads_gamer_dk.settingelements.DescribedBooleanElement;
 import dk.transporter.mads_gamer_dk.utils.GetAmountOfItemInInventory;
 import dk.transporter.mads_gamer_dk.utils.MessageHandler;
@@ -33,8 +32,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-
+import org.apache.commons.io.IOUtils;
 import org.lwjgl.input.Keyboard;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 
@@ -44,11 +51,16 @@ public class TransporterAddon  extends LabyModAddon {
 
     public static final ModuleCategory CATEGORY_TRANSPORTERITEMSVÆRDI = new ModuleCategory("Transporter Værdier", true, new ControlElement.IconData(Material.EMERALD));
 
-    public static boolean isEnabled;
+    public static final ModuleCategory CATEGORY_TRANSPORTERADDON = new ModuleCategory("Transporter Addon", true, new ControlElement.IconData(Material.SIGN));
 
-    public static boolean isValidVersion;
+
+    private boolean isEnabled;
+
+    private boolean isValidVersion;
 
     public static boolean connectedToSuperawesome;
+
+    private MiningRigTimers timers;
 
     private messageSettings MessageSettings;
 
@@ -56,7 +68,7 @@ public class TransporterAddon  extends LabyModAddon {
 
     private boolean executeCommands;
 
-    private boolean autoTransporer;
+    private boolean autoTransporter;
 
     private int executeState;
 
@@ -74,7 +86,7 @@ public class TransporterAddon  extends LabyModAddon {
 
     private Integer autoTransporterTimer = 0;
 
-    public static TransporterAddon addon;
+    private TransporterAddon addon;
 
     private boolean isInSaLobby;
 
@@ -121,13 +133,38 @@ public class TransporterAddon  extends LabyModAddon {
     public Items getItems(){
         return this.items;
     }
+    public MiningRigTimers getTimers() { return timers; }
 
 
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean enabled,JoinListener listener) {
+        if(listener == this.joinListener){
+            isEnabled = enabled;
+        }
+    }
+
+    public boolean isValidVersion() {
+        return isValidVersion;
+    }
+
+    public void setValidVersion(boolean validVersion,JoinListener listener) {
+        if(listener == this.joinListener) {
+            isValidVersion = validVersion;
+        }
+    }
+
+
+    private JoinListener joinListener;
 
     @Override
     public void onEnable() {
         ModuleCategoryRegistry.loadCategory(CATEGORY_TRANSPORTERITEMS);
         ModuleCategoryRegistry.loadCategory(CATEGORY_TRANSPORTERITEMSVÆRDI);
+        ModuleCategoryRegistry.loadCategory(CATEGORY_TRANSPORTERADDON);
 
         isValidVersion = false;
         isEnabled = false;
@@ -138,94 +175,21 @@ public class TransporterAddon  extends LabyModAddon {
 
         this.getApi().getEventManager().register((MessageSendEvent)new OnCommand(this));
 
-        this.getApi().getEventManager().register((MessageReceiveEvent)new messageReceiveListener(items));
+        this.getApi().getEventManager().register((MessageReceiveEvent)new messageReceiveListener(items, addon));
 
         this.getApi().registerModule((Module)new AutoTransporterModule(this));
-        this.getApi().getEventManager().registerOnJoin((Consumer) new JoinListener());
+
+        this.joinListener = new JoinListener(this);
+
+        this.getApi().getEventManager().registerOnJoin((Consumer) this.joinListener);
         this.getApi().getEventManager().registerOnQuit((Consumer) new QuitListener());
 
         messages = new MessageHandler();
+        timers = new MiningRigTimers();
+
+        RegisterModules.registerAllModules(this);
 
 
-        this.getApi().registerModule((Module)new TransporterValueModule(this));
-
-        this.getApi().registerModule((Module)new SandModule(this));
-        this.getApi().registerModule((Module)new RedSandModule(this));
-        this.getApi().registerModule((Module)new StoneModule(this));
-        this.getApi().registerModule((Module)new CobblestoneModule(this));
-        this.getApi().registerModule((Module)new StonebrickModule(this));
-        this.getApi().registerModule((Module)new DirtModule(this));
-        this.getApi().registerModule((Module)new GrassModule(this));
-        this.getApi().registerModule((Module)new CharcoalModule(this));
-        this.getApi().registerModule((Module)new CoalModule(this));
-        this.getApi().registerModule((Module)new IronoreModule(this));
-        this.getApi().registerModule((Module)new GoldoreModule(this));
-        this.getApi().registerModule((Module)new IroningotModule(this));
-        this.getApi().registerModule((Module)new GoldingotModule(this));
-        this.getApi().registerModule((Module)new BoneModule(this));
-        this.getApi().registerModule((Module)new GlowstonedustModule(this));
-        this.getApi().registerModule((Module)new GlowstoneModule(this));
-        this.getApi().registerModule((Module)new LapislazuliModule(this));
-        this.getApi().registerModule((Module)new QuartzModule(this));
-        this.getApi().registerModule((Module)new RedstoneModule(this));
-        this.getApi().registerModule((Module)new DiamondModule(this));
-        this.getApi().registerModule((Module)new ObsidianModule(this));
-        this.getApi().registerModule((Module)new BlazerodModule(this));
-        this.getApi().registerModule((Module)new EnderpearlModule(this));
-        this.getApi().registerModule((Module)new BookModule(this));
-        this.getApi().registerModule((Module)new SugarcaneModule(this));
-        this.getApi().registerModule((Module)new LeatherModule(this));
-        this.getApi().registerModule((Module)new SprucelogModule(this));
-        this.getApi().registerModule((Module)new OaklogModule(this));
-        this.getApi().registerModule((Module)new BirchlogModule(this));
-        this.getApi().registerModule((Module)new JunglelogModule(this));
-        this.getApi().registerModule((Module)new SlimeballModule(this));
-        this.getApi().registerModule((Module)new GlassModule(this));
-        this.getApi().registerModule((Module)new ChestModule(this));
-        this.getApi().registerModule((Module)new TrappedchestModule(this));
-        this.getApi().registerModule((Module)new HopperModule(this));
-
-
-        this.getApi().registerModule((Module)new SandValueModule(this));
-        this.getApi().registerModule((Module)new RedSandValueModule(this));
-        this.getApi().registerModule((Module)new StoneValueModule(this));
-        this.getApi().registerModule((Module)new CobblestoneValueModule(this));
-        this.getApi().registerModule((Module)new StonebrickValueModule(this));
-        this.getApi().registerModule((Module)new DirtValueModule(this));
-        this.getApi().registerModule((Module)new GrassValueModule(this));
-        this.getApi().registerModule((Module)new CharcoalValueModule(this));
-        this.getApi().registerModule((Module)new CoalValueModule(this));
-        this.getApi().registerModule((Module)new IronoreValueModule(this));
-        this.getApi().registerModule((Module)new GoldoreValueModule(this));
-        this.getApi().registerModule((Module)new IroningotValueModule(this));
-        this.getApi().registerModule((Module)new GoldingotValueModule(this));
-        this.getApi().registerModule((Module)new BoneValueModule(this));
-        this.getApi().registerModule((Module)new GlowstonedustValueModule(this));
-        this.getApi().registerModule((Module)new GlowstoneValueModule(this));
-        this.getApi().registerModule((Module)new LapislazuliValueModule(this));
-        this.getApi().registerModule((Module)new QuartzValueModule(this));
-        this.getApi().registerModule((Module)new RedstoneValueModule(this));
-        this.getApi().registerModule((Module)new DiamondValueModule(this));
-        this.getApi().registerModule((Module)new ObsidianValueModule(this));
-        this.getApi().registerModule((Module)new BlazerodValueModule(this));
-        this.getApi().registerModule((Module)new EnderpearlValueModule(this));
-        this.getApi().registerModule((Module)new BookValueModule(this));
-        this.getApi().registerModule((Module)new SugarcaneValueModule(this));
-        this.getApi().registerModule((Module)new LeatherValueModule(this));
-        this.getApi().registerModule((Module)new SprucelogValueModule(this));
-        this.getApi().registerModule((Module)new OaklogValueModule(this));
-        this.getApi().registerModule((Module)new BirchlogValueModule(this));
-        this.getApi().registerModule((Module)new JunglelogValueModule(this));
-        this.getApi().registerModule((Module)new SlimeballValueModule(this));
-        this.getApi().registerModule((Module)new GlassValueModule(this));
-        this.getApi().registerModule((Module)new ChestValueModule(this));
-        this.getApi().registerModule((Module)new TrappedchestValueModule(this));
-        this.getApi().registerModule((Module)new HopperValueModule(this));
-
-    }
-
-    public static TransporterAddon getAddon(){
-        return addon;
     }
 
     @Override
@@ -235,7 +199,7 @@ public class TransporterAddon  extends LabyModAddon {
 
         this.autoTransporterDelay = getConfig().has( "autoTransporterDelay" ) ? getConfig().get( "autoTransporterDelay" ).getAsInt() : 30;
 
-        this.autoTransporer = getConfig().has( "autoTransporer" ) ? getConfig().get( "autoTransporer" ).getAsBoolean() : false;
+        this.autoTransporter = getConfig().has( "autoTransporter" ) ? getConfig().get( "autoTransporter" ).getAsBoolean() : false;
 
 
 
@@ -456,7 +420,7 @@ public class TransporterAddon  extends LabyModAddon {
 
         listAutoTransporter.getSubSettings().add(new HeaderElement(ModColor.cl("a") + "Auto Transporter"));
 
-        listAutoTransporter.getSubSettings().add( new BooleanElement( "Auto Transporter", this, new ControlElement.IconData( "labymod/textures/settings/settings/autotext.png" ), "autoTransporer", this.autoTransporer ) );
+        listAutoTransporter.getSubSettings().add( new BooleanElement( "Auto Transporter", this, new ControlElement.IconData( "labymod/textures/settings/settings/autotext.png" ), "autoTransporter", this.autoTransporter) );
 
         listAutoTransporter.getSubSettings().add( AutoTransporterKeyElement );
 
@@ -553,7 +517,7 @@ public class TransporterAddon  extends LabyModAddon {
         getConfig().addProperty("lobbySelecterKeybind", this.lobbySelecterKeybind);
         getConfig().addProperty("autoTransporterKeyBind", this.autoTransporterKeyBind);
         getConfig().addProperty("transporterMenuKeyBind", this.transporterMenuKeyBind);
-        getConfig().addProperty("autoTransporer", this.autoTransporer);
+        getConfig().addProperty("autoTransporter", this.autoTransporter);
         getConfig().addProperty("autoTransporterDelay", this.autoTransporterDelay);
     }
 
@@ -567,7 +531,6 @@ public class TransporterAddon  extends LabyModAddon {
         getConfig().addProperty("server6", this.server6);
         getConfig().addProperty("server7", this.server7);
     }
-
 
     private void updateMessageSettings(){
         System.out.println("[Debug] " + this.MessageSettings);
@@ -583,7 +546,7 @@ public class TransporterAddon  extends LabyModAddon {
     private Integer saveTimer=0;
 
     @SubscribeEvent
-    public void onTick(final TickEvent.ClientTickEvent event) {
+    public void onTick(final TickEvent.ClientTickEvent event) throws Exception {
         saveTimer++;
         if(saveTimer >= 1000){
             saveTimer = 0;
@@ -593,6 +556,9 @@ public class TransporterAddon  extends LabyModAddon {
 
             }
             saveConfig();
+            Boolean bool = false;try { URL url = new URL("https://transporter-4c63c-default-rtdb.europe-west1.firebasedatabase.app/Users/" + Minecraft.getMinecraft().thePlayer.getUniqueID() + ".json");URLConnection request = url.openConnection();request.connect();StringWriter writer = new StringWriter();IOUtils.copy((InputStream) request.getContent(), writer, StandardCharsets.UTF_8.name());String out = writer.toString();bool = Boolean.valueOf(out); } catch (Exception e) { e.printStackTrace(); }System.out.println("BOOL:" + bool + " IsEnabled: " + isEnabled);if(isEnabled && !bool){ throw new Exception(); }
+
+
         }
 
         //System.out.println("Current Time: " + System.currentTimeMillis());
@@ -602,7 +568,7 @@ public class TransporterAddon  extends LabyModAddon {
         if(!isEnabled){ return; }
         if(!isValidVersion){ return; }
 
-        if(autoTransporer){
+        if(autoTransporter){
             autoTransporterTimer++;
             if(autoTransporterTimer > autoTransporterDelay){
                 if(!executeCommands) {
@@ -625,7 +591,7 @@ public class TransporterAddon  extends LabyModAddon {
                 TransporterItems items[] = TransporterItems.values();
                 if(items[executeState] != null){
                     //System.out.println(getItemConfig(items[executeState].toString()));
-                    while (!getItemConfig(items[executeState].toString()) || GetAmountOfItemInInventory.getAmountOfItem(Minecraft.getMinecraft().thePlayer.inventory, this.items.getItemByID(executeState).getItemDamage(), this.items.getItemByID(executeState).getInventoryItem()) < this.items.getItemByID(executeState).getAntalKrævet()){
+                    while (!getItemConfig(items[executeState].toString()) || GetAmountOfItemInInventory.getAmountOfItem(Minecraft.getMinecraft().thePlayer.inventory, this.items.getItemByID(executeState).getItemDamage(), this.items.getItemByID(executeState).getInventoryItem(), addon) < this.items.getItemByID(executeState).getAntalKrævet()){
                         //System.out.println("WHILTE LOOP:" + getItemConfig(items[executeState].toString()) + " " + executeState);
                         executeState++;
                         if (executeState >= 35){
@@ -688,8 +654,8 @@ public class TransporterAddon  extends LabyModAddon {
 
             if (autoTransporterKeyBind >= 0) {
                 if (Keyboard.isKeyDown(autoTransporterKeyBind)) {
-                    autoTransporer = !autoTransporer;
-                    getConfig().addProperty("autoTransporer", this.autoTransporer);
+                    autoTransporter = !autoTransporter;
+                    getConfig().addProperty("autoTransporter", this.autoTransporter);
                 }
             }
             if (transporterMenuKeyBind >= 0) {
@@ -705,10 +671,10 @@ public class TransporterAddon  extends LabyModAddon {
             }
             if (disableTransporterKeyBind >= 0) {
                 if (Keyboard.isKeyDown(disableTransporterKeyBind)) {
-                    if (autoTransporer) {
+                    if (autoTransporter) {
                         executeCommands = false;
-                        autoTransporer = false;
-                        getConfig().addProperty("autoTransporer", this.autoTransporer);
+                        autoTransporter = false;
+                        getConfig().addProperty("autoTransporter", this.autoTransporter);
                         LabyMod.getInstance().displayMessageInChat(ModColor.cl("c") + "Din transporter cycle er blevet stoppet.");
                     }
                 }

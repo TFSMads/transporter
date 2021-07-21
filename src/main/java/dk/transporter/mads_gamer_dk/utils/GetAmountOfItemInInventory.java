@@ -7,8 +7,8 @@ import net.minecraft.item.ItemStack;
 
 public class GetAmountOfItemInInventory {
 
-    public static Integer getAmountOfItem(InventoryPlayer inventory, Integer itemDamage, Item mcItem){
-        if (!TransporterAddon.getAddon().getCheckItems()){
+    public static Integer getAmountOfItem(InventoryPlayer inventory, Integer itemDamage, Item mcItem, TransporterAddon addon){
+        if (!addon.getCheckItems()){
             return 9999;
         }
         Integer itemAmount = 0;

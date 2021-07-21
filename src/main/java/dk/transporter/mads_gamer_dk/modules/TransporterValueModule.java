@@ -71,7 +71,7 @@ public class TransporterValueModule extends SimpleModule
     }
 
     public ModuleCategory getCategory() {
-        return ModuleCategoryRegistry.CATEGORY_EXTERNAL_SERVICES;
+        return TransporterAddon.CATEGORY_TRANSPORTERADDON;
     }
 
     public String getControlName() {

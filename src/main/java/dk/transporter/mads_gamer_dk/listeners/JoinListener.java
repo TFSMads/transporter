@@ -12,24 +12,27 @@ import net.minecraft.client.Minecraft;
 
 public class JoinListener implements Consumer<ServerData>
 {
+    private final TransporterAddon addon;
+
+    public JoinListener(TransporterAddon addon){
+        this.addon = addon;
+    }
 
     public void accept(final ServerData serverData) {
-        if(!TransporterAddon.isValidVersion){
-            try {
-                TransporterAddon.isValidVersion = validateVersion.isValidVersion("1.4");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        try {
+            Boolean isVV = validateVersion.isValidVersion("2.0");
+            addon.setValidVersion(isVV, this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            Boolean isVU = validateUser.isSubscriber();
+            addon.setEnabled(isVU, this);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        if(!TransporterAddon.isEnabled){
-            try {
-                TransporterAddon.isEnabled = validateUser.isSubscriber(Minecraft.getMinecraft().thePlayer.getName());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        if(!TransporterAddon.isEnabled){
+        if(!addon.isEnabled()){
             LabyMod.getInstance().displayMessageInChat(ModColor.cl("8") + ModColor.cl("l") + "[ " + ModColor.cl("7") + ModColor.cl("l") +"Transporter " + ModColor.cl("8") + ModColor.cl("l") + "]" + ModColor.cl("c") + " Deaktivere transporter addon. Du har ikke købt adgang!");
 
 
@@ -45,7 +48,7 @@ public class JoinListener implements Consumer<ServerData>
             LabyMod.getInstance().displayMessageInChat(ModColor.cl("8") + ModColor.cl("l") + "[ " + ModColor.cl("7") + ModColor.cl("l") +"Transporter " + ModColor.cl("8") + ModColor.cl("l") + "]" + ModColor.cl("c") + " Tilslutet " + serverData.getIp() + ", deaktivere...");
         }
 
-        if(!TransporterAddon.isValidVersion){
+        if(!addon.isValidVersion()){
             LabyMod.getInstance().displayMessageInChat(ModColor.cl("8") + ModColor.cl("l") + "[ " + ModColor.cl("7") + ModColor.cl("l") +"Transporter " + ModColor.cl("8") + ModColor.cl("l") + "]" + ModColor.cl("c") + " Din nuværende version af transporter addon er udløbet, download den seneste version fra vores discord. https://discord.gg/YnAUwqXQwv ");
         }
     }

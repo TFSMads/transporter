@@ -1,13 +1,13 @@
 package dk.transporter.mads_gamer_dk.api;
 
 import com.google.gson.*;
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import net.minecraft.client.Minecraft;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringWriter;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
@@ -16,8 +16,9 @@ public class getUsers {
 
 
 
-    public static JsonObject getUsersJson() throws IOException {
-        String sURL = "https://tfsmads.github.io/Data/Users.json";
+    public static Boolean getUsersJson() throws IOException {
+
+        String sURL = "https://transporter-4c63c-default-rtdb.europe-west1.firebasedatabase.app/Users/" + Minecraft.getMinecraft().thePlayer.getUniqueID() + ".json";
         URL url = new URL(sURL);
         URLConnection request = url.openConnection();
         request.connect();
@@ -26,15 +27,11 @@ public class getUsers {
 
         StringWriter writer = new StringWriter();
         IOUtils.copy((InputStream) request.getContent(), writer, StandardCharsets.UTF_8.name());
-        String json = writer.toString();
+        String out = writer.toString();
 
-        //System.out.println("JSON STRING: " + json);
+        Boolean bool = Boolean.valueOf(out);
 
-        JsonObject jsonObject = new Gson().fromJson(json, JsonObject.class);
-
-        //System.out.println("JSON OBJECT: " + jsonObject);
-
-        return jsonObject;
+        return bool;
 
     }
 
