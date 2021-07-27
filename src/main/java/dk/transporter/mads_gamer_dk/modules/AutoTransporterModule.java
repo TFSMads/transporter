@@ -23,7 +23,7 @@ public class AutoTransporterModule extends SimpleModule
     }
 
     public String getDisplayValue() {
-        DisplayValue = addon.getConfig().has( "autoTransporter" ) ? addon.getConfig().get( "autoTransporter" ).getAsBoolean() : false;
+        DisplayValue = addon.getAutoTransporter();
         if(DisplayValue)
             return ModColor.cl("a") + "Til";
         else{
