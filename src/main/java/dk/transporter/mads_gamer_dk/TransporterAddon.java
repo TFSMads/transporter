@@ -4,18 +4,17 @@ import dk.transporter.mads_gamer_dk.Items.Item;
 import dk.transporter.mads_gamer_dk.Items.Items;
 import dk.transporter.mads_gamer_dk.Items.TransporterItems;
 import dk.transporter.mads_gamer_dk.classes.MiningRigTimers;
-import dk.transporter.mads_gamer_dk.guis.LobbySelecterGui;
+import dk.transporter.mads_gamer_dk.guis.serverSelector.ServerSelecterGui;
 import dk.transporter.mads_gamer_dk.guis.TransporterGui;
-import dk.transporter.mads_gamer_dk.listeners.JoinListener;
-import dk.transporter.mads_gamer_dk.listeners.OnCommand;
-import dk.transporter.mads_gamer_dk.listeners.QuitListener;
-import dk.transporter.mads_gamer_dk.listeners.messageReceiveListener;
+import dk.transporter.mads_gamer_dk.listeners.*;
+import dk.transporter.mads_gamer_dk.mcmmo.Skills;
 import dk.transporter.mads_gamer_dk.messageSendingSettings.messageSettings;
 import dk.transporter.mads_gamer_dk.modules.AutoTransporterModule;
 import dk.transporter.mads_gamer_dk.modules.RegisterModules;
 import dk.transporter.mads_gamer_dk.settingelements.DescribedBooleanElement;
 import dk.transporter.mads_gamer_dk.utils.GetAmountOfItemInInventory;
 import dk.transporter.mads_gamer_dk.utils.MessageHandler;
+import dk.transporter.mads_gamer_dk.utils.data.DataManagers;
 import net.labymod.api.LabyModAddon;
 import net.labymod.api.events.MessageReceiveEvent;
 import net.labymod.api.events.MessageSendEvent;
@@ -32,14 +31,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.apache.commons.io.IOUtils;
 import org.lwjgl.input.Keyboard;
 
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 
@@ -51,6 +44,7 @@ public class TransporterAddon  extends LabyModAddon {
 
     public static final ModuleCategory CATEGORY_TRANSPORTERADDON = new ModuleCategory("Transporter Addon", true, new ControlElement.IconData(Material.SIGN));
 
+    public static final ModuleCategory CATEGORY_MCMMO = new ModuleCategory("Mcmmo", true, new ControlElement.IconData(Material.DIAMOND_SPADE));
 
     private boolean isEnabled;
 
@@ -93,7 +87,6 @@ public class TransporterAddon  extends LabyModAddon {
 
     public Items items;
 
-
     private String server1;
     private String server2;
     private String server3;
@@ -102,12 +95,24 @@ public class TransporterAddon  extends LabyModAddon {
     private String server6;
     private String server7;
 
+    private DataManagers dataManagers;
 
     private MessageHandler messages;
 
     private Integer antalKrævet;
 
     private Boolean checkItems;
+
+    public String getCurrentServer() {
+        return currentServer;
+    }
+
+    public void setCurrentServer(String currentServer) {
+        this.currentServer = currentServer;
+    }
+
+    private String currentServer;
+
 
 
 
@@ -163,11 +168,24 @@ public class TransporterAddon  extends LabyModAddon {
 
     private JoinListener joinListener;
 
+    public Skills getSkills() {
+        return skills;
+    }
+
+    private Skills skills;
+
     @Override
     public void onEnable() {
+
+        dataManagers = new DataManagers();
+
+        skills = new Skills(this);
+
+
         ModuleCategoryRegistry.loadCategory(CATEGORY_TRANSPORTERITEMS);
         ModuleCategoryRegistry.loadCategory(CATEGORY_TRANSPORTERITEMSVÆRDI);
         ModuleCategoryRegistry.loadCategory(CATEGORY_TRANSPORTERADDON);
+        ModuleCategoryRegistry.loadCategory(CATEGORY_MCMMO);
 
         isValidVersion = false;
         isEnabled = false;
@@ -176,16 +194,17 @@ public class TransporterAddon  extends LabyModAddon {
         System.out.println("TransporterAddon Enabled!");
         this.getApi().registerForgeListener(this);
 
-        this.getApi().getEventManager().register((MessageSendEvent)new OnCommand(this));
+        this.getApi().getEventManager().register((MessageSendEvent)new OnCommand(this, skills));
 
-        this.getApi().getEventManager().register((MessageReceiveEvent)new messageReceiveListener(items, addon));
+        this.getApi().getEventManager().register((MessageReceiveEvent)new messageReceiveListener(items, addon,skills));
 
         this.getApi().registerModule((Module)new AutoTransporterModule(this));
 
         this.joinListener = new JoinListener(this);
 
-        this.getApi().getEventManager().registerOnJoin((Consumer) this.joinListener);
-        this.getApi().getEventManager().registerOnQuit((Consumer) new QuitListener());
+        this.getApi().getEventManager().register(new PluginMessageListener());
+        this.getApi().getEventManager().registerOnJoin((Consumer<net.labymod.utils.ServerData>) this.joinListener);
+        this.getApi().getEventManager().registerOnQuit((Consumer<net.labymod.utils.ServerData>) new QuitListener());
 
         messages = new MessageHandler();
         timers = new MiningRigTimers();
@@ -244,9 +263,7 @@ public class TransporterAddon  extends LabyModAddon {
     @Override
     protected void fillSettings(List<SettingsElement> subSettings ) {
 
-
         KeyElement AutoTransporterKeyElement = new KeyElement( "Keybind", new ControlElement.IconData( Material.WOOD_BUTTON ), autoTransporterKeyBind, new Consumer<Integer>() {@Override public void accept( Integer accepted ) { if ( accepted < 0 ) { System.out.println( "Set new key to NONE" );autoTransporterKeyBind = -1;configSave();return; }System.out.println( "Set new key to " + Keyboard.getKeyName( accepted ) );autoTransporterKeyBind = accepted;configSave(); }});
-
 
         KeyElement transporterMenuKeyElement = new KeyElement( "Transporter Menu Keybind", new ControlElement.IconData( Material.STONE_BUTTON ), transporterMenuKeyBind, new Consumer<Integer>() {@Override public void accept( Integer accepted ) { if ( accepted < 0 ) { System.out.println( "Set new key to NONE" );transporterMenuKeyBind = -1;configSave();return; }System.out.println( "Set new key to " + Keyboard.getKeyName( accepted ) );transporterMenuKeyBind = accepted;configSave(); }});
 
@@ -260,7 +277,7 @@ public class TransporterAddon  extends LabyModAddon {
         ListContainerElement listMessages = new ListContainerElement(ModColor.cl("7") + "Beskeder", new ControlElement.IconData(Material.PAPER));
 
 
-        final DropDownMenu<messageSettings> uploadServiceDropDownMenu = (DropDownMenu<messageSettings>)new DropDownMenu("Beskeder", 0, 0, 0, 0).fill((Object[])messageSettings.values());final DropDownElement<messageSettings> uploadServiceDropDownElement = (DropDownElement<messageSettings>)new DropDownElement("Beskeder", (DropDownMenu)uploadServiceDropDownMenu);uploadServiceDropDownMenu.setSelected(this.MessageSettings);uploadServiceDropDownElement.setChangeListener(Message_Settings -> { this.MessageSettings = Message_Settings;this.getConfig().addProperty("Beskeder", Message_Settings.name());this.saveConfig();updateMessageSettings(); });
+        final DropDownMenu<messageSettings> uploadServiceDropDownMenu = (DropDownMenu<messageSettings>)new DropDownMenu("Beskeder", 0, 0, 0, 0).fill((Object[])messageSettings.values());final DropDownElement<messageSettings> uploadServiceDropDownElement = new DropDownElement<messageSettings>("Beskeder", (DropDownMenu<messageSettings>)uploadServiceDropDownMenu);uploadServiceDropDownMenu.setSelected(this.MessageSettings);uploadServiceDropDownElement.setChangeListener(Message_Settings -> { this.MessageSettings = Message_Settings;this.getConfig().addProperty("Beskeder", Message_Settings.name());this.saveConfig();updateMessageSettings(); });
 
         listMessages.getSubSettings().add((SettingsElement)uploadServiceDropDownElement);
 
@@ -416,8 +433,6 @@ public class TransporterAddon  extends LabyModAddon {
         listAutoTransporter.getSubSettings().add( AutoTransporterKeyElement );
 
 
-
-
         ListContainerElement listItems = new ListContainerElement(ModColor.cl("f") + "Items", new ControlElement.IconData(Material.IRON_INGOT));
 
         listItems.getSubSettings().add(new HeaderElement(ModColor.cl("a") + ModColor.cl("l") + "ITEMS"));
@@ -534,8 +549,6 @@ public class TransporterAddon  extends LabyModAddon {
             saveConfig();
 
         }
-
-        //System.out.println("Current Time: " + System.currentTimeMillis());
         if(!isInSaLobby){executeCommands = false; LabyMod.getInstance().displayMessageInChat(ModColor.cl("c") + "Din transporter cycle er blevet stoppet."); isInSaLobby = true; return;}
 
         if(!connectedToSuperawesome){ return; }
@@ -555,21 +568,17 @@ public class TransporterAddon  extends LabyModAddon {
                 executeCommands = false;
             }
             timer++;
-            //System.out.println("TIMER: " + timer);
             if (timer >= delay) {
                 timer = 0;
                 TransporterItems items[] = TransporterItems.values();
                 if(items[executeState] != null){
-                    //System.out.println(getItemConfig(items[executeState].toString()));
                     while (!getItemConfig(items[executeState].toString()) || GetAmountOfItemInInventory.getAmountOfItem(Minecraft.getMinecraft().thePlayer.inventory, this.items.getItemByID(executeState).getItemDamage(), this.items.getItemByID(executeState).getInventoryItem(), addon) < this.items.getItemByID(executeState).getAntalKrævet()){
-                        //System.out.println("WHILTE LOOP:" + getItemConfig(items[executeState].toString()) + " " + executeState);
                         executeState++;
                         if (executeState >= 35){
                             break;
                         }
 
                     }
-                    //Integer itemAmount = GetAmountOfItemInInventory.getAmountOfItem(Minecraft.getMinecraft().thePlayer.inventory,0, Item.getItemById(12));
                     Integer temp = -1;
                     if (executeState <= 34){
                         temp = executeState;
@@ -581,7 +590,6 @@ public class TransporterAddon  extends LabyModAddon {
                     }
                     if(executeState < 35) {
                         while (!getItemConfig(items[executeState].toString())) {
-                            //System.out.println("WHILTE LOOP2:" + getItemConfig(items[executeState].toString()) + " " + executeState);
                             executeState++;
                             if (executeState >= 35) {
                                 break;
@@ -609,7 +617,6 @@ public class TransporterAddon  extends LabyModAddon {
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         try {
-            //System.out.println("VAlID VERSION: " + isValidVersion + " ENABLED: " + isEnabled + " Connected to SuperAwesome: " + connectedToSuperawesome);
             if (!connectedToSuperawesome) {
                 return;
             }
@@ -619,7 +626,6 @@ public class TransporterAddon  extends LabyModAddon {
             if(!isValidVersion){
                 return;
             }
-            //System.out.println(Keyboard.getEventKey() + keyBind);
 
 
             if (autoTransporterKeyBind >= 0) {
@@ -628,7 +634,7 @@ public class TransporterAddon  extends LabyModAddon {
                         executeCommands = false;
                         autoTransporter = false;
                     }else{
-                        autoTransporter = !autoTransporter;
+                        autoTransporter = true;
                     }
                 }
             }
@@ -640,21 +646,21 @@ public class TransporterAddon  extends LabyModAddon {
             }
             if (lobbySelecterKeybind >= 0) {
                 if (Keyboard.isKeyDown(lobbySelecterKeybind)) {
-                    Minecraft.getMinecraft().displayGuiScreen(new LobbySelecterGui(addon));
+                    System.out.println("LOBBY");
+                    Minecraft.getMinecraft().displayGuiScreen(new ServerSelecterGui(addon, dataManagers));
                 }
             }
-
-            //TEST KEY
-            //if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD0)){
-            //    Integer itemAmount = GetAmountOfItemInInventory.getAmountOfItem(Minecraft.getMinecraft().thePlayer.inventory,0, Item.getItemById(12));
-            //    System.out.println("Du har " + itemAmount + " sand!");
-            //}
-
-
+            if (Keyboard.isKeyDown(Keyboard.KEY_N)) {
+                skills.checkScoreboard();
+            }
         } catch (Exception e) {
             System.out.println(e);
         }
 
+    }
+
+    public DataManagers getDataManagers() {
+        return dataManagers;
     }
 }
 

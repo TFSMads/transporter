@@ -3,6 +3,8 @@ package dk.transporter.mads_gamer_dk.modules;
 import dk.transporter.mads_gamer_dk.TransporterAddon;
 import dk.transporter.mads_gamer_dk.modules.Timers.MiningRigModule;
 import dk.transporter.mads_gamer_dk.modules.items.*;
+import dk.transporter.mads_gamer_dk.modules.mcmmo.Excavation;
+import dk.transporter.mads_gamer_dk.modules.mcmmo.ExcavationTimer;
 import dk.transporter.mads_gamer_dk.modules.values.*;
 import net.labymod.ingamegui.Module;
 
@@ -81,6 +83,8 @@ public class RegisterModules {
         addon.getApi().registerModule((Module)new TrappedchestValueModule(addon));
         addon.getApi().registerModule((Module)new HopperValueModule(addon));
         addon.getApi().registerModule((Module)new MiningRigModule(addon));
+        addon.getApi().registerModule((Module)new Excavation(addon));
+        addon.getApi().registerModule((Module)new ExcavationTimer(addon));
     }
     
 }

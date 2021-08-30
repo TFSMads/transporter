@@ -25,7 +25,6 @@ public class TransporterGui extends GuiScreen {
 
     private Scrollbar scrollbar = new Scrollbar(18);
     private TransporterAddon addon;
-    private Boolean interacted = false;
 
     public Integer col1;
     public Integer col2;
@@ -45,13 +44,12 @@ public class TransporterGui extends GuiScreen {
     public void updateScreen() {
 
     }
+    @Override
     public void initGui() {
         super.initGui();
 
 
         this.scrollbar.init();
-
-        Mouse.setGrabbed(false);
 
         this.scrollbar.setPosition(this.width / 2 + 122, 44, this.width / 2 + 126, this.height - 32 - 3);
 
@@ -88,7 +86,7 @@ public class TransporterGui extends GuiScreen {
 
     }
 
-
+    @Override
     protected void actionPerformed(GuiButton button) throws IOException {
         System.out.println("ACTION PERFOMED!!!!");
         System.out.println("Clicked: Button with id " + button.id);
@@ -116,12 +114,11 @@ public class TransporterGui extends GuiScreen {
             Minecraft.getMinecraft().thePlayer.sendChatMessage("/transporter put " + this.items.getItemByID(index).getItem().toString());
 
         }
-        interacted = true;
         Minecraft.getMinecraft().thePlayer.closeScreen();
 
     }
 
-
+    @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         LabyMod.getInstance().getDrawUtils().drawAutoDimmedBackground(this.scrollbar.getScrollY());
         double yPos = 45.0D + this.scrollbar.getScrollY() + 3.0D;
@@ -204,41 +201,30 @@ public class TransporterGui extends GuiScreen {
 
         this.scrollbar.draw();
 
-        Mouse.setGrabbed(false);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
-
         this.scrollbar.mouseAction(mouseX, mouseY, Scrollbar.EnumMouseAction.CLICKED);
     }
 
     @Override
     public void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
         super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
-
-
-
         this.scrollbar.mouseAction(mouseX, mouseY, Scrollbar.EnumMouseAction.DRAGGING);
     }
 
     @Override
     public void mouseReleased(int mouseX, int mouseY, int state) {
         this.scrollbar.mouseAction(mouseX, mouseY, Scrollbar.EnumMouseAction.RELEASED);
-
-
-
         super.mouseReleased(mouseX, mouseY, state);
     }
 
     @Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
-
-
-
         this.scrollbar.mouseInput();
     }
 
