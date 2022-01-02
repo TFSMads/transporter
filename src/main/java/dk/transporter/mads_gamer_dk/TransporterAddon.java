@@ -4,6 +4,7 @@ import dk.transporter.mads_gamer_dk.Items.Item;
 import dk.transporter.mads_gamer_dk.Items.Items;
 import dk.transporter.mads_gamer_dk.Items.TransporterItems;
 import dk.transporter.mads_gamer_dk.classes.MiningRigTimers;
+import dk.transporter.mads_gamer_dk.guis.getItemsGui.GetItemsConfigGui;
 import dk.transporter.mads_gamer_dk.guis.serverSelector.ServerSelecterGui;
 import dk.transporter.mads_gamer_dk.guis.TransporterGui;
 import dk.transporter.mads_gamer_dk.listeners.*;
@@ -22,6 +23,7 @@ import net.labymod.gui.elements.DropDownMenu;
 import net.labymod.ingamegui.Module;
 import net.labymod.ingamegui.ModuleCategory;
 import net.labymod.ingamegui.ModuleCategoryRegistry;
+import net.labymod.labyconnect.packets.Packet;
 import net.labymod.main.LabyMod;
 import net.labymod.settings.elements.*;
 import net.labymod.utils.Consumer;
@@ -87,14 +89,6 @@ public class TransporterAddon  extends LabyModAddon {
 
     public Items items;
 
-    private String server1;
-    private String server2;
-    private String server3;
-    private String server4;
-    private String server5;
-    private String server6;
-    private String server7;
-
     private DataManagers dataManagers;
 
     private MessageHandler messages;
@@ -102,17 +96,6 @@ public class TransporterAddon  extends LabyModAddon {
     private Integer antalKrævet;
 
     private Boolean checkItems;
-
-    public String getCurrentServer() {
-        return currentServer;
-    }
-
-    public void setCurrentServer(String currentServer) {
-        this.currentServer = currentServer;
-    }
-
-    private String currentServer;
-
 
 
 
@@ -128,11 +111,6 @@ public class TransporterAddon  extends LabyModAddon {
 
     public MessageHandler getMessages(){
         return this.messages;
-    }
-
-    public String getServerString(Integer server){
-        if(server == 1){ return server1; }else if(server == 2){  return server2; }else if(server == 3){ return server3; }else if(server == 4){ return server4; }else if(server == 5){ return server5; }else if(server == 6){ return server6; }else if(server == 7){ return server7; }
-        return "larmelobby";
     }
 
     public Boolean getCheckItems(){
@@ -202,9 +180,9 @@ public class TransporterAddon  extends LabyModAddon {
 
         this.joinListener = new JoinListener(this);
 
-        this.getApi().getEventManager().register(new PluginMessageListener());
         this.getApi().getEventManager().registerOnJoin((Consumer<net.labymod.utils.ServerData>) this.joinListener);
         this.getApi().getEventManager().registerOnQuit((Consumer<net.labymod.utils.ServerData>) new QuitListener());
+
 
         messages = new MessageHandler();
         timers = new MiningRigTimers();
@@ -228,14 +206,6 @@ public class TransporterAddon  extends LabyModAddon {
         this.autoTransporterKeyBind = getConfig().has( "autoTransporterKeyBind" ) ? getConfig().get( "autoTransporterKeyBind" ).getAsInt() : Keyboard.KEY_P;
 
         this.lobbySelecterKeybind = getConfig().has( "lobbySelecterKeybind" ) ? getConfig().get( "lobbySelecterKeybind" ).getAsInt() : Keyboard.KEY_Y;
-
-        this.server1 = getConfig().has( "server1" ) ? getConfig().get( "server1" ).getAsString() : "larmelobby";
-        this.server2 = getConfig().has( "server2" ) ? getConfig().get( "server2" ).getAsString() : "shoppylobby";
-        this.server3 = getConfig().has( "server3" ) ? getConfig().get( "server3" ).getAsString() : "byggelobby";
-        this.server4 = getConfig().has( "server4" ) ? getConfig().get( "server4" ).getAsString() : "maskinrummet";
-        this.server5 = getConfig().has( "server5" ) ? getConfig().get( "server5" ).getAsString() : "maskinrummetlight";
-        this.server6 = getConfig().has( "server6" ) ? getConfig().get( "server6" ).getAsString() : "creepylobby";
-        this.server7 = getConfig().has( "server7" ) ? getConfig().get( "server7" ).getAsString() : "limbo";
 
         this.messages.setMessageById(0, getConfig().has( "putMessage" ) ? getConfig().get( "putMessage" ).getAsString() : "&bGemmer &3%antal% %item% &bi din transporter. &7(&3%total%&7)");
         this.messages.setMessageById(1, getConfig().has( "getMessage" ) ? getConfig().get( "getMessage" ).getAsString() : "&bTager &3%antal% %item% &bfra din transporter. &7(&3%total%&7)");
@@ -343,84 +313,6 @@ public class TransporterAddon  extends LabyModAddon {
         listServerSelector.getSubSettings().add( lobbySelecterKeyElement );
 
 
-        StringElement serverElement1 = new StringElement( "Server 1." , new ControlElement.IconData( Material.PAPER ), server1, new Consumer<String>() {
-            @Override
-            public void accept( String accepted ) {
-                server1 = accepted;
-                serverConfigSave();
-            }
-        });
-
-        listServerSelector.getSubSettings().add( serverElement1 );
-
-
-        StringElement serverElement2 = new StringElement( "Server 2." , new ControlElement.IconData( Material.PAPER ), server2, new Consumer<String>() {
-            @Override
-            public void accept( String accepted ) {
-                server2 = accepted;
-                serverConfigSave();
-            }
-        });
-
-        listServerSelector.getSubSettings().add( serverElement2 );
-
-
-        StringElement serverElement3 = new StringElement( "Server 3." , new ControlElement.IconData( Material.PAPER ), server3, new Consumer<String>() {
-            @Override
-            public void accept( String accepted ) {
-                server3 = accepted;
-                serverConfigSave();
-            }
-        });
-
-        listServerSelector.getSubSettings().add( serverElement3 );
-
-
-        StringElement serverElement4 = new StringElement( "Server 4." , new ControlElement.IconData( Material.PAPER ), server4, new Consumer<String>() {
-            @Override
-            public void accept( String accepted ) {
-                server4 = accepted;
-                serverConfigSave();
-            }
-        });
-
-        listServerSelector.getSubSettings().add( serverElement4 );
-
-
-        StringElement serverElement5 = new StringElement( "Server 5." , new ControlElement.IconData( Material.PAPER ), server5, new Consumer<String>() {
-            @Override
-            public void accept( String accepted ) {
-                server5 = accepted;
-                serverConfigSave();
-            }
-        });
-
-        listServerSelector.getSubSettings().add( serverElement5 );
-
-
-        StringElement serverElement6 = new StringElement( "Server 6." , new ControlElement.IconData( Material.PAPER ), server6, new Consumer<String>() {
-            @Override
-            public void accept( String accepted ) {
-                server6 = accepted;
-                serverConfigSave();
-            }
-        });
-
-        listServerSelector.getSubSettings().add( serverElement6 );
-
-
-        StringElement serverElement7 = new StringElement( "Server 7." , new ControlElement.IconData( Material.PAPER ), server7, new Consumer<String>() {
-            @Override
-            public void accept( String accepted ) {
-                server7 = accepted;
-                serverConfigSave();
-            }
-        });
-
-        listServerSelector.getSubSettings().add( serverElement7 );
-
-
-
         ListContainerElement listAutoTransporter = new ListContainerElement(ModColor.cl("a") + "Auto Transporter", new ControlElement.IconData(Material.REDSTONE_COMPARATOR));
 
 
@@ -512,16 +404,6 @@ public class TransporterAddon  extends LabyModAddon {
         getConfig().addProperty("transporterMenuKeyBind", this.transporterMenuKeyBind);
     }
 
-
-    private void serverConfigSave(){
-        getConfig().addProperty("server1", this.server1);
-        getConfig().addProperty("server2", this.server2);
-        getConfig().addProperty("server3", this.server3);
-        getConfig().addProperty("server4", this.server4);
-        getConfig().addProperty("server5", this.server5);
-        getConfig().addProperty("server6", this.server6);
-        getConfig().addProperty("server7", this.server7);
-    }
 
     private void updateMessageSettings(){
         System.out.println("[Debug] " + this.MessageSettings);
@@ -646,12 +528,11 @@ public class TransporterAddon  extends LabyModAddon {
             }
             if (lobbySelecterKeybind >= 0) {
                 if (Keyboard.isKeyDown(lobbySelecterKeybind)) {
-                    System.out.println("LOBBY");
                     Minecraft.getMinecraft().displayGuiScreen(new ServerSelecterGui(addon, dataManagers));
                 }
             }
             if (Keyboard.isKeyDown(Keyboard.KEY_N)) {
-                skills.checkScoreboard();
+                Minecraft.getMinecraft().displayGuiScreen(new GetItemsConfigGui(addon, dataManagers));
             }
         } catch (Exception e) {
             System.out.println(e);

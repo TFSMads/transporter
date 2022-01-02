@@ -25,35 +25,7 @@ public class OnCommand implements MessageSendEvent {
             case "/mcstats":
                 new Timer("Timer").schedule(new TimerTask() {public void run() { skills.checkScoreboard(); }}, 1000L);
                 break;
-
-            case "/server limbo":
-            case "/hub":
-                addon.setCurrentServer("limbo");
-                break;
-            case "/server larmelobby":
-                addon.setCurrentServer("larmelobby");
-                break;
-            case "/server shoppylobby":
-                addon.setCurrentServer("shoppylobby");
-                break;
-            case "/server byggelobby":
-                addon.setCurrentServer("byggelobby");
-                break;
-            case "/server maskinrummet":
-                addon.setCurrentServer("maskinrummet");
-                break;
-            case "/server maskinrummetlight":
-                addon.setCurrentServer("maskinrummetlight");
-                break;
-            case "/server creepylobby":
-                addon.setCurrentServer("creepylobby");
-                break;
-            default:
-                if(s.contains("/server ")){
-                    addon.setCurrentServer("Ukendt");
-                }
         }
-        System.out.println("Server: " + addon.getCurrentServer());
         return false;
 
 

@@ -52,14 +52,6 @@ public class ServerSelecterGui extends GuiScreen {
         this.buttonList.add(new GuiButton(30005, this.width / 2 + 50 + 5, this.height - 30, 100, 20, "Add server"));
 
         Integer buttonWidth = this.width / 5;
-        /*this.buttonList.add(new GuiButton(51275, this.width / 2 - buttonWidth / 2, this.height - (this.height / 2 - 50), buttonWidth, 20, this.addon.getServerString(7)));
-        this.buttonList.add(new GuiButton(51276, this.width / 2 - buttonWidth / 2, this.height - (this.height / 2 - 25), buttonWidth, 20, this.addon.getServerString(6)));
-        this.buttonList.add(new GuiButton(51277, this.width / 2 - buttonWidth / 2, this.height - (this.height / 2), buttonWidth, 20, this.addon.getServerString(5)));
-        this.buttonList.add(new GuiButton(51278, this.width / 2 - buttonWidth / 2, this.height - (this.height / 2 + 25), buttonWidth, 20, this.addon.getServerString(4)));
-        this.buttonList.add(new GuiButton(51279, this.width / 2 - buttonWidth / 2, this.height - (this.height / 2 + 50), buttonWidth, 20, this.addon.getServerString(3)));
-        this.buttonList.add(new GuiButton(51280, this.width / 2 - buttonWidth / 2, this.height - (this.height / 2 + 75), buttonWidth, 20, this.addon.getServerString(2)));
-        this.buttonList.add(new GuiButton(51281, this.width / 2 - buttonWidth / 2, this.height - (this.height / 2 + 100), buttonWidth, 20, this.addon.getServerString(1)));
-        */
     }
 
     @Override
