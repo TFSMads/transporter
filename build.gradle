@@ -26,7 +26,7 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "1.9 Snapshot"
+version = "0.0"
 group= "dk.transporter.mads_gamer_dk"
 archivesBaseName = "transporter"
 
