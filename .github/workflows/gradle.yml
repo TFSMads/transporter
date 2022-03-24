@@ -26,11 +26,6 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
-    - name: Upload jar
-      uses: actions/upload-artifact@v1
-      with:
-        name: Artifacts
-        path: build/libs/  
     - name: get version
       id: version
       uses: notiz-dev/github-action-json-property@release
@@ -45,7 +40,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
         tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
+        release_name: Version ${{steps.version.outputs.prop}} (Snapshot)
         body: |
           Dette er et auto generated release!
           - Bemærk dette artifakt kan indeholder fejl!
@@ -54,4 +49,10 @@ jobs:
           Hvis du gerne vil have et sikkeret release, så kan du download det fra vores discord.
         draft: false
         prerelease: false
+
+    - name: Upload Artifacts To Workflow
+      uses: actions/upload-artifact@v1
+      with:
+        name: Artifacts
+        path: build/libs/  
 
