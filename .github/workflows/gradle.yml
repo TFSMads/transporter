@@ -47,9 +47,11 @@ jobs:
         tag_name: ${{ github.ref }}
         release_name: Release ${{ github.ref }}
         body: |
-          Changes in this Release
-          - First Change
-          - Second Change
+          Dette er et auto generated release!
+          - Bemærk dette artifakt kan indeholder fejl!
+          - Forvent du kan risikere dit spil crasher
+          
+          Hvis du gerne vil have et sikkeret release, så kan du download det fra vores discord.
         draft: false
         prerelease: false
 
