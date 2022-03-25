@@ -56,10 +56,10 @@ jobs:
         prerelease: false
     
     - name: Copy Artifact 
-      run: mv transporter-0.0.jar transporter-v${{steps.version.outputs.prop}}-${{steps.snapshot.outputs.result}}.jar
+      run: mv build/libs/transporter-0.0.jar build/libs/transporter-v${{steps.version.outputs.prop}}-${{steps.snapshot.outputs.result}}.jar
 
     - name: Delete Old Artifact 
-      run: rm -f transporter-0.0.jar
+      run: rm -f build/libs/transporter-0.0.jar
       
     - name: Upload Artifact To Release
       uses: actions/upload-release-asset@v1
