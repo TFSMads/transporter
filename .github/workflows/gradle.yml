@@ -22,12 +22,16 @@ jobs:
       with:
         java-version: '8'
         distribution: 'adopt'
+    - uses: actions/github-script@v6
     - name: Generate Snapshot Version String
-      uses: aammirmirza/RandomPasswordGenerator@v1.1
+      id: snapshot
       with:
-        length: 15
-    - run: echo "${{ steps.generated-password.outputs.password }}"
-      shell: bash
+        script: return Math.random().toString(36).substring(2,7)
+        result-encoding: string
+    - name: Get result
+      run: echo "${{steps.snapshot.outputs.result}}"
+        
+
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
