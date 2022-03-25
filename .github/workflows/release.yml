@@ -42,7 +42,7 @@ jobs:
         prerelease: false
     
     - name: Copy Artifact 
-      run: mv build/libs/transporter-0.0.jar build/libs/transporter-v${{steps.version.outputs.prop}}.jar
+      run: mv build/libs/transporter-0.0.jar build/libs/transporter.jar
 
     - name: Delete Old Artifact 
       run: rm -f build/libs/transporter-0.0.jar
@@ -53,13 +53,13 @@ jobs:
         GITHUB_TOKEN: ${{ github.token }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: build/libs/transporter-v${{steps.version.outputs.prop}}.jar
-        asset_name: transporter-v${{steps.version.outputs.prop}}.jar
+        asset_path: build/libs/transporter.jar
+        asset_name: transporter.jar
         asset_content_type: application/jar
 
     - name: Upload Artifact To Workflow
       uses: actions/upload-artifact@v1
       with:
         name: Transporter Addon
-        path: build/libs/transporter-v${{steps.version.outputs.prop}}.jar
+        path: build/libs/transporter.jar
 
