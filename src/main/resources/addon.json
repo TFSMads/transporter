@@ -3,7 +3,7 @@
   "name": "SA Transporter-Addon",
   "mainClass": "dk.transporter.mads_gamer_dk.TransporterAddon",
   "description": "Et addon med mange redskaber og features til SA.",
-  "version": 1.9,
+  "version": 1.8.3,
   "author": "Mads_Gamer_DK og EmilM24",
   "category": 2,
   "icon": "https://cdn.discordapp.com/attachments/436165208134778880/827448208710959115/Logo.png"
