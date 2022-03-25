@@ -38,22 +38,22 @@ jobs:
       with: 
           path: 'src/main/resources/addon.json'
           prop_path: 'version'
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-      with:
-        tag_name: v${{steps.version.outputs.prop}}-${{steps.snapshot.outputs.result}}
-        release_name: Version ${{steps.version.outputs.prop}} [Snapshot ${{steps.snapshot.outputs.result}}]
-        body: |
-          Dette er et auto generated release!
-          - Bemærk dette artifakt kan indeholder fejl!
-          - Forvent du kan risikere dit spil crasher
-          
-          Hvis du gerne vil have et sikkeret release, så kan du download det fra vores discord.
-        draft: false
-        prerelease: false
+    #- name: Create Release
+     # id: create_release
+     # uses: actions/create-release@v1
+     # env:
+     #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+     # with:
+     #   tag_name: v${{steps.version.outputs.prop}}-${{steps.snapshot.outputs.result}}
+     #   release_name: Version ${{steps.version.outputs.prop}} [Snapshot ${{steps.snapshot.outputs.result}}]
+     #   body: |
+     #     Dette er et auto generated release!
+     #     - Bemærk dette artifakt kan indeholder fejl!
+     #     - Forvent du kan risikere dit spil crasher
+     #     
+      #    Hvis du gerne vil have et sikkeret release, så kan du download det fra vores discord.
+     #   draft: false
+     #   prerelease: false
     
     - name: Copy Artifact 
       run: mv build/libs/transporter-0.0.jar build/libs/transporter-v${{steps.version.outputs.prop}}-${{steps.snapshot.outputs.result}}.jar
@@ -61,15 +61,15 @@ jobs:
     - name: Delete Old Artifact 
       run: rm -f build/libs/transporter-0.0.jar
       
-    - name: Upload Artifact To Release
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: build/libs/transporter-v${{steps.version.outputs.prop}}-${{steps.snapshot.outputs.result}}.jar
-        asset_name: transporter-v${{steps.version.outputs.prop}}-${{steps.snapshot.outputs.result}}.jar
-        asset_content_type: application/jar
+    #- name: Upload Artifact To Release
+    #  uses: actions/upload-release-asset@v1
+    #  env:
+    #   GITHUB_TOKEN: ${{ github.token }}
+    #  with:
+     #   upload_url: ${{ steps.create_release.outputs.upload_url }}
+    #    asset_path: build/libs/transporter-v${{steps.version.outputs.prop}}-${{steps.snapshot.outputs.result}}.jar
+    #    asset_name: transporter-v${{steps.version.outputs.prop}}-${{steps.snapshot.outputs.result}}.jar
+    #    asset_content_type: application/jar
 
     - name: Upload Artifact To Workflow
       uses: actions/upload-artifact@v1
