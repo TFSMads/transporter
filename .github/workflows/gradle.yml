@@ -28,10 +28,6 @@ jobs:
       with:
         script: return Math.random().toString(36).substring(2,7)
         result-encoding: string
-    - name: Get result
-      run: echo "${{steps.snapshot.outputs.result}}"
-        
-
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
@@ -49,8 +45,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
-        tag_name: ${{ env.SNAPSHOT }}
-        release_name: Version ${{steps.version.outputs.prop}} (Snapshot)
+        tag_name: v${{steps.version.outputs.prop}}-${{steps.snapshot.outputs.result}}
+        release_name: Version ${{steps.version.outputs.prop}} [Snapshot ${{steps.snapshot.outputs.result}}]
         body: |
           Dette er et auto generated release!
           - Bemærk dette artifakt kan indeholder fejl!
