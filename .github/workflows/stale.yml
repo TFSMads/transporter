@@ -1,0 +1,79 @@
+# This workflow will build a Java project with Gradle
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
+
+name: Release
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 8
+      uses: actions/setup-java@v2
+      with:
+        java-version: '8'
+        distribution: 'adopt'
+    - name: Generate Snapshot Version String
+      id: snapshot
+      uses: actions/github-script@v6
+      with:
+        script: return Math.random().toString(36).substring(2,7)
+        result-encoding: string
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build with Gradle
+      run: ./gradlew build
+    - name: Get Addon Version
+      id: version
+      uses: notiz-dev/github-action-json-property@release
+      with: 
+          path: 'src/main/resources/addon.json'
+          prop_path: 'version'
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: v${{steps.version.outputs.prop}}-${{steps.snapshot.outputs.result}}
+        release_name: Version ${{steps.version.outputs.prop}} [Snapshot ${{steps.snapshot.outputs.result}}]
+        body: |
+          Dette er et auto generated release!
+          - Bemærk dette artifakt kan indeholder fejl!
+          - Forvent du kan risikere dit spil crasher
+          
+          Hvis du gerne vil have et sikkeret release, så kan du download det fra vores discord.
+        draft: false
+        prerelease: false
+    
+    - name: Copy Artifact 
+      run: mv build/libs/transporter-0.0.jar build/libs/transporter-v${{steps.version.outputs.prop}}-${{steps.snapshot.outputs.result}}.jar
+
+    - name: Delete Old Artifact 
+      run: rm -f build/libs/transporter-0.0.jar
+      
+    - name: Upload Artifact To Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: build/libs/transporter-v${{steps.version.outputs.prop}}-${{steps.snapshot.outputs.result}}.jar
+        asset_name: transporter-v${{steps.version.outputs.prop}}-${{steps.snapshot.outputs.result}}.jar
+        asset_content_type: application/jar
+
+    - name: Upload Artifact To Workflow
+      uses: actions/upload-artifact@v1
+      with:
+        name: Transporter Addon
+        path: build/libs/transporter-v${{steps.version.outputs.prop}}-${{steps.snapshot.outputs.result}}.jar
+
