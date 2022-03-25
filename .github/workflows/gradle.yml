@@ -23,10 +23,9 @@ jobs:
         java-version: '8'
         distribution: 'adopt'
     - name: Generate Snapshot Version String
-      uses: aammirmirza/RandomPasswordGenerator@v1.1
-      with:
-        length: 6
-    - run: echo SNAPSHOT=${{ steps.generated-password.outputs.password }} >> $GITHUB_ENV  
+      run: echo SNAPSHOT=${{ github.action_path }}/New-Password.ps1 -length ${{ inputs.length }}  >> $GITHUB_ENV  
+    - run: echo "${{ env.SNAPSHOT }}"
+      shell: bash
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
@@ -44,7 +43,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
-        tag_name: Version ${{steps.version.outputs.prop}} [Snapshot ${{ env.SNAPSHOT }}]
+        tag_name: ${{ env.SNAPSHOT }}
         release_name: Version ${{steps.version.outputs.prop}} (Snapshot)
         body: |
           Dette er et auto generated release!
