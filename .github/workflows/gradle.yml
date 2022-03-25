@@ -22,9 +22,9 @@ jobs:
       with:
         java-version: '8'
         distribution: 'adopt'
-    - uses: actions/github-script@v6
     - name: Generate Snapshot Version String
       id: snapshot
+      uses: actions/github-script@v6
       with:
         script: return Math.random().toString(36).substring(2,7)
         result-encoding: string
