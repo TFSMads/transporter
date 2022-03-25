@@ -32,13 +32,12 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
-    - name: get version
+    - name: Get Addon Version
       id: version
       uses: notiz-dev/github-action-json-property@release
       with: 
           path: 'src/main/resources/addon.json'
           prop_path: 'version'
-    - run: echo ${{steps.version.outputs.prop}} 
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -55,6 +54,22 @@ jobs:
           Hvis du gerne vil have et sikkeret release, så kan du download det fra vores discord.
         draft: false
         prerelease: false
+    
+    - name: Copy Artifact 
+      run: mv transporter-0.0.jar transporter-v${{steps.version.outputs.prop}}-${{steps.snapshot.outputs.result}}.jar
+
+    - name: Delete Old Artifact 
+      run: rm -f transporter-0.0.jar
+      
+    - name: Upload Artifact To Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: build/libs/transporter-v${{steps.version.outputs.prop}}-${{steps.snapshot.outputs.result}}.jar
+        asset_name: transporter-v${{steps.version.outputs.prop}}-${{steps.snapshot.outputs.result}}.jar
+        asset_content_type: application/jar
 
     - name: Upload Artifacts To Workflow
       uses: actions/upload-artifact@v1
