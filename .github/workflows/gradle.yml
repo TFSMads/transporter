@@ -71,9 +71,9 @@ jobs:
         asset_name: transporter-v${{steps.version.outputs.prop}}-${{steps.snapshot.outputs.result}}.jar
         asset_content_type: application/jar
 
-    - name: Upload Artifacts To Workflow
+    - name: Upload Artifact To Workflow
       uses: actions/upload-artifact@v1
       with:
-        name: Artifacts
-        path: build/libs/  
+        name: Transporter Addon
+        path: build/libs/transporter-v${{steps.version.outputs.prop}}-${{steps.snapshot.outputs.result}}.jar
 
