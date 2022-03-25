@@ -28,3 +28,13 @@
   
 Et LabyMod addon til at transporter-systemet på <a href="https://discord.com/invite/superawesome">SuperAwesome.dk</a>
   
+  
+<h>SInstallations Guide</h2>
+
+<h3>Step 1</h3>  
+Download den seneste version af transporter addon <a href="https://github.com/TFSMads/transporter/releases/latest/download/transporter.jar">Her<a>. Efter du jar downloadet filen skal du åbne FileExplorer/Stifinder, og gå ind i Downloads/Overførsler mappen.
+<br/>
+<br/>
+Hvis Filen transporter.jar er i mappen er du færdig med step 1.
+
+  
