@@ -34,8 +34,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
-        tag_name: v${{steps.version.outputs.prop}}-${{steps.snapshot.outputs.result}}
-        release_name: Version ${{steps.version.outputs.prop}} [Snapshot ${{steps.snapshot.outputs.result}}]
+        tag_name: v${{steps.version.outputs.prop}}
+        release_name: Transporter Addon ${{steps.version.outputs.prop}}
         body: |
           Klik under for at hente dette release
         draft: false
