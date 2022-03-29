@@ -21,7 +21,7 @@
 <br/>
 
 <p align="center">
-  <img alt="Discord" src="https://img.shields.io/badge/discord-Klik%20her-%235865F2%20?style=for-the-badge&logo=discord">  
+  <a href="https://discord.com/invite/YnAUwqXQwv" target="_blank"><img alt="Discord" src="https://img.shields.io/badge/discord-Klik%20her-%235865F2%20?style=for-the-badge&logo=discord"></a>
 <p>
   
 <br/>
@@ -52,3 +52,11 @@ Hvis Filen transporter.jar er i mappen er du færdig med step 1.
 - Eksperimentale features
 - Og andre små ting.
   
+# Support
+  Vi tilbyder support på vores Discord Server <a href="https://discord.com/invite/YnAUwqXQwv" target="_blank">Klik Her</a> for at tilslutte den.
+  
+### Bemærk
+  - Før du går i support med dit problem så prøv at genstart dit minecraft og/eller din computer.
+  - Hvis du ikke har den seneste version af Transporter addon så prøv at installere den før du går i support.
+  - Vi tilbyder ikke support hvis du benytter et snapshot build.
+  - Vi tilbyder kun support hvis du bruger LabyMod til 1.8.
