@@ -39,3 +39,16 @@ Hvis Filen transporter.jar er i mappen er du færdig med step 1.
 
 <img alt="Hvis Filen transporter.jar er i mappen er du færdig med step 1." src="img/step1.png">
 <h3>Step 2</h3>  
+
+# Snapshot Downloads
+  Klik <a href="https://nightly.link/TFSMads/transporter/workflows/gradle/master/Transporter%20Addon.zip">Her<a> for at Download det seneste snapshot.
+  
+- Snapshot builds kan indeholde fejl, der resultere i crash eller uønskede handlinger
+- Vi tilbyder ikke noget support hvis du har problemer med disse builds.
+
+### Hvad indeholder snapshot builds som udgivet builds ikke indeholder
+
+- Halv færdige features
+- Eksperimentale features
+- Og andre små ting.
+  
