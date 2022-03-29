@@ -39,6 +39,32 @@ Hvis Filen transporter.jar er i mappen er du færdig med step 1.
 
 <img alt="Hvis Filen transporter.jar er i mappen er du færdig med step 1." src="img/step1.png">
 <h3>Step 2</h3>  
+ Gå ned til søge ikonet og tryk på det og skriv "%appdata%".
+ <br/>
+ Det burde nu se cirka sådan her ud:
+ <img src="img/step2-1.png">
+ <br/> 
+ Hvis du har søgt ligesom på billedet over skal du klikke enter eller klikke åbn.
+ <img src="img/step2-2.png"> 
+ 
+ Du burde nu have åbnet en mappe hvor der er en mappe der hedder ".minecraft". (Hvis du ikke har fået mappen åbnet så prøv at start forfra med step 2)
+ <pre>
+ Du skal nu gå ind i følgende mapper:
+ ───.minecraft
+    └───LabyMod
+        └───addons-1.8
+ </pre>
+  
+  <img src="img/step2-3.gif"> 
+  
+  <br/>
+  
+  Hvis du er inde i mappen addon-1.8 er du klar til step 3.
+<h3>Step 3</h3>   
+  Du burde nu have mapperne "addon-1.8" og "overførsler" åbnet nu.
+  
+  
+  
 
 # Snapshot Downloads
   Klik <a href="https://nightly.link/TFSMads/transporter/workflows/gradle/master/Transporter%20Addon.zip">Her<a> for at Download det seneste snapshot.
