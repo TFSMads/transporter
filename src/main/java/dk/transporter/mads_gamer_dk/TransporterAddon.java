@@ -3,10 +3,12 @@ package dk.transporter.mads_gamer_dk;
 import dk.transporter.mads_gamer_dk.Items.Item;
 import dk.transporter.mads_gamer_dk.Items.Items;
 import dk.transporter.mads_gamer_dk.Items.TransporterItems;
+import dk.transporter.mads_gamer_dk.classes.AutoGet;
 import dk.transporter.mads_gamer_dk.classes.MiningRigTimers;
+import dk.transporter.mads_gamer_dk.guis.TransporterInfoGui.TransporterInfoGui;
 import dk.transporter.mads_gamer_dk.guis.getItemsGui.GetItemsConfigGui;
 import dk.transporter.mads_gamer_dk.guis.serverSelector.ServerSelecterGui;
-import dk.transporter.mads_gamer_dk.guis.TransporterGui;
+import dk.transporter.mads_gamer_dk.guis.TransporterInfoGui.TransporterGuiOld;
 import dk.transporter.mads_gamer_dk.listeners.*;
 import dk.transporter.mads_gamer_dk.mcmmo.Skills;
 import dk.transporter.mads_gamer_dk.messageSendingSettings.messageSettings;
@@ -15,15 +17,19 @@ import dk.transporter.mads_gamer_dk.modules.RegisterModules;
 import dk.transporter.mads_gamer_dk.settingelements.DescribedBooleanElement;
 import dk.transporter.mads_gamer_dk.utils.GetAmountOfItemInInventory;
 import dk.transporter.mads_gamer_dk.utils.MessageHandler;
+import dk.transporter.mads_gamer_dk.utils.TaDrawUtils;
 import dk.transporter.mads_gamer_dk.utils.data.DataManagers;
+import net.labymod.accountmanager.storage.StorageType;
+import net.labymod.accountmanager.storage.account.Account;
+import net.labymod.accountmanager.storage.loader.java.model.LauncherProfiles;
 import net.labymod.api.LabyModAddon;
 import net.labymod.api.events.MessageReceiveEvent;
 import net.labymod.api.events.MessageSendEvent;
+import net.labymod.gui.account.GuiAccountManager;
 import net.labymod.gui.elements.DropDownMenu;
 import net.labymod.ingamegui.Module;
 import net.labymod.ingamegui.ModuleCategory;
 import net.labymod.ingamegui.ModuleCategoryRegistry;
-import net.labymod.labyconnect.packets.Packet;
 import net.labymod.main.LabyMod;
 import net.labymod.settings.elements.*;
 import net.labymod.utils.Consumer;
@@ -50,6 +56,8 @@ public class TransporterAddon  extends LabyModAddon {
 
     private boolean isEnabled;
 
+    private boolean newMenu;
+
     private boolean isValidVersion;
 
     public static boolean connectedToSuperawesome;
@@ -72,9 +80,11 @@ public class TransporterAddon  extends LabyModAddon {
 
     private Integer transporterMenuKeyBind;
 
+    private Integer autoGetMenuKeyBind;
+
     private Integer lobbySelecterKeybind;
 
-    private TransporterAddon addon;
+    private static TransporterAddon addon;
 
     private boolean isInSaLobby;
 
@@ -96,6 +106,47 @@ public class TransporterAddon  extends LabyModAddon {
     private Integer antalKrævet;
 
     private Boolean checkItems;
+
+    public boolean isSignToolsGuiOpen = false;
+
+    /*
+     * Auto get variables
+     */
+
+    public Boolean autoGetIsActive = false;
+    public String autoGetItem;
+    public int autoGetMinimum;
+
+    private TaDrawUtils drawUtils;
+
+    public static TaDrawUtils getDrawUtils() {
+        return addon.drawUtils;
+    }
+
+    /*
+     * Static Method for getting instance of addon
+     */
+
+    /*public static TransporterAddon getInstance(){
+        return addon;
+    }*/
+
+    /*
+     * Signtool varible and getter and setter
+     */
+
+    private static boolean signToolsIsEnabled = false;
+
+    public static boolean isSignToolsIsEnabled() {
+        return signToolsIsEnabled;
+    }
+
+    public static void setSignToolsIsEnabled(boolean signToolsIsEnabled) {
+       TransporterAddon.signToolsIsEnabled = signToolsIsEnabled;
+    }
+
+
+
 
 
 
@@ -155,6 +206,30 @@ public class TransporterAddon  extends LabyModAddon {
     @Override
     public void onEnable() {
 
+        this.drawUtils = new TaDrawUtils();
+
+        boolean isDebug = java.lang.management.ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0;
+        System.out.println("In debug : " + isDebug);
+
+
+        //Skift til microsoft account gennem labymod account manager hvis kørt i debug mode.
+        if(isDebug){
+            Account[] profiles = LabyMod.getInstance().getAccountManager().getAccounts();
+
+            for (Account acc: profiles) {
+                if(acc.getUsername().equals("Mads_Gamer_DK")){
+                    if(!acc.isAccessTokenExpired() && acc.getStorageType() == StorageType.EXTERNAL){
+                        System.out.println("Changing session: " + acc.getUsername() + " Storage: " + acc.getStorageType().name());
+                        try {
+                            LabyMod.getInstance().setSession(acc);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+
         dataManagers = new DataManagers();
 
         skills = new Skills(this);
@@ -171,6 +246,7 @@ public class TransporterAddon  extends LabyModAddon {
         addon = this;
         System.out.println("TransporterAddon Enabled!");
         this.getApi().registerForgeListener(this);
+        this.getApi().registerForgeListener(new GuiListener(this));
 
         this.getApi().getEventManager().register((MessageSendEvent)new OnCommand(this, skills));
 
@@ -203,6 +279,8 @@ public class TransporterAddon  extends LabyModAddon {
 
         this.transporterMenuKeyBind = getConfig().has( "transporterMenuKeyBind" ) ? getConfig().get( "transporterMenuKeyBind" ).getAsInt() : Keyboard.KEY_L;
 
+        this.autoGetMenuKeyBind = getConfig().has( "autoGetMenuKeyBind" ) ? getConfig().get( "autoGetMenuKeyBind" ).getAsInt() : Keyboard.KEY_N;
+
         this.autoTransporterKeyBind = getConfig().has( "autoTransporterKeyBind" ) ? getConfig().get( "autoTransporterKeyBind" ).getAsInt() : Keyboard.KEY_P;
 
         this.lobbySelecterKeybind = getConfig().has( "lobbySelecterKeybind" ) ? getConfig().get( "lobbySelecterKeybind" ).getAsInt() : Keyboard.KEY_Y;
@@ -215,8 +293,16 @@ public class TransporterAddon  extends LabyModAddon {
 
         this.antalKrævet = getConfig().has( "antalKrævet" ) ? getConfig().get( "antalKrævet" ).getAsInt() : 1;
         this.checkItems = getConfig().has( "checkItems" ) ? getConfig().get( "checkItems" ).getAsBoolean() : true;
+        this.newMenu = getConfig().has( "newMenu" ) ? getConfig().get( "newMenu" ).getAsBoolean() : true;
 
 
+        /*
+         * Auto get data
+         */
+
+        this.autoGetIsActive = getConfig().has( "autoGetIsActive" ) ? getConfig().get( "autoGetIsActive" ).getAsBoolean() : true;
+        this.autoGetItem = getConfig().has( "autoGetItem" ) ? getConfig().get( "autoGetItem" ).getAsString() : "dirt";
+        this.autoGetMinimum = getConfig().has( "autoGetMinimum" ) ? getConfig().get( "autoGetMinimum" ).getAsInt() : 64;
 
         TransporterItems items[] = TransporterItems.values();
         for(TransporterItems item : items) {
@@ -239,6 +325,11 @@ public class TransporterAddon  extends LabyModAddon {
 
         subSettings.add( transporterMenuKeyElement );
 
+        KeyElement autoGetMenuKeyElement = new KeyElement( "Auto Get Menu Keybind", new ControlElement.IconData( Material.STONE_BUTTON ), autoGetMenuKeyBind, new Consumer<Integer>() {@Override public void accept( Integer accepted ) { if ( accepted < 0 ) { System.out.println( "Set new key to NONE" );autoGetMenuKeyBind = -1;configSave();return; }System.out.println( "Set new key to " + Keyboard.getKeyName( accepted ) );autoGetMenuKeyBind = accepted;configSave(); }});
+
+        subSettings.add( autoGetMenuKeyElement );
+
+        subSettings.add( new BooleanElement( "Brug nye Transporter menu", this, new ControlElement.IconData( Material.PAINTING ), "newMenu", this.newMenu ) );
 
         subSettings.add(new HeaderElement(ModColor.cl("a") + " "));
 
@@ -402,6 +493,7 @@ public class TransporterAddon  extends LabyModAddon {
         getConfig().addProperty("lobbySelecterKeybind", this.lobbySelecterKeybind);
         getConfig().addProperty("autoTransporterKeyBind", this.autoTransporterKeyBind);
         getConfig().addProperty("transporterMenuKeyBind", this.transporterMenuKeyBind);
+        getConfig().addProperty("autoGetMenuKeyBind", this.autoGetMenuKeyBind);
     }
 
 
@@ -417,6 +509,7 @@ public class TransporterAddon  extends LabyModAddon {
     }
 
     private Integer saveTimer=0;
+    private AutoGet autoGet = new AutoGet(this);
 
     @SubscribeEvent
     public void onTick(final TickEvent.ClientTickEvent event) throws Exception {
@@ -436,6 +529,8 @@ public class TransporterAddon  extends LabyModAddon {
         if(!connectedToSuperawesome){ return; }
         if(!isEnabled){ return; }
         if(!isValidVersion){ return; }
+
+        autoGet.onTick();
 
         if(autoTransporter){
             if(!executeCommands) {
@@ -522,7 +617,12 @@ public class TransporterAddon  extends LabyModAddon {
             }
             if (transporterMenuKeyBind >= 0) {
                 if (Keyboard.isKeyDown(transporterMenuKeyBind)) {
-                    Minecraft.getMinecraft().displayGuiScreen(new TransporterGui(addon, items));
+                    if(newMenu){
+                        Minecraft.getMinecraft().displayGuiScreen(new TransporterInfoGui(this));
+                    }else{
+                        Minecraft.getMinecraft().displayGuiScreen(new TransporterGuiOld(addon, items));
+                    }
+
                 }
 
             }
@@ -531,8 +631,10 @@ public class TransporterAddon  extends LabyModAddon {
                     Minecraft.getMinecraft().displayGuiScreen(new ServerSelecterGui(addon, dataManagers));
                 }
             }
-            if (Keyboard.isKeyDown(Keyboard.KEY_N)) {
-                Minecraft.getMinecraft().displayGuiScreen(new GetItemsConfigGui(addon, dataManagers));
+            if (autoGetMenuKeyBind >= 0) {
+                if (Keyboard.isKeyDown(autoGetMenuKeyBind)) {
+                    Minecraft.getMinecraft().displayGuiScreen(new GetItemsConfigGui(null, this));
+                }
             }
         } catch (Exception e) {
             System.out.println(e);

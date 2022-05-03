@@ -13,6 +13,8 @@ public class DataManagers {
     private JsonObject serverData;
     private DataManager<Data> serverDataManager;
 
+    private JsonObject signData;
+    private DataManager<Data> signDataManager;
 
     public DataManagers(){
         this.mcmmoDataManager = new DataManager<Data>(new File(AddonLoader.getConfigDirectory() + "\\TransporterAddon", "mcmmoData.json"), Data.class);
@@ -20,6 +22,9 @@ public class DataManagers {
 
         this.serverDataManager = new DataManager<Data>(new File(AddonLoader.getConfigDirectory() + "\\TransporterAddon", "serverData.json"), Data.class);
         this.serverData = (this.serverDataManager.getSettings()).getData();
+
+        this.signDataManager = new DataManager<Data>(new File(AddonLoader.getConfigDirectory() + "\\TransporterAddon", "signData.json"), Data.class);
+        this.signData = (this.signDataManager.getSettings()).getData();
     }
 
     public void saveMCMMOData() {
@@ -42,6 +47,17 @@ public class DataManagers {
 
     public JsonObject getServerData() {
         return this.serverData;
+    }
+
+    public void saveSignData() {
+        if (this.signDataManager != null) {
+            this.signDataManager.save();
+        }
+
+    }
+
+    public JsonObject getSignData() {
+        return this.signData;
     }
 
 }

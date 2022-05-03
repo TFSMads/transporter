@@ -59,15 +59,6 @@ public class AddServerGui extends GuiScreen {
         if(saveServer){ this.buttonAdd.displayString = "Add"; }else{ this.buttonAdd.displayString = "Connect"; }
 
         boolean bl = this.buttonAdd.enabled = !this.fieldServer.getText().isEmpty();
-        if (this.displayError) {
-            draw.drawRectangle(0, 0, this.width, 16, Color.RED.getRGB());
-            String errorMessage = LabyMod.getInstance().getAccountManager().getLastErrorMessage();
-            int shaking = (int)(System.currentTimeMillis() % 10L) - 5;
-            if (this.shakingError + 1000L < System.currentTimeMillis()) {
-                shaking = 0;
-            }
-            draw.drawCenteredString(errorMessage, this.width / 2 + shaking, 4.0);
-        }
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 

@@ -55,17 +55,6 @@ public class RemoveServerGui extends GuiScreen {
         DrawUtils draw = LabyMod.getInstance().getDrawUtils();
         draw.drawString( "Server Navn:", this.width / 2 - 110, this.height / 2 - 30);
         this.buttonDelete.displayString = "Delete";
-
-        boolean bl = this.buttonDelete.enabled = !this.fieldServer.getText().isEmpty();
-        if (this.displayError) {
-            draw.drawRectangle(0, 0, this.width, 16, Color.RED.getRGB());
-            String errorMessage = LabyMod.getInstance().getAccountManager().getLastErrorMessage();
-            int shaking = (int)(System.currentTimeMillis() % 10L) - 5;
-            if (this.shakingError + 1000L < System.currentTimeMillis()) {
-                shaking = 0;
-            }
-            draw.drawCenteredString(errorMessage, this.width / 2 + shaking, 4.0);
-        }
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 

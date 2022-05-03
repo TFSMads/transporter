@@ -25,4 +25,20 @@ public class GetAmountOfItemInInventory {
         }
         return itemAmount;
     }
+
+    public static Integer getAmountOfItem(InventoryPlayer inventory, Integer itemDamage, Item mcItem){
+        Integer itemAmount = 0;
+        for(ItemStack item : inventory.mainInventory){
+            if (item != null){
+                Integer iDamage = item.getItemDamage();
+
+                Item mitem = item.getItem();
+                if( iDamage == itemDamage && mitem == mcItem){
+                    itemAmount = itemAmount + item.stackSize;
+                }
+            }
+
+        }
+        return itemAmount;
+    }
 }
