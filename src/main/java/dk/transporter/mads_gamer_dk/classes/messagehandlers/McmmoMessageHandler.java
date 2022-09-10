@@ -15,7 +15,7 @@ public class McmmoMessageHandler implements IMessageHandler{
     @Override
     public boolean messageReceived(String msg, String clean) {
 
-        if(checkGigaDrill(clean) || checkSkillLevelIncreased(clean))
+        if(checkGigaDrill(clean) || checkSkillLevelIncreased(clean) || checkTreeFeller(clean))
             return false;
         return false;
 
@@ -37,6 +37,14 @@ public class McmmoMessageHandler implements IMessageHandler{
     private boolean checkGigaDrill(String clean){
         if(clean.equals("**GIGA DRILL BREAKER ACTIVATED**")){
             skills.activatePowerUp("GIGA DRILL BREAKER");
+            return true;
+        }
+        return false;
+    }
+
+    private boolean checkTreeFeller(String clean){
+        if(clean.equals("**TREE FELLER ACTIVATED**")){
+            skills.activatePowerUp("TREE FELLER");
             return true;
         }
         return false;

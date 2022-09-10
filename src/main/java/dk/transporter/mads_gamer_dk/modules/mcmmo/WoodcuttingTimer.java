@@ -8,22 +8,20 @@ import net.labymod.ingamegui.moduletypes.SimpleModule;
 import net.labymod.settings.elements.ControlElement;
 import net.labymod.utils.Material;
 
-public class ExcavationTimer extends SimpleModule
-{
-
+public class WoodcuttingTimer extends SimpleModule {
     TransporterAddon addon;
 
-    public ExcavationTimer(final TransporterAddon addon) {
+    public WoodcuttingTimer(final TransporterAddon addon) {
         this.addon = addon;
     }
 
     public String getDisplayName() {
-        return "Excavation Timer";
+        return "Woodcutting Timer";
     }
 
     public String getDisplayValue() {
 
-        Skill skill = addon.getSkills().getSkill("Excavation");
+        Skill skill = addon.getSkills().getSkill("Woodcutting");
 
         String displayValue = "Fejl";
 
@@ -34,13 +32,13 @@ public class ExcavationTimer extends SimpleModule
             if(UnixTimestampOfNow.getTime() - timeStamp > powerUpLength){
                 skill.deactivatePowerup();
             }
-            displayValue = "Giga drill aktiv (" + (powerUpLength - (UnixTimestampOfNow.getTime() - timeStamp)) + ")";
+            displayValue = "Tree Feller aktiv (" + (powerUpLength - (UnixTimestampOfNow.getTime() - timeStamp)) + ")";
         } else{
             Integer timeStamp = skill.getPowerUpActivatedTimestamp();
             if(UnixTimestampOfNow.getTime() - timeStamp > skill.getPowerUpLength() + 239 ){
-                displayValue = "Giga drill er klar til brug.";
+                displayValue = "Tree Feller er klar til brug.";
             }else{
-                displayValue = "Giga drill er klar om " + (skill.getPowerUpLength() + 239 - (UnixTimestampOfNow.getTime() - timeStamp)) + " Sekunder.";
+                displayValue = "Tree Feller er klar om " + (skill.getPowerUpLength() + 239 - (UnixTimestampOfNow.getTime() - timeStamp)) + " Sekunder.";
             }
         }
 
@@ -65,7 +63,7 @@ public class ExcavationTimer extends SimpleModule
     }
 
     public String getDescription() {
-        return "Din excavation timer.";
+        return "Din tree feller timer.";
     }
 
     public int getSortingId() {
@@ -77,7 +75,7 @@ public class ExcavationTimer extends SimpleModule
     }
 
     public String getControlName() {
-        return "Excavation Timer";
+        return "Woodcutting Timer";
     }
 
     public boolean isShown() {

@@ -1,22 +1,25 @@
 package dk.transporter.mads_gamer_dk.mcmmo;
 
 import dk.transporter.mads_gamer_dk.utils.UnixTimestampOfNow;
+import net.labymod.settings.elements.ControlElement;
 
 public class Skill {
 
     private String skillName;
     private Integer level;
+    private ControlElement.IconData iconData;
 
     private String powerUpName;
     private Boolean powerUpActivated;
     private Integer powerUpActivatedTimestamp;
 
-    public Skill(String skillName, Integer level, String powerUpName){
+    public Skill(String skillName, Integer level, String powerUpName, ControlElement.IconData iconData){
         this.skillName = skillName;
         this.level = level;
         this.powerUpName = powerUpName;
         this.powerUpActivated = false;
         this.powerUpActivatedTimestamp = 0;
+        this.iconData = iconData;
     }
 
     public void activatePowerup(){
@@ -38,6 +41,10 @@ public class Skill {
         }else{
             return false;
         }
+    }
+
+    public ControlElement.IconData getIconData(){
+        return this.iconData;
     }
 
     public Integer getLevel() {
