@@ -15,7 +15,6 @@ import dk.transporter.mads_gamer_dk.utils.ConfigHandler;
 import dk.transporter.mads_gamer_dk.utils.MessageHandler;
 import dk.transporter.mads_gamer_dk.utils.TaDrawUtils;
 import dk.transporter.mads_gamer_dk.utils.data.DataManagers;
-import dk.transporter.mads_gamer_dk.utils.transporterapi.UpdateChecker;
 import net.labymod.accountmanager.storage.StorageType;
 import net.labymod.accountmanager.storage.account.Account;
 import net.labymod.api.LabyModAddon;
