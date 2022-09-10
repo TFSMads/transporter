@@ -17,6 +17,8 @@ public class JoinListener implements Consumer<ServerData>
 
     public void accept(final ServerData serverData) {
 
+        System.out.println("Switch server");
+
         System.out.println("Server:" + serverData);
 
         addon.setValidVersion(true, this);

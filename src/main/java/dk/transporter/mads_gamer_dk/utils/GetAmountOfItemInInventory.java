@@ -7,25 +7,6 @@ import net.minecraft.item.ItemStack;
 
 public class GetAmountOfItemInInventory {
 
-    public static Integer getAmountOfItem(InventoryPlayer inventory, Integer itemDamage, Item mcItem, TransporterAddon addon){
-        if (!addon.getCheckItems()){
-            return 9999;
-        }
-        Integer itemAmount = 0;
-        for(ItemStack item : inventory.mainInventory){
-            if (item != null){
-                Integer iDamage = item.getItemDamage();
-
-                Item mitem = item.getItem();
-                if( iDamage == itemDamage && mitem == mcItem){
-                    itemAmount = itemAmount + item.stackSize;
-                }
-            }
-
-        }
-        return itemAmount;
-    }
-
     public static Integer getAmountOfItem(InventoryPlayer inventory, Integer itemDamage, Item mcItem){
         Integer itemAmount = 0;
         for(ItemStack item : inventory.mainInventory){

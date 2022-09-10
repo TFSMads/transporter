@@ -1,5 +1,7 @@
 package dk.transporter.mads_gamer_dk.messageSendingSettings;
 
+import dk.transporter.mads_gamer_dk.listeners.messageReceiveListener;
+
 public enum messageSettings
 {
     ACTIONBAR(new String[] { "actionbar", "ab", "bar" }),
@@ -27,6 +29,17 @@ public enum messageSettings
             }
         }
         return messageSettings.DEFAULT_ACTION;
+    }
+
+    public int getId(){
+        if(this == messageSettings.ACTIONBAR){
+            return 2;
+        }else if(this == messageSettings.INGEN){
+            return 1;
+        }else if(this == messageSettings.CHAT){
+            return 0;
+        }
+        return 0;
     }
 
     public String[] getAliases() {
