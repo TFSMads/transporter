@@ -27,6 +27,7 @@ jobs:
           -DartifactId=unikapi \
           -Dversion=1.0 \
           -Dpackaging=jar \
+          -DlocalRepositoryPath=my-repo \
           -DgeneratePom=true
     - name: Build with Maven
       run: |
