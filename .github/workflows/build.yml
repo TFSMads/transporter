@@ -21,14 +21,7 @@ jobs:
       run: |
         mkdir libs/
         wget -O libs/UnikAPI.jar --no-cache https://github.com/TFSMads/UnikAPI/releases/download/v1.0.0/UnikAPI.jar
-        mvn install:install-file \
-          -Dfile=libs/UnikAPI \
-          -DgroupId=ml.volder \
-          -DartifactId=unikapi \
-          -Dversion=1.0 \
-          -Dpackaging=jar \
-          -DlocalRepositoryPath=my-repo \
-          -DgeneratePom=true
+        mvn deploy:deploy-file -DgroupId=ml.volder -DartifactId=unikapi -Dversion=1.0 -Durl=file:./my-repo/ -DrepositoryId=my-repo -DupdateReleaseInfo=true -Dfile=./libs/UnikAPI.jar
     - name: Build with Maven
       run: |
         mvn validate --file pom.xml
