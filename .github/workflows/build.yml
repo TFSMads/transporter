@@ -17,6 +17,17 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+    - name: Add UnikAPI to local repo
+      run: |
+        mkdir libs/
+        wget -O libs/UnikAPI.jar --no-cache https://github.com/TFSMads/UnikAPI/releases/download/v1.0.0/UnikAPI.jar
+        mvn install:install-file \
+          -Dfile=libs/UnikAPI \
+          -DgroupId=ml.volder \
+          -DartifactId=unikapi \
+          -Dversion=1.0 \
+          -Dpackaging=jar \
+          -DgeneratePom=true
     - name: Build with Maven
       run: |
         mvn validate --file pom.xml
