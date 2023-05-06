@@ -161,7 +161,7 @@ public class TransporterAddon extends AddonMain {
         return autoGetModule;
     }
 
-    @Override
+    //@Override
     public void openSettings(Object o) {
         if (PlayerAPI.getAPI().getCurrentScreen() instanceof TransporterModulesMenu)
             return;
