@@ -54,7 +54,9 @@ public class AutoTransporter extends SimpleModule implements Listener {
         Map<String, Integer> itemAmountMap = new HashMap<>();
 
         for (Item item: addon.getTransporterItemManager().getItemList())
-            itemAmountMap.put(item.getCommandName(), InventoryAPI.getAPI().getAmount(item.getMaterial(), item.getItemDamage()));
+            if(item.isAutoTransporterEnabled())
+                itemAmountMap.put(item.getCommandName(), InventoryAPI.getAPI().getAmount(item.getMaterial(), item.getItemDamage()));
+
 
         int maxAmount = -1;
         String itemWithMost = "";
@@ -127,6 +129,8 @@ public class AutoTransporter extends SimpleModule implements Listener {
             ControlElement.IconData iconData = new ControlElement.IconData(item.getMaterial());
             iconData.setItemDamage(item.getItemDamage());
             BooleanElement booleanElement = new BooleanElement(item.getDisplayName(), getDataManager(), "items." + item.getChatName(), iconData, true);
+            booleanElement.addCallback(item::setAutoTransporterEnabled);
+            item.setAutoTransporterEnabled(booleanElement.getCurrentValue());
             NumberElement numberElement = new NumberElement("Værdi (EMs)", getDataManager(), "items." + item.getChatName() + ".value", new ControlElement.IconData(Material.EMERALD), item.getSellValue());
             item.setSellValue(numberElement.getCurrentValue());
             numberElement.addCallback(integer -> item.setSellValue(integer));

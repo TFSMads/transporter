@@ -18,6 +18,7 @@ public class Item {
     private String transporterInfoName;
     private Integer amountInTransporter;
     private Material material;
+    private boolean isAutoTransporterEnabled = true;
 
     private UUID currentPlayerData;
 
@@ -96,5 +97,19 @@ public class Item {
         this.amountInTransporter = TransporterAddon.getInstance().getTransporterItemManager().getDataManager().getSettings().getData().has("amount." + this.getChatName())
                 ? TransporterAddon.getInstance().getTransporterItemManager().getDataManager().getSettings().getData().get("amount." + this.getChatName()).getAsInt()
                 : 0;
+    }
+
+    /**
+     * @return True if this item should be put in transporter by Auto Transporter
+     */
+    public boolean isAutoTransporterEnabled() {
+        return isAutoTransporterEnabled;
+    }
+
+    /**
+     * @param autoTransporterEnabled Whether this item should be put in transporter by Auto Transporter.
+     */
+    public void setAutoTransporterEnabled(boolean autoTransporterEnabled) {
+        isAutoTransporterEnabled = autoTransporterEnabled;
     }
 }

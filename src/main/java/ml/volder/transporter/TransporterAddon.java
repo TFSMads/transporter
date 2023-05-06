@@ -9,6 +9,7 @@ import ml.volder.transporter.jsonmanager.Data;
 import ml.volder.transporter.jsonmanager.DataManager;
 import ml.volder.transporter.listeners.KeyboardListener;
 import ml.volder.transporter.modules.*;
+import ml.volder.unikapi.AddonMain;
 import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.api.minecraft.MinecraftAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
@@ -33,7 +34,7 @@ import java.util.UUID;
 // Transporter Menu         - Done
 // Gui Modules på skærm     - Done
 
-public class TransporterAddon {
+public class TransporterAddon extends AddonMain {
 
     private boolean isEnabled = false;
     private static TransporterAddon instance;
@@ -158,5 +159,12 @@ public class TransporterAddon {
 
     public AutoGetModule getAutoGetModule() {
         return autoGetModule;
+    }
+
+    @Override
+    public void openSettings(Object o) {
+        if (PlayerAPI.getAPI().getCurrentScreen() instanceof TransporterModulesMenu)
+            return;
+        PlayerAPI.getAPI().openGuiScreen(new TransporterModulesMenu(TransporterAddon.getInstance(), null));
     }
 }
