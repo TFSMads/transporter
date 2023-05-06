@@ -1,0 +1,34 @@
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+    - name: Add UnikAPI to local repo
+      run: |
+        mkdir libs/
+        wget -O libs/UnikAPI.jar --no-cache https://github.com/TFSMads/UnikAPI/releases/download/v1.0.0/UnikAPI.jar
+        mvn deploy:deploy-file -DgroupId=ml.volder -DartifactId=unikapi -Dversion=1.0 -Durl=file:./my-repo/ -DrepositoryId=my-repo -DupdateReleaseInfo=true -Dfile=./libs/UnikAPI.jar
+    - name: Build with Maven
+      run: |
+        mvn validate --file pom.xml
+        mvn clean --file pom.xml
+        mvn package --file pom.xml
+    - name: Upload Artifact To Workflow
+      uses: actions/upload-artifact@v1
+      with:
+        name: TransporterAddon
+        path: target/transporter-2.0.jar
