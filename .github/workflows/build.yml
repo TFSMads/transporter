@@ -29,7 +29,7 @@ jobs:
         mvn clean --file pom.xml
         mvn package --file pom.xml
     - name: Upload Artifact To Workflow
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v3
       with:
         name: TransporterAddon
-        path: target/transporter-2.0.jar
+        path: target/*.jar
