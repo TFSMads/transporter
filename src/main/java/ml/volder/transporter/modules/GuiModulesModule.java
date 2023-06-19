@@ -3,6 +3,8 @@ package ml.volder.transporter.modules;
 import ml.volder.transporter.gui.ModTextures;
 import ml.volder.transporter.gui.TransporterModulesMenu;
 import ml.volder.transporter.gui.elements.*;
+import ml.volder.transporter.jsonmanager.Data;
+import ml.volder.transporter.jsonmanager.DataManager;
 import ml.volder.transporter.modules.guimodules.GuiModule;
 import ml.volder.transporter.modules.guimodules.GuiModuleRenderer;
 import ml.volder.transporter.modules.guimodules.ModuleManager;
@@ -27,6 +29,7 @@ public class GuiModulesModule extends SimpleModule {
 
     public GuiModulesModule(String moduleName) {
         super(moduleName);
+        instance = this;
         guiModuleRenderer = new GuiModuleRenderer(this, getDataManager());
         EventManager.registerEvents(guiModuleRenderer);
         fillSettings();
@@ -44,6 +47,21 @@ public class GuiModulesModule extends SimpleModule {
 
     public List<GuiModule> getGuiModuleList() {
         return guiModuleList;
+    }
+
+    private static GuiModulesModule instance;
+
+    public static GuiModule getModuleByKey(String key) {
+        for(GuiModule guiModule : instance.guiModuleList)
+            if(guiModule.getKey().equals(key))
+                return guiModule;
+        return null;
+    }
+
+    public static DataManager<Data> getModulesDataManager() {
+        if(instance == null)
+            return null;
+        return instance.getDataManager();
     }
 
     private void open() {

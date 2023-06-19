@@ -7,6 +7,7 @@ import ml.volder.transporter.gui.elements.Scrollbar;
 import ml.volder.transporter.gui.elements.SettingsElement;
 import ml.volder.transporter.modules.GuiModulesModule;
 import ml.volder.transporter.modules.guimodules.GuiModule;
+import ml.volder.transporter.modules.guimodules.RenderRelative;
 import ml.volder.transporter.modules.guimodules.elements.ModuleCategoryElement;
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
@@ -16,10 +17,15 @@ import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
 import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
 
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public class GuiEditor extends WrappedGuiScreen {
+
+    private static final int MODULE_ATTACH_DISTANCE = 30;
 
     private ArrayList<SettingsElement> path = new ArrayList();
 
@@ -27,16 +33,22 @@ public class GuiEditor extends WrappedGuiScreen {
     private GuiModulesModule guiModulesModule;
     private GuiModule hoveredGuiModule;
     private GuiModule draggedGuiModule;
+    private GuiModule attachGuiModule;
     private double dragOffsetX;
     private double dragOffsetY;
     private WrappedGuiButton buttonBack;
     private WrappedGuiScreen lastScreen;
     private Scrollbar scrollbar;
 
+    private int editorScaledWidth;
+    private int editorScaledHeight;
+
     public GuiEditor(GuiModulesModule guiModulesModule, WrappedGuiScreen lastScreen) {
         this.guiModulesModule = guiModulesModule;
         this.lastScreen = lastScreen;
         this.scrollbar = new Scrollbar(22);
+        editorScaledHeight = getHeight() / 6 * 5;
+        editorScaledWidth = getWidth() / 6 * 5;
         for(ModuleCategoryElement category : guiModulesModule.getGuiModuleCategories()) {
             category.getSubSettings().getElements().clear();
             moduleCategoryElementList.add(category);
@@ -96,6 +108,8 @@ public class GuiEditor extends WrappedGuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        editorScaledHeight = getHeight() / 6 * 5;
+        editorScaledWidth = getWidth() / 6 * 5;
         //Draw Background
         DrawAPI drawAPI = DrawAPI.getAPI();
         drawAPI.drawOverlayBackground(0, this.getHeight());
@@ -149,15 +163,6 @@ public class GuiEditor extends WrappedGuiScreen {
 
     private void drawModules(int mouseX, int mouseY) {
         hoveredGuiModule = null;
-        DrawAPI drawAPI = DrawAPI.getAPI();
-
-        if(draggedGuiModule != null) {
-            double x = draggedGuiModule.getDrawX(getWidth() / 6 * 5) + getWidth() / 6;
-            double y = draggedGuiModule.getDrawY(getHeight() / 6 * 5) + getHeight() / 6 * 0.5;
-            double width = draggedGuiModule.getWidth();
-            double height = drawAPI.getFontHeight();
-            drawAPI.drawRect(x,y,x+width,y+height, ModColor.toRGB(128,128, 128, 150));
-        }
 
         guiModulesModule.getGuiModuleList().forEach(guiModule -> {
             if(guiModule.isEnabled()) {
@@ -167,29 +172,64 @@ public class GuiEditor extends WrappedGuiScreen {
             }
         });
 
-        if(hoveredGuiModule != null && draggedGuiModule == null) {
-            double x = hoveredGuiModule.getDrawX(getWidth() / 6 * 5) + getWidth() / 6;
-            double y = hoveredGuiModule.getDrawY(getHeight() / 6 * 5) + getHeight() / 6 * 0.5;
-            double width = hoveredGuiModule.getWidth();
-            double height = drawAPI.getFontHeight();
-            drawAPI.drawRect(x,y,x+width,y+height, ModColor.toRGB(128,128, 128, 100));
-        }
+        guiModulesModule.getGuiModuleList().forEach(this::drawGuiModule);
+    }
 
-        guiModulesModule.getGuiModuleList().forEach(guiModule -> {
-            guiModule.draw(guiModule.getDrawX(getWidth() / 6 * 5) + getWidth() / 6, guiModule.getDrawY(getHeight() / 6 * 5) + getHeight() / 6 * 0.5);
-        });
+    private void drawGuiModule(GuiModule guiModule) {
+        if(guiModule.isAttachedToModule())
+            return;
+        double drawX = guiModule.getDrawX(editorScaledWidth) + getWidth() / 6;
+        double drawY = guiModule.getDrawY(editorScaledHeight) + getHeight() / 6 * 0.5;
+        Collection<GuiModule> subModules = guiModule.getSubModules();
+        if(guiModule.getRenderRelative() == RenderRelative.RIGHT_TOP || guiModule.getRenderRelative() == RenderRelative.LEFT_TOP) {
+            for (GuiModule module : subModules) {
+                if(drawX + module.getWidth() - getWidth() / 6 > editorScaledWidth)
+                    drawX = DrawAPI.getAPI().getScaledWidth() - module.getWidth();
+            }
+        }
+        GuiModule module = guiModule;
+        while (module != null) {
+            DrawAPI drawAPI = DrawAPI.getAPI();
+            if(hoveredGuiModule != null && draggedGuiModule == null && hoveredGuiModule == module) {
+                drawAPI.drawRect(drawX, drawY,drawX+module.getWidth(),drawY+module.getModuleHeight(), ModColor.toRGB(128,128, 128, 100));
+            }  else if (draggedGuiModule == module) {
+                drawAPI.drawRect(drawX, drawY,drawX+module.getWidth(),drawY+module.getModuleHeight(), ModColor.toRGB(128,128, 128, 150));
+            }
+            if (attachGuiModule != null && attachGuiModule == module) {
+                double endX = drawX + attachGuiModule.getWidth();
+                drawAPI.drawRectangle((int) drawX, (int) drawY + module.getModuleHeight(), (int) endX, (int) drawY + module.getModuleHeight() + 1, new Color(255, 218, 0,255).getRGB());
+            }
+            module.draw(drawX, drawY);
+            drawY += module.getModuleHeight() + 1;
+            module = module.getNextModule();
+        }
     }
 
     private boolean isMouseOverModule(int mouseX, int mouseY, GuiModule guiModule) {
         DrawAPI drawAPI = DrawAPI.getAPI();
-        double x = guiModule.getDrawX(getWidth() / 6 * 5) + getWidth() / 6;
-        double y = guiModule.getDrawY(getHeight() / 6 * 5) + getHeight() / 6 * 0.5;
+        GuiModule topMostModule = guiModule.getTopMostModule();
+        double drawX = topMostModule.getDrawX(editorScaledWidth) + getWidth() / 6;
+        double drawY = topMostModule.getDrawY(editorScaledHeight) + getHeight() / 6 * 0.5;
+        GuiModule module = topMostModule;
+        while (module != null) {
+            if(module != guiModule)
+                drawY += module.getModuleHeight() + 1;
+            else
+                break;
+            module = module.getNextModule();
+        }
+
+        Collection<GuiModule> subModules = guiModule.getSubModules();
+        if(guiModule.getRenderRelative() == RenderRelative.RIGHT_TOP || guiModule.getRenderRelative() == RenderRelative.LEFT_TOP) {
+            for (GuiModule m : subModules) {
+                if(drawX + m.getWidth() - getWidth() / 6 > editorScaledWidth)
+                    drawX = DrawAPI.getAPI().getScaledWidth() - m.getWidth();
+            }
+        }
+
         double width = guiModule.getWidth();
         double height = drawAPI.getFontHeight();
-        if((mouseX > x && mouseX < x + width) && (mouseY > y && mouseY < y + height)) {
-            return true;
-        }
-        return false;
+        return (mouseX > drawX && mouseX < drawX + width) && (mouseY > drawY && mouseY < drawY + height);
     }
 
     @Override
@@ -241,18 +281,55 @@ public class GuiEditor extends WrappedGuiScreen {
         if(draggedGuiModule == null || !draggedGuiModule.isEnabled())
             return;
         if(mouseX > getWidth() / 6 && (mouseY > getHeight() / 6 * 0.5 && mouseY < getHeight() - getHeight() / 6 * 0.5)){
-            double width = getWidth() / 6 * 5;
-            double height = getHeight() / 6 * 5;
+            double scaledWidth = getWidth() / 6 * 5;
+            double scaledHeight = getHeight() / 6 * 5;
             double xPos = mouseX - getWidth() / 6 - dragOffsetX;
             double yPos = mouseY - getHeight() / 6 * 0.5 - dragOffsetY;
-            if(((xPos + draggedGuiModule.getWidth()) * 1000/width >= 1000)) {
-                xPos = getWidth() / 6 * 5 - draggedGuiModule.getWidth();
+
+
+
+            Collection<GuiModule> guiModules = draggedGuiModule.getSubModules();
+
+            for (GuiModule module : guiModules) {
+                // Check out of screen x
+                if(xPos + module.getWidth() > scaledWidth && xPos - module.getWidth() < xPos)
+                    xPos = scaledWidth - (module.getWidth() * (scaledWidth / DrawAPI.getAPI().getScaledWidth()));
+                xPos = xPos < 0 ? 0 : xPos;
+
+                // Check out of screen y
+                if(yPos + module.getDistancetoBottomMostModule(false) > scaledHeight) {
+                    yPos = scaledHeight - module.getDistancetoBottomMostModule(false);
+                }
+                yPos = yPos < 0 ? 0 : yPos;
             }
-            if(((yPos + DrawAPI.getAPI().getFontHeight()) + 5) * 1000/height >= 1000) {
-                yPos = getHeight() / 6 * 5 - DrawAPI.getAPI().getFontHeight();
+
+
+
+
+            if(draggedGuiModule.isAttachedToModule())
+                draggedGuiModule.deattachFromParent();
+            draggedGuiModule.updatePosition((int) xPos, (int) yPos, (int) scaledWidth, (int) scaledHeight);
+
+            //Check if module should attach
+            attachGuiModule = null;
+            for(GuiModule module : guiModulesModule.getGuiModuleList()) {
+                if(module == draggedGuiModule)
+                    continue;
+                if (!module.isEnabled())
+                    continue;
+                if(draggedGuiModule.getTopMostModule().getSubModules().contains(module))
+                    continue;
+                double drawX = module.getDrawX(editorScaledWidth) + getWidth() / 6;
+                double drawY = module.getDrawY(editorScaledHeight) + getHeight() / 12;
+                if(!(mouseX > drawX && mouseX < drawX + module.getWidth()))
+                    continue;
+                if(attachGuiModule != null && attachGuiModule.getDrawY(editorScaledHeight) + getHeight() / 12 + module.getModuleHeight() - 1 > drawY)
+                    continue;
+                if(mouseY > drawY && Math.abs(mouseY - drawY) < MODULE_ATTACH_DISTANCE) {
+                    attachGuiModule = module;
+                }
             }
-            draggedGuiModule.setX((1000/width * xPos) < 0 ? 0 : (int) (1000 / width * xPos));
-            draggedGuiModule.setY((1000/height * yPos) < 0 ? 0 : (int) (1000 / height * yPos));
+
         }
     }
 
@@ -266,8 +343,11 @@ public class GuiEditor extends WrappedGuiScreen {
                 }
             }
         }
+        if(attachGuiModule != null)
+            attachGuiModule.attachModule(draggedGuiModule);
+        attachGuiModule = null;
         if(draggedGuiModule != null)
-            draggedGuiModule.savePosition(guiModulesModule.getDataManager());
+            draggedGuiModule.getTopMostModule().savePosition(guiModulesModule.getDataManager());
         draggedGuiModule = null;
         dragOffsetX = 0;
         dragOffsetY = 0;

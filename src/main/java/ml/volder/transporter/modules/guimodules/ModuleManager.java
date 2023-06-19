@@ -98,5 +98,9 @@ public class ModuleManager {
         };
         module.setIconData(new ControlElement.IconData(Material.EMERALD));
         guiModulesModule.getGuiModuleList().add(module);
+
+        for (GuiModule m : guiModulesModule.getGuiModuleList()) {
+            m.loadConfig(guiModulesModule.getDataManager());
+        }
     }
 }

@@ -11,6 +11,13 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+
+        <addon.name>Transporter Addon</addon.name>
+        <addon.description>Et addon med redskaber der forbedre din spil oplevelse på SA.</addon.description>
+        <addon.version>2.0</addon.version>
+        <addon.author>Mads_Gamer_DK</addon.author>
+        <addon.icon>https://raw.githubusercontent.com/TFSMads/transporter/master/logo.png</addon.icon>
+
     </properties>
 
     <dependencies>
@@ -55,6 +62,9 @@
 
     <build>
         <plugins>
+
+            <!--Slet den nuværende UnikAPI inden den nye downloades-->
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -75,6 +85,9 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!--Download UnikAPI fra github-->
+
             <plugin>
                 <groupId>com.googlecode.maven-download-plugin</groupId>
                 <artifactId>download-maven-plugin</artifactId>
@@ -88,7 +101,7 @@
                         </goals>
                         <configuration>
                             <skipCache>true</skipCache>
-                            <url>https://github.com/TFSMads/UnikAPI/releases/download/v1.0.0/UnikAPI.jar</url>
+                            <url>https://github.com/TFSMads/UnikAPI/releases/latest/download/UnikAPI.jar</url>
                             <outputFileName>UnikAPI.jar</outputFileName>
                             <!-- default target location, just to demonstrate the parameter -->
                             <outputDirectory>${basedir}/libs</outputDirectory>
@@ -96,6 +109,9 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!--Tilføj unikapi til lokalt maven repository-->
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-install-plugin</artifactId>
@@ -118,6 +134,70 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!--Decompile UnikAPI og replace addon info i addon.json og fly til target/transporter/%version%/addon.json-->
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>ant-contrib</groupId>
+                        <artifactId>ant-contrib</artifactId>
+                        <version>1.0b3</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>ant</groupId>
+                                <artifactId>ant</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant-nodeps</artifactId>
+                        <version>1.8.1</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>generateAddonJson</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <taskdef resource="net/sf/antcontrib/antlib.xml"/>
+                                <unzip src="${basedir}/libs/UnikAPI.jar" dest="${basedir}/target/transporter/unikapi"/>
+                                <for param="file">
+                                    <path>
+                                        <fileset dir="${basedir}/target/transporter/unikapi/addonJson">
+                                            <include name="*/addon.json"/>
+                                        </fileset>
+                                    </path>
+                                    <sequential>
+                                        <dirname property="fulldirname.@{file}" file="@{file}"/>
+                                        <basename property="dirname.@{file}" file="${fulldirname.@{file}}"/>
+
+                                        <replace file="@{file}" token="%name%" value="${addon.name}"/>
+                                        <replace file="@{file}" token="%description%" value="${addon.description}"/>
+                                        <replace file="@{file}" token="%version%" value="${addon.version}"/>
+                                        <replace file="@{file}" token="%author%" value="${addon.author}"/>
+                                        <replace file="@{file}" token="%icon%" value="${addon.icon}"/>
+
+                                        <copy file="@{file}" toFile="${basedir}/target/transporter/addonJson/${dirname.@{file}}/addon.json"/>
+                                    </sequential>
+                                </for>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <!--Shade jar file (Inkludere dependencies)-->
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -133,6 +213,68 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!--Generer en jar fil til hver version af labymod-->
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>ant-contrib</groupId>
+                        <artifactId>ant-contrib</artifactId>
+                        <version>1.0b3</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>ant</groupId>
+                                <artifactId>ant</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant-nodeps</artifactId>
+                        <version>1.8.1</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>generateJar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <taskdef resource="net/sf/antcontrib/antlib.xml"/>
+                                <unzip src="${basedir}/libs/UnikAPI.jar" dest="${basedir}/target/transporter/transporter"/>
+                                <unzip src="${basedir}/target/transporter-2.0.jar" dest="${basedir}/target/transporter/transporter"/>
+                                <delete dir="${basedir}/target/transporter/transporter/addonJson"/>
+                                <delete file="${basedir}/target/transporter/transporter/addon.json"/>
+                                <for param="file">
+                                    <path>
+                                        <fileset dir="${basedir}/target/transporter/addonJson">
+                                            <include name="*/addon.json"/>
+                                        </fileset>
+                                    </path>
+                                    <sequential>
+                                        <dirname property="fulldirname.@{file}" file="@{file}"/>
+                                        <basename property="dirname.@{file}" file="${fulldirname.@{file}}"/>
+                                        <copy todir="${basedir}/target/transporter/transporter_${dirname.@{file}}">
+                                            <fileset dir="${basedir}/target/transporter/transporter"/>
+                                        </copy>
+                                        <copy file="${basedir}/target/transporter/addonJson/${dirname.@{file}}/addon.json" toFile="${basedir}/target/transporter/transporter_${dirname.@{file}}/addon.json"/>
+
+                                        <jar destFile="${basedir}/target/transporter-${addon.version}-${dirname.@{file}}.jar" basedir="${basedir}/target/transporter/transporter_${dirname.@{file}}"/>
+                                    </sequential>
+                                </for>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 

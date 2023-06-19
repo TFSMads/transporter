@@ -37,8 +37,8 @@
             </goals>
             <configuration>
               <skipCache>true</skipCache>
-              <url>https://github.com/TFSMads/UnikAPI/releases/download/v1.0.0/UnikAPI.jar</url>
-              <outputFileName>UnikAPI.jar</outputFileName>
+              <url>https://github.com/TFSMads/UnikAPI/releases/latest/download/UnikAPI.jar</url>
+              <outputFileName>UnikAPI2.jar</outputFileName>
               <outputDirectory>${basedir}/libs</outputDirectory>
             </configuration>
           </execution>
@@ -66,6 +66,60 @@
         </configuration>
       </plugin>
       <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.8</version>
+        <executions>
+          <execution>
+            <id>generateAddonJson</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <taskdef />
+                <unzip />
+                <for>
+                  <path>
+                    <fileset>
+                      <include />
+                    </fileset>
+                  </path>
+                  <sequential>
+                    <dirname />
+                    <basename />
+                    <replace />
+                    <replace />
+                    <replace />
+                    <replace />
+                    <replace />
+                    <copy />
+                  </sequential>
+                </for>
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>ant-contrib</groupId>
+            <artifactId>ant-contrib</artifactId>
+            <version>1.0b3</version>
+            <exclusions>
+              <exclusion>
+                <artifactId>ant</artifactId>
+                <groupId>ant</groupId>
+              </exclusion>
+            </exclusions>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-nodeps</artifactId>
+            <version>1.8.1</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
         <artifactId>maven-shade-plugin</artifactId>
         <version>2.3</version>
         <executions>
@@ -76,6 +130,62 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.8</version>
+        <executions>
+          <execution>
+            <id>generateJar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <taskdef />
+                <unzip />
+                <unzip />
+                <delete />
+                <delete />
+                <for>
+                  <path>
+                    <fileset>
+                      <include />
+                    </fileset>
+                  </path>
+                  <sequential>
+                    <dirname />
+                    <basename />
+                    <copy>
+                      <fileset />
+                    </copy>
+                    <copy />
+                    <jar />
+                  </sequential>
+                </for>
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>ant-contrib</groupId>
+            <artifactId>ant-contrib</artifactId>
+            <version>1.0b3</version>
+            <exclusions>
+              <exclusion>
+                <artifactId>ant</artifactId>
+                <groupId>ant</groupId>
+              </exclusion>
+            </exclusions>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-nodeps</artifactId>
+            <version>1.8.1</version>
+          </dependency>
+        </dependencies>
       </plugin>
     </plugins>
   </build>
@@ -142,8 +252,13 @@
     </dependency>
   </dependencies>
   <properties>
+    <addon.name>Transporter Addon</addon.name>
+    <addon.version>2.0</addon.version>
+    <addon.icon>https://cdn.discordapp.com/attachments/436165208134778880/827448208710959115/Logo.png</addon.icon>
     <maven.compiler.target>8</maven.compiler.target>
     <maven.compiler.source>8</maven.compiler.source>
+    <addon.author>Mads_Gamer_DK</addon.author>
+    <addon.description>Et addon med redskaber der forbedre din spil oplevelse på SA.</addon.description>
   </properties>
 </project>
 

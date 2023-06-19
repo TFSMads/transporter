@@ -8,6 +8,7 @@ import ml.volder.transporter.gui.elements.KeyElement;
 import ml.volder.transporter.jsonmanager.Data;
 import ml.volder.transporter.jsonmanager.DataManager;
 import ml.volder.transporter.listeners.KeyboardListener;
+import ml.volder.transporter.listeners.MainMenuOpenListener;
 import ml.volder.transporter.modules.*;
 import ml.volder.unikapi.AddonMain;
 import ml.volder.unikapi.UnikAPI;
@@ -107,6 +108,7 @@ public class TransporterAddon extends AddonMain {
 
         //Events
         EventManager.registerEvents(new KeyboardListener());
+        EventManager.registerEvents(new MainMenuOpenListener());
 
         isEnabled = true;
         UnikAPI.LOGGER.info("TransporterAddon finished loading");

@@ -4,6 +4,7 @@ import ml.volder.transporter.gui.ModTextures;
 import ml.volder.transporter.gui.elements.ControlElement;
 import ml.volder.transporter.jsonmanager.Data;
 import ml.volder.transporter.jsonmanager.DataManager;
+import ml.volder.transporter.modules.SignToolsModule;
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.api.input.InputAPI;
 import ml.volder.unikapi.api.minecraft.MinecraftAPI;
@@ -46,6 +47,10 @@ public class SignGui extends WrappedGuiScreen {
         this.tileEntitySign = tileEntitySign;
     }
 
+    public static SignBuffer getBufferedText() {
+        return bufferText;
+    }
+
     @Override
     public void updateScreen() {
 
@@ -76,7 +81,7 @@ public class SignGui extends WrappedGuiScreen {
         DrawAPI drawAPI = DrawAPI.getAPI();
         drawAPI.drawAutoDimmedBackground(0);
         drawAPI.drawCenteredString(MinecraftAPI.getAPI().translateLanguageKey("sign.edit"), this.getWidth() / 2, 40);
-        hoverToggleButton = drawButton( drawSignTools ? new ControlElement.IconData(Material.BARRIER) : new ControlElement.IconData(Material.SIGN), getWidth() / 2 + DrawAPI.getAPI().getStringWidth(MinecraftAPI.getAPI().translateLanguageKey("sign.edit")) / 2 + 10, 40 + (drawAPI.getFontHeight()/2) - 8, 16, mouseX, mouseY);
+        hoverToggleButton = drawButton( drawSignTools ? new ControlElement.IconData(Material.BARRIER) : new ControlElement.IconData(Material.OAK_SIGN), getWidth() / 2 + DrawAPI.getAPI().getStringWidth(MinecraftAPI.getAPI().translateLanguageKey("sign.edit")) / 2 + 10, 40 + (drawAPI.getFontHeight()/2) - 8, 16, mouseX, mouseY);
 
         drawAPI.bindTexture(signTexture);
         drawAPI.drawTexture(getWidth() / 2 - 24*2, 120 - 12*2, 256D, 256D, 24*4, 12*4);
@@ -189,6 +194,16 @@ public class SignGui extends WrappedGuiScreen {
         if (key.equals(Key.ESCAPE)) // ESCAPE
         {
             this.actionPerformed(this.doneBtn);
+        }
+
+        if(key.equals(SignToolsModule.getCopyKey()) && InputAPI.getAPI().isCtrlKeyDown()) {
+            bufferText.copy(signText);
+            return;
+        }
+
+        if(key.equals(SignToolsModule.getPasteKey()) && InputAPI.getAPI().isCtrlKeyDown()) {
+            signText.copy(bufferText);
+            return;
         }
 
         String s = signText.getLine(selected); //TODO fjern formatting (farver) - Mineraft implmentation er i kommentaren under

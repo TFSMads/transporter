@@ -3,21 +3,21 @@ package ml.volder.transporter.modules.guimodules;
 import ml.volder.transporter.gui.elements.*;
 import ml.volder.transporter.jsonmanager.Data;
 import ml.volder.transporter.jsonmanager.DataManager;
+import ml.volder.transporter.modules.GuiModulesModule;
 import ml.volder.transporter.modules.guimodules.elements.ModuleCategoryElement;
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.types.Material;
 import ml.volder.unikapi.types.ModColor;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
 
 public class GuiModule {
-    //Integer mellem 0 og 1000 der representere modulets position
-    private int screenX;
-    private int screenY;
-
+    private RenderRelative renderRelative = RenderRelative.LEFT_TOP;
+    private int distanceFromXRelative;
+    private int distanceFromYRelative;
+    private int moduleHeight;
     private String key;
     private String prefix;
     private ControlElement.IconData iconData;
@@ -34,11 +34,14 @@ public class GuiModule {
 
     private boolean isEnabled;
 
+    private GuiModule attachedModule;
+
+    private GuiModule parentModule;
+
+
     public GuiModule(int defaultX, int defaultY, String key, String defaultPrefix, boolean defaultIsEnabled, DataManager<Data> dataManager, ModuleCategoryElement category) {
         this.category = category;
-        this.screenX = dataManager.getSettings().getData().has("modules." + key + ".screenX") ? dataManager.getSettings().getData().get("modules." + key + ".screenX").getAsInt() : defaultX;
-        this.screenY = dataManager.getSettings().getData().has("modules." + key + ".screenY") ? dataManager.getSettings().getData().get("modules." + key + ".screenY").getAsInt() : defaultY;
-
+        this.moduleHeight = DrawAPI.getAPI().getFontHeight();
         this.isEnabled = dataManager.getSettings().getData().has("modules." + key + ".isEnabled")
                 ? dataManager.getSettings().getData().get("modules." + key + ".isEnabled").getAsBoolean()
                 : defaultIsEnabled;
@@ -46,6 +49,17 @@ public class GuiModule {
         this.prefix = dataManager.getSettings().getData().has("modules." + key + ".prefix")
                 ? dataManager.getSettings().getData().get("modules." + key + ".prefix").getAsString()
                 : defaultPrefix;
+        this.distanceFromXRelative = dataManager.getSettings().getData().has("modules." + key + ".distanceFromXRelative") ? dataManager.getSettings().getData().get("modules." + key + ".distanceFromXRelative").getAsInt() : defaultX;
+        this.distanceFromYRelative = dataManager.getSettings().getData().has("modules." + key + ".distanceFromYRelative") ? dataManager.getSettings().getData().get("modules." + key + ".distanceFromYRelative").getAsInt() : defaultY;
+    }
+
+    public void loadConfig(DataManager<Data> dataManager) {
+        this.attachedModule = dataManager.getSettings().getData().has("modules." + key + ".attachedModule")
+                ? GuiModulesModule.getModuleByKey(dataManager.getSettings().getData().get("modules." + key + ".attachedModule").getAsString())
+                : null;
+        this.parentModule = dataManager.getSettings().getData().has("modules." + key + ".parentModule")
+                ? GuiModulesModule.getModuleByKey(dataManager.getSettings().getData().get("modules." + key + ".parentModule").getAsString())
+                : null;
 
         this.valueColor = dataManager.getSettings().getData().has("modules." + key + ".valueColor") ? new Color(dataManager.getSettings().getData().get("modules." + key + ".valueColor").getAsInt()) : ModColor.WHITE.getColor();
         this.keyColor = dataManager.getSettings().getData().has("modules." + key + ".prefixColor") ? new Color(dataManager.getSettings().getData().get("modules." + key + ".prefixColor").getAsInt()) : ModColor.GREEN.getColor();
@@ -133,25 +147,65 @@ public class GuiModule {
     }
 
     public void drawModule() {
-        draw(getDrawX(DrawAPI.getAPI().getScaledWidth()), getDrawY(DrawAPI.getAPI().getScaledHeight()));
+        draw(getDrawX(), getDrawY());
     }
 
-    public double getDrawX(double screenWidth) {
-        double ratio = screenWidth/1000;
-        return screenX*ratio;
+    public double getDrawX() {
+        return this.getDrawX(DrawAPI.getAPI().getScaledWidth());
     }
 
-    public double getDrawY(double screenHeight) {
-        double ratio = screenHeight/1000;
-        return screenY*ratio;
+    public double getDrawX(int scaledWidth) {
+        return getRelativePointX(scaledWidth) == 0
+                ? getRelativePointX(scaledWidth) + convertScaledRatio(getDistanceFromXRelative(), DrawAPI.getAPI().getScaledWidth(), scaledWidth)
+                : getRelativePointX(scaledWidth) - convertScaledRatio(getDistanceFromXRelative(), DrawAPI.getAPI().getScaledWidth(), scaledWidth);
     }
 
-    public int getX() {
-        return screenX;
+    public double getDrawY() {
+        return this.getDrawY(DrawAPI.getAPI().getScaledHeight());
     }
 
-    public int getY() {
-        return screenY;
+    public double getDrawY(int scaledHeight) {
+        return getRelativePointY(scaledHeight) == 0
+                ? getRelativePointY(scaledHeight) + convertScaledRatio(getDistanceFromYRelative(), DrawAPI.getAPI().getScaledHeight(), scaledHeight)
+                : getRelativePointY(scaledHeight) - convertScaledRatio(getDistanceFromYRelative(), DrawAPI.getAPI().getScaledHeight(), scaledHeight);
+    }
+
+    public RenderRelative getRenderRelative() {
+        return renderRelative;
+    }
+
+    public int getDistanceFromXRelative() {
+        return distanceFromXRelative;
+    }
+
+    public int getDistanceFromYRelative() {
+        return distanceFromYRelative;
+    }
+
+    private int getRelativePointX(int scaledWidth) {
+        switch (renderRelative) {
+            case LEFT_TOP:
+            case LEFT_BOTTOM:
+                return 0;
+            case RIGHT_TOP:
+            case RIGHT_BOTTOM:
+                return scaledWidth;
+            default:
+                return 0;
+        }
+    }
+
+    private int getRelativePointY(int scaledHeight) {
+        switch (renderRelative) {
+            case LEFT_TOP:
+            case RIGHT_TOP:
+                return 0;
+            case LEFT_BOTTOM:
+            case RIGHT_BOTTOM:
+                return scaledHeight;
+            default:
+                return 0;
+        }
     }
 
     public List<Text> getText() {
@@ -171,6 +225,10 @@ public class GuiModule {
         return DrawAPI.getAPI().getStringWidth(text);
     }
 
+    public int getModuleHeight() {
+        return moduleHeight;
+    }
+
     public void draw(double screenX, double screenY) {
         if(isEnabled != true)
             return;
@@ -179,22 +237,83 @@ public class GuiModule {
             Text text = textIterator.next();
             int stringWidth = DrawAPI.getAPI().getStringWidth(text.getText());
             DrawAPI.getAPI().drawStringWithShadow(text.getText(), screenX, screenY, text.getColor());
-            screenX += (double)stringWidth;
+            screenX += stringWidth;
         }
     }
 
     public void savePosition(DataManager<Data> dataManager) {
-        dataManager.getSettings().getData().addProperty("modules." + key + ".screenX", screenX);
-        dataManager.getSettings().getData().addProperty("modules." + key + ".screenY", screenY);
+        savePosition(dataManager, true);
+    }
+
+    public void savePosition(DataManager<Data> dataManager, boolean saveAttached) {
+        dataManager.getSettings().getData().addProperty("modules." + key + ".distanceFromXRelative", distanceFromXRelative);
+        dataManager.getSettings().getData().addProperty("modules." + key + ".distanceFromYRelative", distanceFromYRelative);
+        if(attachedModule == null)
+            dataManager.getSettings().getData().remove("modules." + key + ".attachedModule");
+        else
+            dataManager.getSettings().getData().addProperty("modules." + key + ".attachedModule", attachedModule.key);
+        if(parentModule == null)
+            dataManager.getSettings().getData().remove("modules." + key + ".parentModule");
+        else
+            dataManager.getSettings().getData().addProperty("modules." + key + ".parentModule", parentModule.key);
         dataManager.save();
+        if(saveAttached && attachedModule != null)
+            attachedModule.savePosition(dataManager, true);
     }
 
-    public void setX(int x) {
-        this.screenX = x;
+    public void setDistanceFromXRelative(int distance) {
+        this.distanceFromXRelative = distance;
     }
 
-    public void setY(int y) {
-        this.screenY = y;
+    public void setDistanceFromYRelative(int distance) {
+        this.distanceFromYRelative = distance;
+    }
+
+    public void updatePosition(int distanceFromXRelative, int distanceFromYRelative, RenderRelative renderRelative, boolean moveAttachedModules) {
+        setDistanceFromXRelative(distanceFromXRelative);
+        setDistanceFromYRelative(distanceFromYRelative);
+        this.renderRelative = renderRelative;
+        if(moveAttachedModules && hasAttachedModule())
+            attachedModule.updatePosition(distanceFromXRelative, distanceFromYRelative + moduleHeight + 1, renderRelative, true);
+    }
+
+    public void updatePosition(int x, int y, int scaledWidth, int scaledHeight) {
+        updatePosition(x, y, scaledWidth, scaledHeight, true);
+    }
+
+    public void updatePosition(int x, int y, int scaledWidth, int scaledHeight, boolean moveAttachedModules) {
+        renderRelative = scaledWidth / 2 <= x ? RenderRelative.RIGHT_TOP : RenderRelative.LEFT_TOP;
+        setDistanceFromXRelative(getDistanceFromRelative(
+                        x,
+                        scaledWidth,
+                        DrawAPI.getAPI().getScaledWidth(),
+                        true
+                )
+        );
+        setDistanceFromYRelative(getDistanceFromRelative(
+                        y,
+                        scaledHeight,
+                        DrawAPI.getAPI().getScaledHeight(),
+                        false
+                )
+        );
+        if(moveAttachedModules && hasAttachedModule())
+            attachedModule.updatePosition(getDistanceFromXRelative(), getDistanceFromYRelative() + moduleHeight + 1, renderRelative, true);
+    }
+
+    private int getDistanceFromRelative(int point, int scale, int actualScale, boolean isHorizontal) {
+        point = convertScaledRatio(point, scale, actualScale);
+        boolean isRelativeToZero;
+        if(isHorizontal)
+            isRelativeToZero = renderRelative == RenderRelative.LEFT_TOP || renderRelative == RenderRelative.LEFT_BOTTOM;
+        else
+            isRelativeToZero = renderRelative == RenderRelative.LEFT_TOP || renderRelative == RenderRelative.RIGHT_TOP;
+        return isRelativeToZero ? point : actualScale - point;
+    }
+
+    private int convertScaledRatio(int point, int currentScale, int targetScale) {
+        double ratio = (double) targetScale / currentScale;
+        return (int) (point * ratio);
     }
 
     public String getDisplayValue(){
@@ -207,6 +326,21 @@ public class GuiModule {
 
     public void setEnabled(boolean enabled) {
         isEnabled = enabled;
+        if(isEnabled)
+            return;
+        if(parentModule != null && attachedModule != null) {
+            parentModule.attachedModule = attachedModule;
+            attachedModule.parentModule = parentModule;
+            this.parentModule = null;
+            this.attachedModule = null;
+        }else if (parentModule != null) {
+            parentModule.attachedModule = null;
+            this.parentModule = null;
+        }else if (attachedModule != null) {
+            attachedModule.parentModule = null;
+            this.attachedModule = null;
+        }
+        savePosition(GuiModulesModule.getModulesDataManager());
     }
 
     public Color getValueColor() {
@@ -254,5 +388,75 @@ public class GuiModule {
 
     public void setCategory(ModuleCategoryElement categorySettingsElement) {
         this.category = categorySettingsElement;
+    }
+
+    public void attachModule(GuiModule module) {
+        if(module == this)
+            return;
+        if(module.isAttachedToModule())
+            module.deattachFromParent();
+        if(attachedModule != null) {
+            module.attachModule(attachedModule);
+        }
+        attachedModule = module;
+        attachedModule.parentModule = this;
+        updatePosition(getDistanceFromXRelative(), getDistanceFromYRelative(), renderRelative, true);
+    }
+
+    public void deattachModule() {
+        if(attachedModule == null)
+            return;
+        attachedModule.parentModule = null;
+        attachedModule = null;
+    }
+
+    public void deattachFromParent() {
+        if(parentModule != null)
+            parentModule.deattachModule();
+    }
+
+    public boolean hasAttachedModule() {
+        return attachedModule != null;
+    }
+
+    public boolean isAttachedToModule() {
+        return parentModule != null;
+    }
+
+    public Collection<GuiModule> getSubModules() {
+        Collection<GuiModule> subModules = new HashSet<>();
+        subModules.add(this);
+        if(hasAttachedModule())
+            subModules.addAll(attachedModule.getSubModules());
+        return subModules;
+    }
+
+    public GuiModule getNextModule() {
+        return attachedModule;
+    }
+
+    public boolean hasNextModule() {
+        return attachedModule != null;
+    }
+
+    public GuiModule getTopMostModule() {
+        if(parentModule != null)
+            return parentModule.getTopMostModule();
+        return this;
+    }
+
+    public GuiModule getBottomMostModule() {
+        if(attachedModule != null)
+            return attachedModule.getBottomMostModule();
+        return this;
+    }
+
+    public int getDistancetoBottomMostModule(boolean includeThis) {
+        int distance = 0;
+        if(includeThis)
+            distance += moduleHeight + 1;
+        if(attachedModule != null)
+            distance += attachedModule.getDistancetoBottomMostModule(true);
+        return distance;
     }
 }
