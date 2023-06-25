@@ -1,11 +1,14 @@
 package ml.volder.transporter.updater;
 
+import com.google.gson.Gson;
 import jdk.tools.jlink.internal.Platform;
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.classes.helper.OsCheck;
 import ml.volder.transporter.utils.ArchDetect;
+import ml.volder.unikapi.UnikAPI;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
@@ -19,45 +22,34 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class UpdateManager {
+
+    private static class UpdateInfoJson {
+        public String version;
+        public String forceupdate;
+        public String changelog;
+    }
+
     public static boolean isUpToDate() {
-        String jarLocation = getJarLocation();
-        String downloadURL = getDownloadURL();
-
-
-        byte[] downloadedChecksum;
-        byte[] remoteChecksum;
-
+        Gson gson = new Gson();
+        UpdateInfoJson localUpdateInfo;
+        UpdateInfoJson remoteUpdateInfo;
 
         try {
-            BufferedInputStream bis = new BufferedInputStream(Files.newInputStream(Paths.get(jarLocation)));
-            downloadedChecksum = getHash(bis);
+            InputStream updateInfoSteam = UpdateManager.class.getClassLoader().getResourceAsStream("updateInfo.json");
+            Reader reader = new InputStreamReader(updateInfoSteam, "UTF-8");
+            localUpdateInfo = gson.fromJson(reader, UpdateInfoJson.class);
+
+            InputStream remoteInputStream = new URL("https://github.com/TFSMads/transporter/releases/latest/download/updateInfo.json").openStream();
+            reader = new InputStreamReader(remoteInputStream, "UTF-8");
+            remoteUpdateInfo = gson.fromJson(reader, UpdateInfoJson.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        try {
-            BufferedInputStream in = new BufferedInputStream(new URL(downloadURL).openStream());
-            remoteChecksum = getHash(in);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return Arrays.equals(downloadedChecksum, remoteChecksum);
+        return localUpdateInfo.version.equals(remoteUpdateInfo.version);
     }
 
-    private static byte[] getHash(InputStream inputStream) {
-        try {
-            byte[] dataBuffer = new byte[8192];
-            int bytesRead;
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            while ((bytesRead = inputStream.read(dataBuffer)) > 0) {
-                digest.update(dataBuffer, 0, bytesRead);
-            }
-            inputStream.close();
-            return digest.digest();
-        } catch (NoSuchAlgorithmException | IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+
 
     private static void extractUpdater(Path jarFileLocation) throws IOException {
         Path targetFile = getExtractedExecutablePath();
@@ -147,9 +139,7 @@ public class UpdateManager {
     }
 
     private static String getDownloadURL() {
-        return  "https://github.com/TFSMads/transporter/releases/latest/download/transporter.jar";
-
-/*        if(UnikAPI.getClientBrand().equals("labymod4"))
+        if(UnikAPI.getClientBrand().equals("labymod4"))
             return "https://github.com/TFSMads/transporter/releases/latest/download/transporter-laby4.jar";
         else if (UnikAPI.getClientBrand().equals("labymod3")) {
             if(UnikAPI.matchMinecraftVersion(new String[]{"1.8.*"})) {
@@ -159,7 +149,8 @@ public class UpdateManager {
             } else if(UnikAPI.matchMinecraftVersion(new String[]{"1.16.*"})) {
                 return "https://github.com/TFSMads/transporter/releases/latest/download/transporter-laby3_v1_16_5.jar";
             }
-        }*/
+        }
+        return "https://github.com/TFSMads/transporter/releases/latest/download/transporter-laby4.jar";
     }
 
     private static String detectArch() {
