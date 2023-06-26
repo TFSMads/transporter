@@ -53,7 +53,7 @@ public class UpdateManager {
 
     private static void extractUpdater(Path jarFileLocation) throws IOException {
         Path targetFile = getExtractedExecutablePath();
-        extractFile(jarFileLocation, "Transporter-Updater_" + getOSArchitectureString() + (OsCheck.getOperatingSystemType() == OsCheck.OSType.Windows ? ".exe" : ""), targetFile);
+        extractFile(jarFileLocation, "updater/Transporter-Updater_" + getOSArchitectureString() + (OsCheck.getOperatingSystemType() == OsCheck.OSType.Windows ? ".exe" : ""), targetFile);
     }
 
     /**
