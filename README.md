@@ -6,7 +6,7 @@
   
  
 <p align="center">
-  <a href="https://github.com/TFSMads/transporter/actions"><img alt="GitHub all releases" src="[![.github/workflows/build.yml](https://github.com/TFSMads/transporter/actions/workflows/build.yml/badge.svg)](https://github.com/TFSMads/transporter/actions/workflows/build.yml)"</a>
+  <a href="https://github.com/TFSMads/transporter/actions"><img alt="GitHub all releases" src="https://github.com/TFSMads/transporter/actions/workflows/build.yml/badge.svg"</a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-General Public License-green.svg" alt="License"/></a>
   <a href="https://github.com/TFSMads/transporter/releases/latest/download/transporter.jar"><img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/TFSMads/transporter"></a>
   <img alt="Minecraft 1.8.8 Only" src="https://img.shields.io/badge/minecraft-1.8.8-brightgreen">
