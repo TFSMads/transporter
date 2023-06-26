@@ -38,7 +38,7 @@
             <configuration>
               <skipCache>true</skipCache>
               <url>https://github.com/TFSMads/UnikAPI/releases/latest/download/UnikAPI.jar</url>
-              <outputFileName>UnikAPI2.jar</outputFileName>
+              <outputFileName>UnikAPI.jar</outputFileName>
               <outputDirectory>${basedir}/libs</outputDirectory>
             </configuration>
           </execution>
@@ -254,7 +254,7 @@
   <properties>
     <addon.name>Transporter Addon</addon.name>
     <addon.version>2.0</addon.version>
-    <addon.icon>https://cdn.discordapp.com/attachments/436165208134778880/827448208710959115/Logo.png</addon.icon>
+    <addon.icon>https://raw.githubusercontent.com/TFSMads/transporter/master/logo.png</addon.icon>
     <maven.compiler.target>8</maven.compiler.target>
     <maven.compiler.source>8</maven.compiler.source>
     <addon.author>Mads_Gamer_DK</addon.author>
