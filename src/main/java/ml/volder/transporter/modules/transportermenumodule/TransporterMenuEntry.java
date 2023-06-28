@@ -79,7 +79,7 @@ public class TransporterMenuEntry {
             PlayerAPI.getAPI().sendCommand("transporter get " + item.getCommandName() + " " + TransporterMenuModule.getInstance().getWithdrawAmount());
             PlayerAPI.getAPI().openGuiScreen(null);
         }else if (hoverPutButton) {
-            PlayerAPI.getAPI().sendCommand("transporter put " + item.getCommandName()+ " " + TransporterMenuModule.getInstance().getWithdrawAmount());
+            PlayerAPI.getAPI().sendCommand("transporter put " + item.getCommandName());
             PlayerAPI.getAPI().openGuiScreen(null);
         }
     }

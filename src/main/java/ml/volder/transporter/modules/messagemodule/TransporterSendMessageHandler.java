@@ -22,7 +22,7 @@ public class TransporterSendMessageHandler implements IMessageHandler {
     }
 
     private boolean matchSendMessage(String clean){
-        final Pattern pattern = Pattern.compile("Du sendte ([0-9]+) (" + module.getItemRegex() + ") til ([a-zA-Z0-9_])");
+        final Pattern pattern = Pattern.compile("Du sendte ([0-9]+) (" + module.getItemRegex() + ") til ([a-zA-Z0-9_]+)");
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
             Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByChatName(matcher.group(2));
@@ -78,7 +78,7 @@ public class TransporterSendMessageHandler implements IMessageHandler {
     }
 
     private boolean matchModtagMessage(String clean){
-        final Pattern pattern = Pattern.compile("Du modtog ([0-9]+) (" + module.getItemRegex() + ") fra ([a-zA-Z0-9_])");
+        final Pattern pattern = Pattern.compile("Du modtog ([0-9]+) (" + module.getItemRegex() + ") fra ([a-zA-Z0-9_]+)");
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
             Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByChatName(matcher.group(2));
