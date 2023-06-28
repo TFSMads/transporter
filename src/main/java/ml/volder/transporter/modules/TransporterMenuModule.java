@@ -3,10 +3,7 @@ package ml.volder.transporter.modules;
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.gui.ModTextures;
 import ml.volder.transporter.gui.TransporterModulesMenu;
-import ml.volder.transporter.gui.elements.ControlElement;
-import ml.volder.transporter.gui.elements.KeyElement;
-import ml.volder.transporter.gui.elements.ModuleElement;
-import ml.volder.transporter.gui.elements.Settings;
+import ml.volder.transporter.gui.elements.*;
 import ml.volder.transporter.modules.transportermenumodule.TransporterMenu;
 import ml.volder.unikapi.api.input.InputAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
@@ -20,10 +17,13 @@ import ml.volder.unikapi.types.Material;
 public class TransporterMenuModule extends SimpleModule implements Listener {
     private boolean isFeatureActive;
 
+    private int withdrawAmount = 64;
+
     private Key openKey = Key.K;
 
     public TransporterMenuModule(String moduleName) {
         super(moduleName);
+        instance = this;
         EventManager.registerEvents(this);
         fillSettings();
     }
@@ -63,6 +63,20 @@ public class TransporterMenuModule extends SimpleModule implements Listener {
         keyElement.addCallback(key -> this.openKey = key);
         subSettings.add(keyElement);
 
+        NumberElement numberElement = new NumberElement("Get Antal", getDataManager(), "withdraw.amount", new ControlElement.IconData(Material.PAPER), 64);
+        withdrawAmount = numberElement.getCurrentValue();
+        numberElement.addCallback(integer -> withdrawAmount = integer);
+        subSettings.add(numberElement);
+
         TransporterModulesMenu.addSetting(moduleElement);
+    }
+
+    public int getWithdrawAmount() {
+        return withdrawAmount;
+    }
+
+    private static TransporterMenuModule instance;
+    public static TransporterMenuModule getInstance() {
+        return instance;
     }
 }

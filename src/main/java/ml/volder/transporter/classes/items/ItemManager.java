@@ -2,6 +2,7 @@ package ml.volder.transporter.classes.items;
 
 
 
+import com.google.gson.JsonObject;
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.jsonmanager.Data;
 import ml.volder.transporter.jsonmanager.DataManager;
@@ -21,7 +22,7 @@ public class ItemManager {
         itemList.add(new Item(
                 "minecraft:sand",
                 0,
-                800,
+                600,
                 "Sand",
                 "sand",
                 "sand:0",
@@ -31,7 +32,7 @@ public class ItemManager {
         itemList.add(new Item(
                 "minecraft:sand",
                 1,
-                800,
+                600,
                 "Redsand",
                 "sand:1",
                 "sand:1",
@@ -51,7 +52,7 @@ public class ItemManager {
         itemList.add(new Item(
                 "minecraft:cobblestone",
                 0,
-                0,
+                800,
                 "Cobblestone",
                 "cobblestone",
                 "cobblestone",
@@ -101,7 +102,7 @@ public class ItemManager {
         itemList.add(new Item(
                 "minecraft:coal",
                 0,
-                0,
+                200,
                 "Coal",
                 "coal",
                 "coal:0",
@@ -111,7 +112,7 @@ public class ItemManager {
         itemList.add(new Item(
                 "minecraft:iron_ore",
                 0,
-                0,
+                1500,
                 "Iron Ore",
                 "ironore",
                 "iron_ore",
@@ -121,7 +122,7 @@ public class ItemManager {
         itemList.add(new Item(
                 "minecraft:gold_ore",
                 0,
-                0,
+                2000,
                 "Gold Ore",
                 "goldore",
                 "gold_ore",
@@ -131,7 +132,7 @@ public class ItemManager {
         itemList.add(new Item(
                 "minecraft:iron_ingot",
                 0,
-                0,
+                2100,
                 "Iron Ingot",
                 "ironingot",
                 "iron_ingot",
@@ -141,7 +142,7 @@ public class ItemManager {
         itemList.add(new Item(
                 "minecraft:gold_ingot",
                 0,
-                0,
+                3000,
                 "Gold Ingot",
                 "goldingot",
                 "gold_ingot",
@@ -161,7 +162,7 @@ public class ItemManager {
         itemList.add(new Item(
                 "minecraft:glowstone_dust",
                 0,
-                0,
+                800,
                 "Glowstone Dust",
                 "glowstonedust",
                 "glowstone_dust",
@@ -191,7 +192,7 @@ public class ItemManager {
         itemList.add(new Item(
                 "minecraft:quartz",
                 0,
-                0,
+                820,
                 "Quartz",
                 "quartz",
                 "quartz",
@@ -201,7 +202,7 @@ public class ItemManager {
         itemList.add(new Item(
                 "minecraft:redstone",
                 0,
-                0,
+                215,
                 "Redstone",
                 "redstone",
                 "redstone",
@@ -211,7 +212,7 @@ public class ItemManager {
         itemList.add(new Item(
                 "minecraft:diamond",
                 0,
-                0,
+                8000,
                 "Diamond",
                 "diamond",
                 "diamond",
@@ -291,7 +292,7 @@ public class ItemManager {
         itemList.add(new Item(
                 "minecraft:log",
                 1,
-                0,
+                200,
                 "Spruce Log",
                 "sprucelog",
                 "log:1",
@@ -449,5 +450,14 @@ public class ItemManager {
         if(dataManager == null || PlayerAPI.getAPI().getUUID() == null || !dataManagerUUID.equals(PlayerAPI.getAPI().getUUID()))
             initDataManager();
         return dataManager;
+    }
+
+    public void loadPriceConfig(JsonObject priceConfig) {
+        for (String key : priceConfig.keySet()) {
+            Item item = getItemByChatName(key);
+            if(item != null && priceConfig.has(key)) {
+                item.setSellValue(priceConfig.get(key).getAsInt());
+            }
+        }
     }
 }

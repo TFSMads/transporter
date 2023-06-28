@@ -13,7 +13,7 @@ public class TransporterFailedHandler implements IMessageHandler {
 
     @Override
     public boolean messageReceived(String msg, String clean) {
-        if(clean.equals("Du skriver kommandoer for hurtigt!")) {
+        if(clean.equals("Du skriver kommandoer for hurtigt!") || clean.equals("Du gør dette for hurtigt!")) {
             MessageModes mode = module.getMessageMode();
             if(mode == MessageModes.NO_MESSAGES){
                 return true;

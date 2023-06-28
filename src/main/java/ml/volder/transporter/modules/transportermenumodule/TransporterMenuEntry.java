@@ -3,6 +3,7 @@ package ml.volder.transporter.modules.transportermenumodule;
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.classes.items.Item;
 import ml.volder.transporter.gui.ModTextures;
+import ml.volder.transporter.modules.TransporterMenuModule;
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.keysystem.MouseButton;
@@ -75,10 +76,10 @@ public class TransporterMenuEntry {
         if(!mouseButton.isLeft())
             return;
         if(hoverGetButton) {
-            PlayerAPI.getAPI().sendCommand("transporter get " + item.getCommandName());
+            PlayerAPI.getAPI().sendCommand("transporter get " + item.getCommandName() + " " + TransporterMenuModule.getInstance().getWithdrawAmount());
             PlayerAPI.getAPI().openGuiScreen(null);
         }else if (hoverPutButton) {
-            PlayerAPI.getAPI().sendCommand("transporter put " + item.getCommandName());
+            PlayerAPI.getAPI().sendCommand("transporter put " + item.getCommandName()+ " " + TransporterMenuModule.getInstance().getWithdrawAmount());
             PlayerAPI.getAPI().openGuiScreen(null);
         }
     }

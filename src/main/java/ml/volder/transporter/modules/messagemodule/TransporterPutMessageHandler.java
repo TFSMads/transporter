@@ -22,7 +22,7 @@ public class TransporterPutMessageHandler implements IMessageHandler {
     }
 
     private boolean matchPutManglerMessage(String clean){
-        final Pattern pattern = Pattern.compile("Du har ikke noget " + module.getItemRegex() + " at putte i.");
+        final Pattern pattern = Pattern.compile("Du har ikke noget (" + module.getItemRegex() + ") at putte i\\.");
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
             Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByChatName(matcher.group(1));
@@ -41,19 +41,19 @@ public class TransporterPutMessageHandler implements IMessageHandler {
     }
 
     private boolean matchPutSuccessMessage(String clean){
-        final Pattern pattern = Pattern.compile("Du har puttet ([0-9]+) (" + module.getItemRegex() + ") i din transporter\\. Du har ([0-9]+) \\([0-9]+ stacks\\) " + module.getItemRegex() + " i den\\.");
+        final Pattern pattern = Pattern.compile("Du har puttet nu puttet ([0-9]+) (" + module.getItemRegex() + ") i din transporter\\.");
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
             Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByChatName(matcher.group(2));
-            item.setAmountInTransporter(Integer.parseInt(matcher.group(3)));
+            item.setAmountInTransporter(item.getAmountInTransporter()+Integer.parseInt(matcher.group(1)));
             MessageModes mode = module.getMessageMode();
             if(mode == MessageModes.NO_MESSAGES) {
                 return true;
             }else if(mode == MessageModes.ACTIONBAR_MESSAGES){
-                PlayerAPI.getAPI().displayActionBarMessage(module.getMessage(module.getRawMessage("putSuccess"), item.getDisplayName().toLowerCase(), matcher.group(1), matcher.group(3)));
+                PlayerAPI.getAPI().displayActionBarMessage(module.getMessage(module.getRawMessage("putSuccess"), item.getDisplayName().toLowerCase(), matcher.group(1), String.valueOf(item.getAmountInTransporter())));
                 return true;
             }else if(mode == MessageModes.CHAT_MESSAGES){
-                PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("putSuccess"), item.getDisplayName().toLowerCase(), matcher.group(1), matcher.group(3)));
+                PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("putSuccess"), item.getDisplayName().toLowerCase(), matcher.group(1), String.valueOf(item.getAmountInTransporter())));
                 return true;
             }
         }

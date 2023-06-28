@@ -36,6 +36,7 @@ public class MessagesModule extends SimpleModule implements Listener {
         messageHandlers.add(new TransporterGetMessageHandler(this));
         messageHandlers.add(new TransporterPutMessageHandler(this));
         messageHandlers.add(new TransporterInfoHandler(this));
+        messageHandlers.add(new TransporterSendMessageHandler(this));
     }
 
     @Override
@@ -134,6 +135,42 @@ public class MessagesModule extends SimpleModule implements Listener {
         messagesMap.put(stringElementPutFailed.getConfigEntryName(), stringElementPutFailed.getCurrentValue());
         subSettings.add(stringElementPutFailed);
 
+        StringElement stringElementSendSuccess = new StringElement("Besked - Send Success",
+                "sendSuccess",
+                new ControlElement.IconData(Material.PAPER),
+                "&bDu sendte &3%antal% %item% &btil %spiller%. &7(&3%total%&7)",
+                getDataManager());
+        stringElementSendSuccess.addCallback(value -> messagesMap.put(stringElementSendSuccess.getConfigEntryName(), value));
+        messagesMap.put(stringElementSendSuccess.getConfigEntryName(), stringElementSendSuccess.getCurrentValue());
+        subSettings.add(stringElementSendSuccess);
+
+        StringElement stringElementModtag = new StringElement("Besked - Modtag",
+                "modtagSuccess",
+                new ControlElement.IconData(Material.PAPER),
+                "&bDu modtog &3%antal% %item% &bfra %spiller%. &7(&3%total%&7)",
+                getDataManager());
+        stringElementModtag.addCallback(value -> messagesMap.put(stringElementModtag.getConfigEntryName(), value));
+        messagesMap.put(stringElementModtag.getConfigEntryName(), stringElementModtag.getCurrentValue());
+        subSettings.add(stringElementModtag);
+
+        StringElement stringElementOffline = new StringElement("Besked - Send Offline",
+                "sendOffline",
+                new ControlElement.IconData(Material.PAPER),
+                "&cDenne spiller er ikke online!",
+                getDataManager());
+        stringElementOffline.addCallback(value -> messagesMap.put(stringElementOffline.getConfigEntryName(), value));
+        messagesMap.put(stringElementOffline.getConfigEntryName(), stringElementOffline.getCurrentValue());
+        subSettings.add(stringElementOffline);
+
+        StringElement stringElementSendSelf = new StringElement("Besked - Send Dig Selv",
+                "sendSelf",
+                new ControlElement.IconData(Material.PAPER),
+                "&cDu kanne ikke sende til dig selv!",
+                getDataManager());
+        stringElementSendSelf.addCallback(value -> messagesMap.put(stringElementSendSelf.getConfigEntryName(), value));
+        messagesMap.put(stringElementSendSelf.getConfigEntryName(), stringElementSendSelf.getCurrentValue());
+        subSettings.add(stringElementSendSelf);
+
         StringElement stringElementCooldown = new StringElement("Besked - Cooldown",
                 "cooldown",
                 new ControlElement.IconData(Material.PAPER),
@@ -154,7 +191,7 @@ public class MessagesModule extends SimpleModule implements Listener {
         return messagesMap.getOrDefault(key, "");
     }
 
-    public String getMessage(String message, String item, String antal, String total){
+    public String getMessage(String message, String item, String antal, String total, String spiller){
 
         message = message.replace('&','§');
 
@@ -164,8 +201,14 @@ public class MessagesModule extends SimpleModule implements Listener {
 
         message = message.replace("%total%", total != null ? total : "%total%");
 
+        message = message.replace("%spiller%", spiller != null ? spiller : "%spiller%");
+
         return message;
 
+    }
+
+    public String getMessage(String message, String item, String antal, String total){
+        return getMessage(message, item, antal, total, null);
     }
 
     public MessageModes getMessageMode() {
