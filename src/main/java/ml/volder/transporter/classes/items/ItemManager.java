@@ -25,7 +25,7 @@ public class ItemManager {
                 600,
                 "Sand",
                 "sand",
-                "sand:0",
+                "sand",
                 "sand",
                 Material.SAND
         ));
@@ -95,7 +95,7 @@ public class ItemManager {
                 0,
                 "Charcoal",
                 "charcoal",
-                "coal:1",
+                "charcoal",
                 "charcoal",
                 Material.COAL
         ));
@@ -105,7 +105,7 @@ public class ItemManager {
                 200,
                 "Coal",
                 "coal",
-                "coal:0",
+                "coal",
                 "coal",
                 Material.CHARCOAL
         ));
@@ -115,7 +115,7 @@ public class ItemManager {
                 1500,
                 "Iron Ore",
                 "ironore",
-                "iron_ore",
+                "ironore",
                 "ironore",
                 Material.IRON_ORE
         ));
@@ -125,7 +125,7 @@ public class ItemManager {
                 2000,
                 "Gold Ore",
                 "goldore",
-                "gold_ore",
+                "goldore",
                 "goldore",
                 Material.GOLD_ORE
         ));
@@ -135,7 +135,7 @@ public class ItemManager {
                 2100,
                 "Iron Ingot",
                 "ironingot",
-                "iron_ingot",
+                "ironingot",
                 "ironingot",
                 Material.IRON_INGOT
         ));
@@ -145,7 +145,7 @@ public class ItemManager {
                 3000,
                 "Gold Ingot",
                 "goldingot",
-                "gold_ingot",
+                "goldingot",
                 "goldingot",
                 Material.GOLD_INGOT
         ));
@@ -165,7 +165,7 @@ public class ItemManager {
                 800,
                 "Glowstone Dust",
                 "glowstonedust",
-                "glowstone_dust",
+                "glowstonedust",
                 "glowstonedust",
                 Material.GLOWSTONE_DUST
         ));
@@ -185,7 +185,7 @@ public class ItemManager {
                 0,
                 "Lapis Lazuli",
                 "lapislazuli",
-                "ink_sack:4",
+                "lapislazuli",
                 "lapislazuli",
                 Material.LAPIS_LAZULI
         ));
@@ -235,8 +235,8 @@ public class ItemManager {
                 0,
                 "Blaze Rod",
                 "blazerod",
-                "blaze_rod", //Unchecked
-                "blazerod", //Unchecked
+                "blazerod",
+                "blazerod",
                 Material.BLAZE_ROD
         ));
         itemList.add(new Item(
@@ -245,8 +245,8 @@ public class ItemManager {
                 0,
                 "Ender Pearl",
                 "enderpearl",
-                "ender_pearl", //Unchecked
-                "enderpearl", //Unchecked
+                "enderpearl",
+                "enderpearl",
                 Material.ENDER_PEARL
         ));
         itemList.add(new Item(
@@ -255,8 +255,8 @@ public class ItemManager {
                 0,
                 "Book",
                 "book",
-                "book", //Unchecked
-                "book", //Unchecked
+                "book",
+                "book",
                 Material.BOOK
         ));
         itemList.add(new Item(
@@ -265,8 +265,8 @@ public class ItemManager {
                 0,
                 "Sugarcane",
                 "sugarcane",
-                "sugarcane", //Unchecked
-                "sugarcane", //Unchecked
+                "sugarcane",
+                "sugarcane",
                 Material.SUGAR_CANE
         ));
         itemList.add(new Item(
@@ -285,7 +285,7 @@ public class ItemManager {
                 0,
                 "Oak Log",
                 "oaklog",
-                "log:0",
+                "oaklog",
                 "oaklog",
                 Material.OAK_LOG
         ));
@@ -295,7 +295,7 @@ public class ItemManager {
                 200,
                 "Spruce Log",
                 "sprucelog",
-                "log:1",
+                "sprucelog",
                 "sprucelog",
                 Material.SPRUCE_LOG
         ));
@@ -305,7 +305,7 @@ public class ItemManager {
                 0,
                 "Birch Log",
                 "birchlog",
-                "log:2",
+                "birchlog",
                 "birchlog",
                 Material.BIRCH_LOG
         ));
@@ -315,7 +315,7 @@ public class ItemManager {
                 0,
                 "Jungle Log",
                 "junglelog",
-                "log:3",
+                "junglelog",
                 "junglelog",
                 Material.JUNGLE_LOG
         ));
@@ -325,7 +325,7 @@ public class ItemManager {
                 0,
                 "Slimeball",
                 "slimeball",
-                "slime_ball",
+                "slimeball",
                 "slimeball",
                 Material.SLIME_BALL
         ));
@@ -345,7 +345,7 @@ public class ItemManager {
                 0,
                 "Trapped Chest",
                 "trappedchest",
-                "trapped_chest",
+                "trappedchest",
                 "trappedchest",
                 Material.TRAPPED_CHEST
         ));

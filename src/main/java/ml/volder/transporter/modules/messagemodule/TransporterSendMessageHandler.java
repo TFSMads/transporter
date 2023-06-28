@@ -25,7 +25,7 @@ public class TransporterSendMessageHandler implements IMessageHandler {
         final Pattern pattern = Pattern.compile("Du sendte ([0-9]+) (" + module.getItemRegex() + ") til ([a-zA-Z0-9_])");
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
-            Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByChatName(matcher.group(1));
+            Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByChatName(matcher.group(2));
             item.setAmountInTransporter(item.getAmountInTransporter()-Integer.parseInt(matcher.group(1)));
             MessageModes mode = module.getMessageMode();
             if(mode == MessageModes.NO_MESSAGES) {
