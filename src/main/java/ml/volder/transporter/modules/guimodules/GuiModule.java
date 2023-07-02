@@ -38,10 +38,12 @@ public class GuiModule {
 
     private GuiModule parentModule;
 
+    private float scaleMultiplier = 2;
+
 
     public GuiModule(int defaultX, int defaultY, String key, String defaultPrefix, boolean defaultIsEnabled, DataManager<Data> dataManager, ModuleCategoryElement category) {
         this.category = category;
-        this.moduleHeight = DrawAPI.getAPI().getFontHeight();
+        this.moduleHeight = (int) (DrawAPI.getAPI().getFontHeight()*scaleMultiplier);
         this.isEnabled = dataManager.getSettings().getData().has("modules." + key + ".isEnabled")
                 ? dataManager.getSettings().getData().get("modules." + key + ".isEnabled").getAsBoolean()
                 : defaultIsEnabled;
@@ -54,6 +56,12 @@ public class GuiModule {
     }
 
     public void loadConfig(DataManager<Data> dataManager) {
+
+        this.scaleMultiplier = dataManager.getSettings().getData().has("modules." + key + ".textSize")
+                ? dataManager.getSettings().getData().get("modules." + key + ".textSize").getAsFloat()
+                : 1;
+        this.moduleHeight = (int) (DrawAPI.getAPI().getFontHeight()*scaleMultiplier);
+
         this.attachedModule = dataManager.getSettings().getData().has("modules." + key + ".attachedModule")
                 ? GuiModulesModule.getModuleByKey(dataManager.getSettings().getData().get("modules." + key + ".attachedModule").getAsString())
                 : null;
@@ -77,6 +85,15 @@ public class GuiModule {
         StringElement prefixElement = new StringElement("Prefix", "modules." + key + ".prefix", iconData, prefix == null ? key : prefix, dataManager);
         prefixElement.addCallback(s -> this.prefix = s);
         subSettings.add(prefixElement);
+
+        FloatElement numberElement = new FloatElement("Tekst Størelse", dataManager, "modules." + key + ".textSize", new ControlElement.IconData(Material.PAPER), 1);
+        numberElement.setMaxValue(1.5F);
+        numberElement.setMinValue(0.5F);
+        numberElement.addCallback(integer -> {
+            scaleMultiplier = integer;
+            this.moduleHeight = (int) (DrawAPI.getAPI().getFontHeight()*scaleMultiplier);
+        });
+        subSettings.add(numberElement);
 
         //Color picker and Checkboxes bulk element
         ColorPickerCheckBoxBulkElement bulkElement = new ColorPickerCheckBoxBulkElement("");
@@ -222,7 +239,7 @@ public class GuiModule {
         for(Text t : getText()) {
             text += t.getText();
         }
-        return DrawAPI.getAPI().getStringWidth(text);
+        return (int) (DrawAPI.getAPI().getStringWidth(text)*scaleMultiplier);
     }
 
     public int getModuleHeight() {
@@ -235,8 +252,8 @@ public class GuiModule {
         Iterator<Text> textIterator = getText().iterator();
         while(textIterator.hasNext()) {
             Text text = textIterator.next();
-            int stringWidth = DrawAPI.getAPI().getStringWidth(text.getText());
-            DrawAPI.getAPI().drawStringWithShadow(text.getText(), screenX, screenY, text.getColor());
+            int stringWidth = (int) (DrawAPI.getAPI().getStringWidth(text.getText()) * scaleMultiplier);
+            DrawAPI.getAPI().renderString(text.getText(), (float) screenX, (float) screenY, true, false, scaleMultiplier, text.getColor());
             screenX += stringWidth;
         }
     }

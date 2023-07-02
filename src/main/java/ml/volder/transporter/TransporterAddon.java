@@ -1,15 +1,16 @@
 package ml.volder.transporter;
 
+import ml.volder.transporter.classes.exceptions.LoadingFailedException;
 import ml.volder.transporter.classes.items.ItemManager;
 import ml.volder.transporter.gui.TransporterModulesMenu;
-import ml.volder.transporter.gui.elements.ControlElement;
-import ml.volder.transporter.gui.elements.HeaderElement;
-import ml.volder.transporter.gui.elements.KeyElement;
+import ml.volder.transporter.gui.elements.*;
 import ml.volder.transporter.jsonmanager.Data;
 import ml.volder.transporter.jsonmanager.DataManager;
 import ml.volder.transporter.listeners.KeyboardListener;
 import ml.volder.transporter.listeners.MainMenuOpenListener;
 import ml.volder.transporter.modules.*;
+import ml.volder.transporter.modules.messagemodule.MessageModes;
+import ml.volder.transporter.utils.FormatingUtils;
 import ml.volder.unikapi.AddonMain;
 import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.api.minecraft.MinecraftAPI;
@@ -85,30 +86,56 @@ public class TransporterAddon extends AddonMain {
 
     public void onEnable() {
         UnikAPI.LOGGER.info("Loading TransporterAddon");
-        instance = this;
-        initDataFolders();
 
-        transporterItemManager = new ItemManager();
-        this.dataManager = new DataManager<>(new File(TransporterAddon.getInstance().getCommonDataFolder(), "settings.json"), Data.class);
+        try {
+            instance = this;
+            initDataFolders();
 
-        KeyElement keyElement = new KeyElement("Indstillinger - Keybind", new ControlElement.IconData(Material.OAK_BUTTON), dataManager, "settingsKeybind", false, Key.R_SHIFT);
-        keyElement.addCallback(key -> settingsKeybind = key);
-        this.settingsKeybind = keyElement.getCurrentKey();
-        TransporterModulesMenu.addSetting(keyElement);
-        TransporterModulesMenu.addSetting(new HeaderElement(ModColor.WHITE + "Transporter Addon" + ModColor.GRAY + " - " + ModColor.WHITE + "Features"));
+            transporterItemManager = new ItemManager();
+            this.dataManager = new DataManager<>(new File(TransporterAddon.getInstance().getCommonDataFolder(), "settings.json"), Data.class);
 
-        //Modules
-        autoTransporter = new AutoTransporter("autoTransporter", this);
-        new ServerListModule("serverSelector");
-        messagesModule = new MessagesModule("messageModule");
-        new GuiModulesModule("guiModule");
-        new TransporterMenuModule("transporterMenuModule");
-        autoGetModule = new AutoGetModule("autoGetModule", this);
-        new SignToolsModule("signToolsModule");
+            KeyElement keyElement = new KeyElement("Indstillinger - Keybind", new ControlElement.IconData(Material.OAK_BUTTON), dataManager, "settingsKeybind", false, Key.R_SHIFT);
+            keyElement.addCallback(key -> settingsKeybind = key);
+            this.settingsKeybind = keyElement.getCurrentKey();
+            TransporterModulesMenu.addSetting(keyElement);
 
-        //Events
-        EventManager.registerEvents(new KeyboardListener());
-        EventManager.registerEvents(new MainMenuOpenListener());
+            DropDownMenu<FormatingUtils.FORMATTING_MODE> dropDownMenu = new DropDownMenu<>("", 0, 0, 0, 0);
+            dropDownMenu.fill(FormatingUtils.FORMATTING_MODE.values());
+            DropDownElement<FormatingUtils.FORMATTING_MODE> dropDownElement = new DropDownElement<>("Tal Formatering", "selectedNumberFormat", dropDownMenu, new ControlElement.IconData(Material.PAPER), (DropDownElement.DropDownLoadValue<FormatingUtils.FORMATTING_MODE>) value -> {
+                if(value.equals("INGEN")) {
+                    return FormatingUtils.FORMATTING_MODE.INGEN;
+                }else if(value.equals("PUNKTUM")) {
+                    return FormatingUtils.FORMATTING_MODE.PUNKTUM;
+                }
+                return FormatingUtils.FORMATTING_MODE.ENDELSE;
+            }, dataManager);
+            FormatingUtils.formattingMode = (FormatingUtils.FORMATTING_MODE) dropDownElement.getDropDownMenu().getSelected();
+            dropDownElement.setCallback(mode -> FormatingUtils.formattingMode = mode);
+
+            TransporterModulesMenu.addSetting(dropDownElement);
+
+
+            TransporterModulesMenu.addSetting(new HeaderElement(ModColor.WHITE + "Transporter Addon" + ModColor.GRAY + " - " + ModColor.WHITE + "Features"));
+
+
+            //Modules
+            autoTransporter = new AutoTransporter("autoTransporter", this);
+            new ServerListModule("serverSelector");
+            messagesModule = new MessagesModule("messageModule");
+            new GuiModulesModule("guiModule");
+            new TransporterMenuModule("transporterMenuModule");
+            autoGetModule = new AutoGetModule("autoGetModule", this);
+            new SignToolsModule("signToolsModule");
+
+            //Events
+            EventManager.registerEvents(new KeyboardListener());
+            EventManager.registerEvents(new MainMenuOpenListener());
+        }catch (Exception e) {
+            getCommonDataFolder().delete();
+            throw new LoadingFailedException();
+        }
+
+
 
         isEnabled = true;
         UnikAPI.LOGGER.info("TransporterAddon finished loading");

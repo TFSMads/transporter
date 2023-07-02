@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 
 public class AutoTransporter extends SimpleModule implements Listener {
     private boolean isFeatureActive;
+    private boolean hasTransporterData;
 
     private boolean isEnabled;
     private TransporterAddon addon;
@@ -40,6 +41,7 @@ public class AutoTransporter extends SimpleModule implements Listener {
     @Override
     protected void loadConfig() {
         isFeatureActive = hasConfigEntry("isFeatureActive") ? getConfigEntry("isFeatureActive", Boolean.class) : true;
+        hasTransporterData = hasConfigEntry("hasTransporterData") ? getConfigEntry("hasTransporterData", Boolean.class) : false;
     }
 
     @EventHandler
@@ -108,8 +110,8 @@ public class AutoTransporter extends SimpleModule implements Listener {
 
         Settings subSettings = moduleElement.getSubSettings();
 
-        SliderElement sliderElement = new SliderElement("Delay (Ticks)", getDataManager(), "autoTransporterDelay", new ControlElement.IconData(Material.WATCH), 40);
-        sliderElement.setRange(20, 100);
+        SliderElement sliderElement = new SliderElement("Delay (Ticks)", getDataManager(), "autoTransporterDelay", new ControlElement.IconData(Material.WATCH), 125);
+        sliderElement.setRange(20, 150);
         this.delay = sliderElement.getCurrentValue();
         sliderElement.addCallback(integer -> this.delay = integer);
 
@@ -146,6 +148,19 @@ public class AutoTransporter extends SimpleModule implements Listener {
     public boolean isFeatureActive() {
         return isFeatureActive;
     }
+
+    public boolean hasTransporterData() {
+        return hasTransporterData;
+    }
+
+    public void transporterInfoSet() {
+        if(hasTransporterData)
+            return;
+        hasTransporterData = true;
+        getDataManager().getSettings().getData().addProperty("hasTransporterData", hasTransporterData);
+        getDataManager().save();
+    }
+
 
     public boolean isEnabled() {
         return isEnabled;

@@ -112,8 +112,8 @@ public class AutoGetModule extends SimpleModule implements Listener {
 
         Settings subSettings = moduleElement.getSubSettings();
 
-        SliderElement sliderElement = new SliderElement("Delay (Ticks)", getDataManager(), "autoGetDelay", new ControlElement.IconData(Material.WATCH), 50);
-        sliderElement.setRange(20, 100);
+        SliderElement sliderElement = new SliderElement("Delay (Ticks)", getDataManager(), "autoGetDelay", new ControlElement.IconData(Material.WATCH), 125);
+        sliderElement.setRange(20, 500);
         this.delay = sliderElement.getCurrentValue();
         sliderElement.addCallback(integer -> this.delay = integer);
 

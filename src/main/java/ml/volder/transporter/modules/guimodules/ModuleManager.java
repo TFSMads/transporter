@@ -5,9 +5,9 @@ import ml.volder.transporter.classes.items.Item;
 import ml.volder.transporter.gui.elements.ControlElement;
 import ml.volder.transporter.modules.GuiModulesModule;
 import ml.volder.transporter.modules.guimodules.elements.ModuleCategoryElement;
+import ml.volder.transporter.utils.FormatingUtils;
 import ml.volder.unikapi.types.Material;
 import ml.volder.unikapi.types.ModColor;
-import ml.volder.unikapi.utils.FormatingUtils;
 
 public class ModuleManager {
 
@@ -36,6 +36,8 @@ public class ModuleManager {
             GuiModule module = new GuiModule(2,2, item.getCommandName() + "-antal", item.getDisplayName(), false, guiModulesModule.getDataManager(), itemAmountModules) {
                 @Override
                 public String getDisplayValue() {
+                    if(!TransporterAddon.getInstance().getAutoTransporter().hasTransporterData())
+                        return "Ingen Transporter Data tilgængelig! (skriv /transporter info)";
                     return TransporterAddon.getInstance().getMessagesModule().isFeatureActive() ? (item.getAmountInTransporter() == null ? "0" : FormatingUtils.formatNumber(item.getAmountInTransporter())) : "Besked featuren er deaktiveret!";
                 }
             };
@@ -49,10 +51,12 @@ public class ModuleManager {
             GuiModule module = new GuiModule(2,2, item.getCommandName() + "-value", item.getDisplayName(), false, guiModulesModule.getDataManager(), itemValueModules) {
                 @Override
                 public String getDisplayValue() {
+                    if(!TransporterAddon.getInstance().getAutoTransporter().hasTransporterData())
+                        return "Ingen Transporter Data tilgængelig! (skriv /transporter info)";
                     return TransporterAddon.getInstance().getMessagesModule().isFeatureActive()
                             ?   (item.getAmountInTransporter() == null
                                 ? "0 EMs"
-                                : FormatingUtils.formatNumber((long) (item.getAmountInTransporter() / 6400) * item.getSellValue()) + " EMs"
+                                : FormatingUtils.formatNumber((long)((item.getAmountInTransporter().doubleValue() / 6400) * item.getSellValue().doubleValue())) + " EMs"
                                 )
                             : "Besked featuren er deaktiveret!";
                 }
@@ -66,6 +70,8 @@ public class ModuleManager {
         GuiModule module = new GuiModule(2,2, "autoTransporterAktiv", "Auto Transporter", false, guiModulesModule.getDataManager(), otherModules){
             @Override
             public String getDisplayValue() {
+                if(!TransporterAddon.getInstance().getAutoTransporter().hasTransporterData())
+                    return "Ingen Transporter Data tilgængelig! (skriv /transporter info)";
                 return TransporterAddon.getInstance().getAutoTransporter().isFeatureActive() && TransporterAddon.getInstance().getAutoTransporter().isEnabled() ? ModColor.GREEN + "Til" : ModColor.RED + "Fra";
             }
         };
@@ -75,6 +81,8 @@ public class ModuleManager {
         module = new GuiModule(2,2, "autoGetAktiv", "Auto Get", false, guiModulesModule.getDataManager(), otherModules){
             @Override
             public String getDisplayValue() {
+                if(!TransporterAddon.getInstance().getAutoTransporter().hasTransporterData())
+                    return "Ingen Transporter Data tilgængelig! (skriv /transporter info)";
                 return TransporterAddon.getInstance().getAutoGetModule().isFeatureActive() && TransporterAddon.getInstance().getAutoGetModule().isEnabled() ? ModColor.GREEN + "Til" : ModColor.RED + "Fra";
             }
         };
@@ -86,11 +94,13 @@ public class ModuleManager {
             public String getDisplayValue() {
                 if(!TransporterAddon.getInstance().getMessagesModule().isFeatureActive())
                     return "Besked featuren er deaktiveret!";
+                if(!TransporterAddon.getInstance().getAutoTransporter().hasTransporterData())
+                    return "Ingen Transporter Data tilgængelig! (skriv /transporter info)";
                 double value = 0;
                 for(Item item : TransporterAddon.getInstance().getTransporterItemManager().getItemList()) {
                     value += (item.getAmountInTransporter() == null
                             ? 0
-                            : (item.getAmountInTransporter() / 6400) * item.getSellValue()
+                            : (item.getAmountInTransporter().doubleValue() / 6400) * item.getSellValue()
                     );
                 }
                 return FormatingUtils.formatNumber((long) value) + " EMs";

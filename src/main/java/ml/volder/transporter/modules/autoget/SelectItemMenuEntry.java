@@ -6,7 +6,7 @@ import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.types.ModColor;
-import ml.volder.unikapi.utils.FormatingUtils;
+import ml.volder.transporter.utils.FormatingUtils;
 import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
 
 public class SelectItemMenuEntry {

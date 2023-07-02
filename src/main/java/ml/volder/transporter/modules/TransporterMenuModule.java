@@ -63,7 +63,8 @@ public class TransporterMenuModule extends SimpleModule implements Listener {
         keyElement.addCallback(key -> this.openKey = key);
         subSettings.add(keyElement);
 
-        NumberElement numberElement = new NumberElement("Get Antal", getDataManager(), "withdraw.amount", new ControlElement.IconData(Material.PAPER), 64);
+        NumberElement numberElement = new NumberElement("Get Antal", getDataManager(), "withdraw.amount", new ControlElement.IconData(Material.PAPER), -1);
+        numberElement.setMinValue(-1);
         withdrawAmount = numberElement.getCurrentValue();
         numberElement.addCallback(integer -> withdrawAmount = integer);
         subSettings.add(numberElement);

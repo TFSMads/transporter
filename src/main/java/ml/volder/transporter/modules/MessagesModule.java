@@ -181,6 +181,17 @@ public class MessagesModule extends SimpleModule implements Listener {
         subSettings.add(stringElementCooldown);
 
         TransporterModulesMenu.addSetting(moduleElement);
+
+        StringElement stringElementToFast = new StringElement("Besked - Wait",
+                "commandDelay",
+                new ControlElement.IconData(Material.PAPER),
+                "&cVent! Du skriver kommandoer for hurtigt.",
+                getDataManager());
+        stringElementToFast.addCallback(value -> messagesMap.put(stringElementToFast.getConfigEntryName(), value));
+        messagesMap.put(stringElementToFast.getConfigEntryName(), stringElementToFast.getCurrentValue());
+        subSettings.add(stringElementToFast);
+
+        TransporterModulesMenu.addSetting(moduleElement);
     }
 
     public String getItemRegex() {

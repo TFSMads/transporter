@@ -22,7 +22,7 @@ public class TransporterPutMessageHandler implements IMessageHandler {
     }
 
     private boolean matchPutManglerMessage(String clean){
-        final Pattern pattern = Pattern.compile("Du har ikke noget (" + module.getItemRegex() + ") at putte i\\.");
+        final Pattern pattern = Pattern.compile("^Du har ikke noget (" + module.getItemRegex() + ") at putte i\\.$");
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
             Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByChatName(matcher.group(1));
@@ -41,7 +41,7 @@ public class TransporterPutMessageHandler implements IMessageHandler {
     }
 
     private boolean matchPutSuccessMessage(String clean){
-        final Pattern pattern = Pattern.compile("Du har nu puttet ([0-9]+) (" + module.getItemRegex() + ") i din transporter");
+        final Pattern pattern = Pattern.compile("^Du har nu puttet ([0-9]+) (" + module.getItemRegex() + ") i din transporter$");
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
             Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByChatName(matcher.group(2));

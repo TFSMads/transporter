@@ -5,11 +5,12 @@ import ml.volder.transporter.classes.items.Item;
 import ml.volder.transporter.gui.ModTextures;
 import ml.volder.transporter.modules.TransporterMenuModule;
 import ml.volder.unikapi.api.draw.DrawAPI;
+import ml.volder.unikapi.api.input.InputAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.types.ResourceLocation;
-import ml.volder.unikapi.utils.FormatingUtils;
+import ml.volder.transporter.utils.FormatingUtils;
 
 public class TransporterMenuEntry {
     private int width = 120;
@@ -76,7 +77,12 @@ public class TransporterMenuEntry {
         if(!mouseButton.isLeft())
             return;
         if(hoverGetButton) {
-            PlayerAPI.getAPI().sendCommand("transporter get " + item.getCommandName() + " " + TransporterMenuModule.getInstance().getWithdrawAmount());
+            if(InputAPI.getAPI().isShiftKeyDown()) {
+                PlayerAPI.getAPI().sendCommand("transporter get " + item.getCommandName());
+            } else {
+                PlayerAPI.getAPI().sendCommand("transporter get " + item.getCommandName() + " " + TransporterMenuModule.getInstance().getWithdrawAmount());
+
+            }
             PlayerAPI.getAPI().openGuiScreen(null);
         }else if (hoverPutButton) {
             PlayerAPI.getAPI().sendCommand("transporter put " + item.getCommandName());

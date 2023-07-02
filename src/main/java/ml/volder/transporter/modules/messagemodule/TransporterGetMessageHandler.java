@@ -22,7 +22,7 @@ public class TransporterGetMessageHandler implements IMessageHandler {
     }
 
     private boolean matchGetManglerMessage(String clean){
-        final Pattern pattern = Pattern.compile("Du har ikke nok items i din transporter!");
+        final Pattern pattern = Pattern.compile("^Du har ikke nok items i din transporter!$");
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
             MessageModes mode = module.getMessageMode();
@@ -40,7 +40,7 @@ public class TransporterGetMessageHandler implements IMessageHandler {
     }
 
     private boolean matchGetSuccessMessage(String clean){
-        final Pattern pattern = Pattern.compile("^Du har taget ([0-9]+) (" + module.getItemRegex() + ") fra din transporter.");
+        final Pattern pattern = Pattern.compile("^Du har taget ([0-9]+) (" + module.getItemRegex() + ") fra din transporter.$");
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
             Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByChatName(matcher.group(2));

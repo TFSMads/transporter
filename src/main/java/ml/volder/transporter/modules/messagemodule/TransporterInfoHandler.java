@@ -17,12 +17,13 @@ public class TransporterInfoHandler implements IMessageHandler {
 
     @Override
     public boolean messageReceived(String msg, String clean) {
-        final Pattern pattern = Pattern.compile(" - ([A-Za-z0-9:_]+) ([0-9]+)");
+        final Pattern pattern = Pattern.compile("^ - ([A-Za-z0-9:_]+) ([0-9]+)$");
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
             for(Item item : TransporterAddon.getInstance().getTransporterItemManager().getItemList()){
                 if(matcher.group(1).equals(item.getTransporterInfoName())){
                     item.setAmountInTransporter(Integer.parseInt(matcher.group(2)));
+                    TransporterAddon.getInstance().getAutoTransporter().transporterInfoSet();
                     return false;
                 }
             }
