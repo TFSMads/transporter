@@ -180,8 +180,6 @@ public class MessagesModule extends SimpleModule implements Listener {
         messagesMap.put(stringElementCooldown.getConfigEntryName(), stringElementCooldown.getCurrentValue());
         subSettings.add(stringElementCooldown);
 
-        TransporterModulesMenu.addSetting(moduleElement);
-
         StringElement stringElementToFast = new StringElement("Besked - Wait",
                 "commandDelay",
                 new ControlElement.IconData(Material.PAPER),
