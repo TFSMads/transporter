@@ -1,9 +1,9 @@
 package ml.volder.transporter.modules;
 
 import ml.volder.transporter.TransporterAddon;
-import ml.volder.transporter.gui.ModTextures;
 import ml.volder.transporter.gui.TransporterModulesMenu;
-import ml.volder.transporter.gui.elements.*;
+import ml.volder.unikapi.guisystem.ModTextures;
+import ml.volder.unikapi.guisystem.elements.*;
 import ml.volder.transporter.modules.serverlistmodule.ServerSelecterGui;
 import ml.volder.unikapi.api.input.InputAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
@@ -49,12 +49,9 @@ public class ServerListModule extends SimpleModule implements Listener {
     }
 
     private void fillSettings() {
-        ModuleElement moduleElement = new ModuleElement("Server Selector", "En feature til at skifte nemt og hurtigt mellem server på sa.", ModTextures.MISC_HEAD_QUESTION, new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean isActive) {
-                isFeatureActive = isActive;
-                setConfigEntry("isFeatureActive", isFeatureActive);
-            }
+        ModuleElement moduleElement = new ModuleElement("Server Selector", "En feature til at skifte nemt og hurtigt mellem server på sa.", ModTextures.MISC_HEAD_QUESTION, isActive -> {
+            isFeatureActive = isActive;
+            setConfigEntry("isFeatureActive", isFeatureActive);
         });
         moduleElement.setActive(isFeatureActive);
 

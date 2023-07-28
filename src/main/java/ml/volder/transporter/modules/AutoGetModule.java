@@ -2,9 +2,7 @@ package ml.volder.transporter.modules;
 
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.classes.items.Item;
-import ml.volder.transporter.gui.ModTextures;
 import ml.volder.transporter.gui.TransporterModulesMenu;
-import ml.volder.transporter.gui.elements.*;
 import ml.volder.transporter.modules.autoget.AutoGetMenu;
 import ml.volder.transporter.modules.autoget.SelectItemMenu;
 import ml.volder.unikapi.api.input.InputAPI;
@@ -15,10 +13,10 @@ import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.event.events.clientkeypressevent.ClientKeyPressEvent;
 import ml.volder.unikapi.event.events.clienttickevent.ClientTickEvent;
+import ml.volder.unikapi.guisystem.ModTextures;
+import ml.volder.unikapi.guisystem.elements.*;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.types.Material;
-
-import java.util.function.Consumer;
 
 public class AutoGetModule extends SimpleModule implements Listener {
     private boolean isFeatureActive;
@@ -101,12 +99,9 @@ public class AutoGetModule extends SimpleModule implements Listener {
     }
 
     private void fillSettings() {
-        ModuleElement moduleElement = new ModuleElement("Auto Get", "En feature til at automatisk tage ting fra din transporter.", ModTextures.MISC_HEAD_QUESTION, new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean isActive) {
-                isFeatureActive = isActive;
-                setConfigEntry("isFeatureActive", isFeatureActive);
-            }
+        ModuleElement moduleElement = new ModuleElement("Auto Get", "En feature til at automatisk tage ting fra din transporter.", ModTextures.MISC_HEAD_QUESTION, isActive -> {
+            isFeatureActive = isActive;
+            setConfigEntry("isFeatureActive", isFeatureActive);
         });
         moduleElement.setActive(isFeatureActive);
 

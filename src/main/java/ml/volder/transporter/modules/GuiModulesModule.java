@@ -1,39 +1,29 @@
 package ml.volder.transporter.modules;
 
-import ml.volder.transporter.gui.ModTextures;
 import ml.volder.transporter.gui.TransporterModulesMenu;
-import ml.volder.transporter.gui.elements.*;
-import ml.volder.transporter.jsonmanager.Data;
-import ml.volder.transporter.jsonmanager.DataManager;
-import ml.volder.transporter.modules.guimodules.GuiModule;
-import ml.volder.transporter.modules.guimodules.GuiModuleRenderer;
-import ml.volder.transporter.modules.guimodules.ModuleManager;
-import ml.volder.transporter.modules.guimodules.editor.GuiEditor;
-import ml.volder.transporter.modules.guimodules.elements.ModuleCategoryElement;
+
+import ml.volder.transporter.modules.guimodules.ModuleRegistry;
 import ml.volder.transporter.modules.serverlistmodule.ServerSelecterGui;
 import ml.volder.unikapi.api.player.PlayerAPI;
-import ml.volder.unikapi.event.EventManager;
+import ml.volder.unikapi.guisystem.ModTextures;
+import ml.volder.unikapi.guisystem.elements.ControlElement;
+import ml.volder.unikapi.guisystem.elements.ListContainerElement;
+import ml.volder.unikapi.guisystem.elements.ModuleElement;
+import ml.volder.unikapi.guisystem.elements.Settings;
 import ml.volder.unikapi.types.Material;
+import ml.volder.unikapi.widgets.ModuleSystem;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
 public class GuiModulesModule extends SimpleModule {
     private boolean isFeatureActive;
-    private GuiModuleRenderer guiModuleRenderer;
-    private ModuleManager moduleManager;
-
-    private List<GuiModule> guiModuleList = new ArrayList<>();
-    private List<ModuleCategoryElement> guiModuleCategories = new ArrayList<>();
+    private ModuleRegistry moduleManager;
 
     public GuiModulesModule(String moduleName) {
         super(moduleName);
         instance = this;
-        guiModuleRenderer = new GuiModuleRenderer(this, getDataManager());
-        EventManager.registerEvents(guiModuleRenderer);
         fillSettings();
-        moduleManager = new ModuleManager(this);
+        moduleManager = new ModuleRegistry(this);
         moduleManager.registerCategories();
         moduleManager.registerModules();
     }
@@ -45,24 +35,8 @@ public class GuiModulesModule extends SimpleModule {
         isFeatureActive = hasConfigEntry("isFeatureActive") ? getConfigEntry("isFeatureActive", Boolean.class) : true;
     }
 
-    public List<GuiModule> getGuiModuleList() {
-        return guiModuleList;
-    }
-
     private static GuiModulesModule instance;
 
-    public static GuiModule getModuleByKey(String key) {
-        for(GuiModule guiModule : instance.guiModuleList)
-            if(guiModule.getKey().equals(key))
-                return guiModule;
-        return null;
-    }
-
-    public static DataManager<Data> getModulesDataManager() {
-        if(instance == null)
-            return null;
-        return instance.getDataManager();
-    }
 
     private void open() {
         if(PlayerAPI.getAPI().hasOpenScreen())
@@ -71,39 +45,21 @@ public class GuiModulesModule extends SimpleModule {
     }
 
     private void fillSettings() {
-        ModuleElement moduleElement = new ModuleElement("Gui Moduler", "En feature der kan vise relevant info omkring din transporter.", ModTextures.MISC_HEAD_QUESTION, new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean isActive) {
-                isFeatureActive = isActive;
-                setConfigEntry("isFeatureActive", isFeatureActive);
-            }
+        ModuleElement moduleElement = new ModuleElement("Gui Moduler", "En feature der kan vise relevant info omkring din transporter.", ModTextures.MISC_HEAD_QUESTION, isActive -> {
+            isFeatureActive = isActive;
+            setConfigEntry("isFeatureActive", isFeatureActive);
         });
         moduleElement.setActive(isFeatureActive);
         Settings subSettings = moduleElement.getSubSettings();
 
         ListContainerElement editorGuiButton = new ListContainerElement("Gui Editor", new ControlElement.IconData(Material.PAINTING));
-        editorGuiButton.setAdvancedButtonCallback(aBoolean -> {
-            PlayerAPI.getAPI().openGuiScreen(new GuiEditor(this, PlayerAPI.getAPI().getCurrentScreen()));
-        });
-
+        editorGuiButton.setAdvancedButtonCallback(aBoolean -> ModuleSystem.openEditor());
 
         subSettings.add(editorGuiButton);
 
         TransporterModulesMenu.addSetting(moduleElement);
     }
 
-    public List<ModuleCategoryElement> getGuiModuleCategories() {
-        return guiModuleCategories;
-    }
-
-    public void addModule(GuiModule module, ModuleCategoryElement category) {
-        module.setCategory(category);
-        guiModuleList.add(module);
-    }
-
-    public void addModule(GuiModule module) {
-        guiModuleList.add(module);
-    }
 
     public boolean isFeatureActive() {
         return isFeatureActive;

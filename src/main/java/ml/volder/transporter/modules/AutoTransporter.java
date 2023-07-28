@@ -2,23 +2,28 @@ package ml.volder.transporter.modules;
 
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.classes.items.Item;
-import ml.volder.transporter.gui.ModTextures;
 import ml.volder.transporter.gui.TransporterModulesMenu;
-import ml.volder.transporter.gui.elements.*;
 import ml.volder.unikapi.api.input.InputAPI;
 import ml.volder.unikapi.api.inventory.InventoryAPI;
+import ml.volder.unikapi.api.minecraft.MinecraftAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.event.EventHandler;
 import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.event.events.clientkeypressevent.ClientKeyPressEvent;
+import ml.volder.unikapi.event.events.clientmessageevent.ClientMessageEvent;
 import ml.volder.unikapi.event.events.clienttickevent.ClientTickEvent;
+import ml.volder.unikapi.guisystem.ModTextures;
+import ml.volder.unikapi.guisystem.elements.*;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.types.Material;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AutoTransporter extends SimpleModule implements Listener {
     private boolean isFeatureActive;
@@ -28,6 +33,8 @@ public class AutoTransporter extends SimpleModule implements Listener {
     private TransporterAddon addon;
     private int delay = 50;
     private Key toggleKey = Key.P; // Default key = P
+
+    private boolean useTransporterPutMine = true;
 
     private int timer = 0;
 
@@ -53,6 +60,34 @@ public class AutoTransporter extends SimpleModule implements Listener {
         if(!(timer >= delay))
             return;
 
+        if(useTransporterPutMine)
+            executeAutoTransporterPutMineMethod();
+        else
+            executeAutoTransporterPutItemMethod();
+    }
+
+    boolean cancelTransporterInfoMessages = false;
+    @EventHandler
+    public void onMessage(ClientMessageEvent event) {
+        if(!cancelTransporterInfoMessages)
+            return;
+        if(event.getCleanMessage().equals("Du har følgende i din transporter:")){
+            event.setCancelled(true);
+            return;
+        }
+        final Pattern pattern = Pattern.compile("^ - ([A-Za-z0-9:_]+) ([0-9]+)$");
+        final Matcher matcher = pattern.matcher(event.getCleanMessage());
+        if (matcher.find()) {
+            for(Item item : TransporterAddon.getInstance().getTransporterItemManager().getItemList()){
+                if(matcher.group(1).equals(item.getTransporterInfoName())){
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+        }
+    }
+
+    private void executeAutoTransporterPutItemMethod() {
         Map<String, Integer> itemAmountMap = new HashMap<>();
 
         for (Item item: addon.getTransporterItemManager().getItemList())
@@ -72,6 +107,33 @@ public class AutoTransporter extends SimpleModule implements Listener {
             PlayerAPI.getAPI().sendCommand("transporter put " + itemWithMost);
             timer = 0;
         }
+    }
+
+    boolean executeTransporterInfo = false;
+    private void executeAutoTransporterPutMineMethod() {
+        int itemAmount = 0;
+
+        for (Item item: addon.getTransporterItemManager().getItemList())
+            if(item.isAutoTransporterEnabled())
+                itemAmount += InventoryAPI.getAPI().getAmount(item.getMaterial(), item.getItemDamage());
+        if (itemAmount < 1)
+            return;
+        if (executeTransporterInfo && itemAmount < 256) {
+            cancelTransporterInfoMessages = true;
+            PlayerAPI.getAPI().sendCommand("transporter info");
+            executeTransporterInfo = false;
+            new Timer("changeCancelInfoMessage").schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    cancelTransporterInfoMessages = false;
+                }
+            }, 1000L);
+        } else {
+            PlayerAPI.getAPI().sendCommand("transporter put mine");
+            executeTransporterInfo = true;
+        }
+        timer = 0;
+
     }
 
     @EventHandler
@@ -99,12 +161,9 @@ public class AutoTransporter extends SimpleModule implements Listener {
     }
 
     private void fillSettings() {
-        ModuleElement moduleElement = new ModuleElement("Auto Transporter", "En feature til at putte item i din transporter for dig.", ModTextures.MISC_HEAD_QUESTION, new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean isActive) {
-                isFeatureActive = isActive;
-                setConfigEntry("isFeatureActive", isFeatureActive);
-            }
+        ModuleElement moduleElement = new ModuleElement("Auto Transporter", "En feature til at putte item i din transporter for dig.", ModTextures.MISC_HEAD_QUESTION, isActive -> {
+            isFeatureActive = isActive;
+            setConfigEntry("isFeatureActive", isFeatureActive);
         });
         moduleElement.setActive(isFeatureActive);
 
@@ -122,6 +181,11 @@ public class AutoTransporter extends SimpleModule implements Listener {
         keyElement.addCallback(key -> this.toggleKey = key);
 
         subSettings.add(keyElement);
+
+        BooleanElement useTransporterPutMineElement = new BooleanElement("Brug '/transporter put mine'", getDataManager(), "useTransporterPutMine", new ControlElement.IconData(Material.DIODE), true);
+        this.useTransporterPutMine = useTransporterPutMineElement.getCurrentValue();
+        useTransporterPutMineElement.addCallback(b -> this.useTransporterPutMine = b);
+        subSettings.add(useTransporterPutMineElement);
 
         ListContainerElement autoTransporterItems = new ListContainerElement("Items", new ControlElement.IconData(Material.CHEST));
 
@@ -160,7 +224,6 @@ public class AutoTransporter extends SimpleModule implements Listener {
         getDataManager().getSettings().getData().addProperty("hasTransporterData", hasTransporterData);
         getDataManager().save();
     }
-
 
     public boolean isEnabled() {
         return isEnabled;

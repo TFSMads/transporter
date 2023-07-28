@@ -2,8 +2,9 @@ package ml.volder.transporter.modules;
 
 import com.google.gson.JsonObject;
 import ml.volder.transporter.TransporterAddon;
-import ml.volder.transporter.jsonmanager.Data;
-import ml.volder.transporter.jsonmanager.DataManager;
+import ml.volder.unikapi.UnikAPI;
+import ml.volder.unikapi.datasystem.Data;
+import ml.volder.unikapi.datasystem.DataManager;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -24,7 +25,7 @@ public abstract class SimpleModule {
     }
 
     private void initDataManager() {
-        this.dataManager = new DataManager<Data>(new File(TransporterAddon.getInstance().getCommonDataFolder(), moduleName + ".json"), Data.class);
+        this.dataManager = DataManager.getOrCreateDataManager(new File(UnikAPI.getCommonDataFolder(), moduleName + ".json"));
     }
 
     private JsonObject getJsonObject() {

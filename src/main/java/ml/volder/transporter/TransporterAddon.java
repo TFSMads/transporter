@@ -3,19 +3,18 @@ package ml.volder.transporter;
 import ml.volder.transporter.classes.exceptions.LoadingFailedException;
 import ml.volder.transporter.classes.items.ItemManager;
 import ml.volder.transporter.gui.TransporterModulesMenu;
-import ml.volder.transporter.gui.elements.*;
-import ml.volder.transporter.jsonmanager.Data;
-import ml.volder.transporter.jsonmanager.DataManager;
 import ml.volder.transporter.listeners.KeyboardListener;
 import ml.volder.transporter.listeners.MainMenuOpenListener;
 import ml.volder.transporter.modules.*;
-import ml.volder.transporter.modules.messagemodule.MessageModes;
 import ml.volder.transporter.utils.FormatingUtils;
 import ml.volder.unikapi.AddonMain;
 import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.api.minecraft.MinecraftAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
+import ml.volder.unikapi.datasystem.Data;
+import ml.volder.unikapi.datasystem.DataManager;
 import ml.volder.unikapi.event.EventManager;
+import ml.volder.unikapi.guisystem.elements.*;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.types.Material;
 import ml.volder.unikapi.types.ModColor;
@@ -46,10 +45,6 @@ public class TransporterAddon extends AddonMain {
     private AutoTransporter autoTransporter;
     private MessagesModule messagesModule;
     private AutoGetModule autoGetModule;
-
-    private File commonDataFolder;
-    private File playerDataFolder;
-    private UUID lastUUID;
 
     DataManager<Data> dataManager;
 
@@ -89,10 +84,9 @@ public class TransporterAddon extends AddonMain {
 
         try {
             instance = this;
-            initDataFolders();
 
             transporterItemManager = new ItemManager();
-            this.dataManager = new DataManager<>(new File(TransporterAddon.getInstance().getCommonDataFolder(), "settings.json"), Data.class);
+            this.dataManager = DataManager.getOrCreateDataManager(new File(UnikAPI.getCommonDataFolder(), "settings.json"));
 
             KeyElement keyElement = new KeyElement("Indstillinger - Keybind", new ControlElement.IconData(Material.OAK_BUTTON), dataManager, "settingsKeybind", false, Key.R_SHIFT);
             keyElement.addCallback(key -> settingsKeybind = key);
@@ -122,6 +116,7 @@ public class TransporterAddon extends AddonMain {
             autoTransporter = new AutoTransporter("autoTransporter", this);
             new ServerListModule("serverSelector");
             messagesModule = new MessagesModule("messageModule");
+            new McmmoModule("mcmmoModule");
             new GuiModulesModule("guiModule");
             new TransporterMenuModule("transporterMenuModule");
             autoGetModule = new AutoGetModule("autoGetModule", this);
@@ -131,7 +126,8 @@ public class TransporterAddon extends AddonMain {
             EventManager.registerEvents(new KeyboardListener());
             EventManager.registerEvents(new MainMenuOpenListener());
         }catch (Exception e) {
-            getCommonDataFolder().delete();
+            UnikAPI.getCommonDataFolder().delete();
+            e.printStackTrace();
             throw new LoadingFailedException();
         }
 
@@ -143,35 +139,6 @@ public class TransporterAddon extends AddonMain {
 
     public ItemManager getTransporterItemManager() {
         return transporterItemManager;
-    }
-
-    private boolean hasUUIDChanged() {
-        if(lastUUID == null)
-            return true;
-        return !lastUUID.equals(PlayerAPI.getAPI().getUUID());
-    }
-
-    private void initDataFolders() {
-        File file = new File("TransporterAddon/");
-        file.mkdirs();
-        this.commonDataFolder = file;
-        if(lastUUID != null){
-            file = new File("TransporterAddon/" + PlayerAPI.getAPI().getUUID());
-            file.mkdirs();
-            this.playerDataFolder = file;
-        }
-    }
-
-    public File getCommonDataFolder() {
-        return this.commonDataFolder;
-    }
-
-    public File getPlayerDataFolder() {
-        if(hasUUIDChanged()){
-            this.lastUUID = PlayerAPI.getAPI().getUUID();
-            initDataFolders();
-        }
-        return this.playerDataFolder;
     }
 
     public MessagesModule getMessagesModule() {

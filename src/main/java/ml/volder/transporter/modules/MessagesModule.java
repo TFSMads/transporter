@@ -1,9 +1,9 @@
 package ml.volder.transporter.modules;
 
 import ml.volder.transporter.TransporterAddon;
-import ml.volder.transporter.gui.ModTextures;
 import ml.volder.transporter.gui.TransporterModulesMenu;
-import ml.volder.transporter.gui.elements.*;
+import ml.volder.unikapi.guisystem.ModTextures;
+import ml.volder.unikapi.guisystem.elements.*;
 import ml.volder.transporter.modules.messagemodule.*;
 import ml.volder.transporter.modules.serverlistmodule.ServerSelecterGui;
 import ml.volder.unikapi.api.player.PlayerAPI;
@@ -52,29 +52,21 @@ public class MessagesModule extends SimpleModule implements Listener {
         messageHandlers.forEach(iMessageHandler -> {
             isCancelled.set(iMessageHandler.messageReceived(event.getMessage(), event.getCleanMessage()) ? true : isCancelled.get());
         });
-        event.setCancelled(isCancelled.get());
-    }
-
-    private void open() {
-        if(PlayerAPI.getAPI().hasOpenScreen())
-            return;
-        PlayerAPI.getAPI().openGuiScreen(new ServerSelecterGui(getDataManager()));
+        if(isCancelled.get())
+            event.setCancelled(isCancelled.get());
     }
 
     private void fillSettings() {
-        ModuleElement moduleElement = new ModuleElement("Beskeder", "En feature der benytter beskeder i chatten til at samle data omkring din transporter.", ModTextures.MISC_HEAD_QUESTION, new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean isActive) {
-                isFeatureActive = isActive;
-                setConfigEntry("isFeatureActive", isFeatureActive);
-            }
+        ModuleElement moduleElement = new ModuleElement("Beskeder", "En feature der benytter beskeder i chatten til at samle data omkring din transporter.", ModTextures.MISC_HEAD_QUESTION, isActive -> {
+            isFeatureActive = isActive;
+            setConfigEntry("isFeatureActive", isFeatureActive);
         });
         moduleElement.setActive(isFeatureActive);
         Settings subSettings = moduleElement.getSubSettings();
 
         DropDownMenu<MessageModes> dropDownMenu = new DropDownMenu<>("", 0, 0, 0, 0);
         dropDownMenu.fill(MessageModes.values());
-        DropDownElement<MessageModes> dropDownElement = new DropDownElement<>("Hvor skal beskeder sendes?", "selectedChatMode", dropDownMenu, new ControlElement.IconData(Material.PAPER), (DropDownElement.DropDownLoadValue<MessageModes>) value -> {
+        DropDownElement<MessageModes> dropDownElement = new DropDownElement<>("Hvor skal beskeder sendes?", "selectedChatMode", dropDownMenu, new ControlElement.IconData(Material.PAPER), value -> {
             if(value.equals("NO_MESSAGES")) {
                 return MessageModes.NO_MESSAGES;
             }else if(value.equals("CHAT_MESSAGES")) {

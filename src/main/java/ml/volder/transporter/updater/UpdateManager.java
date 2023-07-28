@@ -121,7 +121,7 @@ public class UpdateManager {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        Path executablePath = Paths.get(TransporterAddon.getInstance().getCommonDataFolder().getPath(), OsCheck.getOperatingSystemType() == OsCheck.OSType.Windows ? "Transporter-Updater.exe" : "Transporter-Updater");
+        Path executablePath = Paths.get(UnikAPI.getCommonDataFolder().getPath(), OsCheck.getOperatingSystemType() == OsCheck.OSType.Windows ? "Transporter-Updater.exe" : "Transporter-Updater");
 
         String downloadURL = getDownloadURL();
 
@@ -184,6 +184,6 @@ public class UpdateManager {
         return "win-x86";
     }
     private static Path getExtractedExecutablePath() {
-        return Paths.get(TransporterAddon.getInstance().getCommonDataFolder().getPath(), OsCheck.getOperatingSystemType() == OsCheck.OSType.Windows ? "Transporter-Updater.exe" : "Transporter-Updater_linux-arm");
+        return Paths.get(UnikAPI.getCommonDataFolder().getPath(), OsCheck.getOperatingSystemType() == OsCheck.OSType.Windows ? "Transporter-Updater.exe" : "Transporter-Updater_linux-arm");
     }
 }

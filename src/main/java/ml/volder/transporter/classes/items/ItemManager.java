@@ -4,9 +4,10 @@ package ml.volder.transporter.classes.items;
 
 import com.google.gson.JsonObject;
 import ml.volder.transporter.TransporterAddon;
-import ml.volder.transporter.jsonmanager.Data;
-import ml.volder.transporter.jsonmanager.DataManager;
+import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
+import ml.volder.unikapi.datasystem.Data;
+import ml.volder.unikapi.datasystem.DataManager;
 import ml.volder.unikapi.types.Material;
 
 import java.io.File;
@@ -440,9 +441,9 @@ public class ItemManager {
     private UUID dataManagerUUID;
 
     private void initDataManager() {
-        if(TransporterAddon.getInstance().getPlayerDataFolder() == null)
+        if(UnikAPI.getPlayerDataFolder() == null)
             return;
-        this.dataManager = new DataManager<Data>(new File(TransporterAddon.getInstance().getPlayerDataFolder(), "itemData.json"), Data.class);
+        this.dataManager = DataManager.getOrCreateDataManager(new File(UnikAPI.getPlayerDataFolder(), "itemData.json"));
         dataManagerUUID = PlayerAPI.getAPI().getUUID();
     }
 

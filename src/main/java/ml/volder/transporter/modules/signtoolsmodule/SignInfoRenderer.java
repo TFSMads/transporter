@@ -1,7 +1,7 @@
 package ml.volder.transporter.modules.signtoolsmodule;
 
-import ml.volder.transporter.gui.ModTextures;
 import ml.volder.unikapi.api.draw.DrawAPI;
+import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.types.ModColor;
 
 public class SignInfoRenderer {

@@ -1,9 +1,9 @@
 package ml.volder.transporter.modules;
 
 import ml.volder.transporter.TransporterAddon;
-import ml.volder.transporter.gui.ModTextures;
 import ml.volder.transporter.gui.TransporterModulesMenu;
-import ml.volder.transporter.gui.elements.*;
+import ml.volder.unikapi.guisystem.ModTextures;
+import ml.volder.unikapi.guisystem.elements.*;
 import ml.volder.transporter.modules.signtoolsmodule.SignBuffer;
 import ml.volder.transporter.modules.signtoolsmodule.SignGui;
 import ml.volder.unikapi.event.EventHandler;

@@ -2,8 +2,8 @@ package ml.volder.transporter.modules.transportermenumodule;
 
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.classes.items.Item;
-import ml.volder.transporter.gui.elements.Scrollbar;
 import ml.volder.unikapi.api.draw.DrawAPI;
+import ml.volder.unikapi.guisystem.elements.Scrollbar;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.types.ModColor;

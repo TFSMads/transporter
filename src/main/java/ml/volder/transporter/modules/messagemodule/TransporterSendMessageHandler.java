@@ -27,16 +27,8 @@ public class TransporterSendMessageHandler implements IMessageHandler {
         if (matcher.find()) {
             Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByChatName(matcher.group(2));
             item.setAmountInTransporter(item.getAmountInTransporter()-Integer.parseInt(matcher.group(1)));
-            MessageModes mode = module.getMessageMode();
-            if(mode == MessageModes.NO_MESSAGES) {
-                return true;
-            }else if(mode == MessageModes.ACTIONBAR_MESSAGES){
-                PlayerAPI.getAPI().displayActionBarMessage(module.getMessage(module.getRawMessage("sendSuccess"), item.getDisplayName().toLowerCase(), matcher.group(1), String.valueOf(item.getAmountInTransporter()), matcher.group(3)));
-                return true;
-            }else if(mode == MessageModes.CHAT_MESSAGES){
-                PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("sendSuccess"), item.getDisplayName().toLowerCase(), matcher.group(1), String.valueOf(item.getAmountInTransporter()), matcher.group(3)));
-                return true;
-            }
+            PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("sendSuccess"), item.getDisplayName().toLowerCase(), matcher.group(1), String.valueOf(item.getAmountInTransporter()), matcher.group(3)));
+            return true;
         }
         return false;
     }
@@ -45,16 +37,8 @@ public class TransporterSendMessageHandler implements IMessageHandler {
         final Pattern pattern = Pattern.compile("^Denne spiller er ikke online$");
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
-            MessageModes mode = module.getMessageMode();
-            if(mode == MessageModes.NO_MESSAGES) {
-                return true;
-            }else if(mode == MessageModes.ACTIONBAR_MESSAGES){
-                PlayerAPI.getAPI().displayActionBarMessage(module.getMessage(module.getRawMessage("sendOffline"), null, null, null));
-                return true;
-            }else if(mode == MessageModes.CHAT_MESSAGES){
-                PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("sendOffline"), null, null, null));
-                return true;
-            }
+            PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("sendOffline"), null, null, null));
+            return true;
         }
         return false;
     }
@@ -63,16 +47,8 @@ public class TransporterSendMessageHandler implements IMessageHandler {
         final Pattern pattern = Pattern.compile("^Du kan ikke sende til dig selv$");
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
-            MessageModes mode = module.getMessageMode();
-            if(mode == MessageModes.NO_MESSAGES) {
-                return true;
-            }else if(mode == MessageModes.ACTIONBAR_MESSAGES){
-                PlayerAPI.getAPI().displayActionBarMessage(module.getMessage(module.getRawMessage("sendSelf"), null, null, null));
-                return true;
-            }else if(mode == MessageModes.CHAT_MESSAGES){
-                PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("sendSelf"), null, null, null));
-                return true;
-            }
+            PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("sendSelf"), null, null, null));
+            return true;
         }
         return false;
     }
@@ -83,16 +59,8 @@ public class TransporterSendMessageHandler implements IMessageHandler {
         if (matcher.find()) {
             Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByChatName(matcher.group(2));
             item.setAmountInTransporter(item.getAmountInTransporter()+Integer.parseInt(matcher.group(1)));
-            MessageModes mode = module.getMessageMode();
-            if(mode == MessageModes.NO_MESSAGES) {
-                return true;
-            }else if(mode == MessageModes.ACTIONBAR_MESSAGES){
-                PlayerAPI.getAPI().displayActionBarMessage(module.getMessage(module.getRawMessage("modtagSuccess"), item.getDisplayName().toLowerCase(), matcher.group(1), String.valueOf(item.getAmountInTransporter()), matcher.group(3)));
-                return true;
-            }else if(mode == MessageModes.CHAT_MESSAGES){
-                PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("modtagSuccess"), item.getDisplayName().toLowerCase(), matcher.group(1), String.valueOf(item.getAmountInTransporter()), matcher.group(3)));
-                return true;
-            }
+            PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("modtagSuccess"), item.getDisplayName().toLowerCase(), matcher.group(1), String.valueOf(item.getAmountInTransporter()), matcher.group(3)));
+            return true;
         }
         return false;
     }
