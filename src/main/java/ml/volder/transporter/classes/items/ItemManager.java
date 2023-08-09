@@ -378,9 +378,9 @@ public class ItemManager {
                 1,
                 0,
                 "Spruce Sapling",
-                "spruce_sapling",
-                "spruce_saplings",
-                "spruce_sapling",
+                "sapling:1",
+                "sapling:1",
+                "sapling:1",
                 Material.SPRUCE_SAPLING
         ));
 
