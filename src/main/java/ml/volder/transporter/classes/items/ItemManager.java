@@ -98,7 +98,7 @@ public class ItemManager {
                 "charcoal",
                 "charcoal",
                 "charcoal",
-                Material.COAL
+                Material.CHARCOAL
         ));
         itemList.add(new Item(
                 "minecraft:coal",
@@ -108,7 +108,7 @@ public class ItemManager {
                 "coal",
                 "coal",
                 "coal",
-                Material.CHARCOAL
+                Material.COAL
         ));
         itemList.add(new Item(
                 "minecraft:iron_ore",
@@ -360,6 +360,31 @@ public class ItemManager {
                 "hopper",
                 Material.HOPPER
         ));
+
+
+        itemList.add(new Item(
+                "minecraft:dye",
+                3,
+                0,
+                "Cocoa Beans",
+                "cocoa_beans",
+                "cocoa_beans",
+                "cocoa_beans",
+                Material.COCAO_BEANS
+        ));
+
+        itemList.add(new Item(
+                "minecraft:sapling",
+                1,
+                0,
+                "Spruce Sapling",
+                "spruce_sapling",
+                "spruce_saplings",
+                "spruce_sapling",
+                Material.SPRUCE_SAPLING
+        ));
+
+
         for (int i = 0; i < 16; i++) {
             itemList.add(new Item(
                     "minecraft:wool",

@@ -4,8 +4,11 @@ import com.google.gson.Gson;
 import jdk.tools.jlink.internal.Platform;
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.classes.helper.OsCheck;
+import ml.volder.transporter.gui.UpdateFailedScreen;
 import ml.volder.transporter.utils.ArchDetect;
 import ml.volder.unikapi.UnikAPI;
+import ml.volder.unikapi.api.minecraft.MinecraftAPI;
+import ml.volder.unikapi.api.player.PlayerAPI;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -17,7 +20,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -52,8 +57,8 @@ public class UpdateManager {
 
 
     private static void extractUpdater(Path jarFileLocation) throws IOException {
-        Path targetFile = getExtractedExecutablePath();
-        extractFile(jarFileLocation, "updater/Transporter-Updater_" + getOSArchitectureString() + (OsCheck.getOperatingSystemType() == OsCheck.OSType.Windows ? ".exe" : ""), targetFile);
+        Path targetFile = getUpdaterPath();
+        extractFile(jarFileLocation, "updater/TransporterUpdater.jar", targetFile);
     }
 
     /**
@@ -121,14 +126,28 @@ public class UpdateManager {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        Path executablePath = Paths.get(UnikAPI.getCommonDataFolder().getPath(), OsCheck.getOperatingSystemType() == OsCheck.OSType.Windows ? "Transporter-Updater.exe" : "Transporter-Updater");
-
+        Path updaterPath = getUpdaterPath();
         String downloadURL = getDownloadURL();
 
         try {
-            Process process = new ProcessBuilder(executablePath.toString(), jarLocation, downloadURL).start();
+            String javaHome = System.getProperty("java.home");
+            if(javaHome == null){
+                PlayerAPI.getAPI().openGuiScreen(new UpdateFailedScreen());
+                return;
+            }
+            Path path = Paths.get(UnikAPI.getCommonDataFolder() + "/updater/");
+            path.toFile().mkdirs();
+            String javaBin = javaHome + File.separator + "bin" + File.separator + "java";
+            List<String> arguments = new ArrayList();
+            arguments.add(javaBin);
+            arguments.add("-jar");
+            arguments.add(updaterPath.toFile().getAbsolutePath());
+            arguments.add(downloadURL);
+            arguments.add(jarLocation);
+            ProcessBuilder pb = new ProcessBuilder(arguments);
+            pb.directory(new File(UnikAPI.getCommonDataFolder() + "/updater/"));
+            Process p = pb.start();
             System.exit(0);
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -153,37 +172,10 @@ public class UpdateManager {
         return "https://github.com/TFSMads/transporter/releases/latest/download/transporter-laby4.jar";
     }
 
-    private static String detectArch() {
-        String arch = System.getenv("PROCESSOR_ARCHITECTURE");
-        String wow64Arch = System.getenv("PROCESSOR_ARCHITEW6432");
 
-        return arch != null && arch.endsWith("64")
-                || wow64Arch != null && wow64Arch.endsWith("64")
-                ? "64" : "32";
-    }
 
-    private static String getOSArchitectureString() {
-        OsCheck.OSType osType = OsCheck.getOperatingSystemType();
-        String arch = detectArch();
-        boolean isArm = ArchDetect.isARM();
-        if(osType == OsCheck.OSType.Windows) {
-            if(arch.equals("64")) {
-                return isArm ? "win-arm64" : "win-x64";
-            }
-            return isArm ? "win-arm" : "win-x86";
-        }
-        if(osType == OsCheck.OSType.Linux) {
-            if(arch.equals("64")) {
-                return isArm ? "linux-arm64" : "linux-x64";
-            }
-            return isArm ? "linux-arm" : "linux-x64";
-        }
-        if(osType == OsCheck.OSType.MacOS) {
-            return isArm ? "osx-arm64" : "osx-x64";
-        }
-        return "win-x86";
-    }
-    private static Path getExtractedExecutablePath() {
-        return Paths.get(UnikAPI.getCommonDataFolder().getPath(), OsCheck.getOperatingSystemType() == OsCheck.OSType.Windows ? "Transporter-Updater.exe" : "Transporter-Updater_linux-arm");
+
+    private static Path getUpdaterPath() {
+        return Paths.get(UnikAPI.getCommonDataFolder().getPath(), "TransporterUpdater.jar");
     }
 }
