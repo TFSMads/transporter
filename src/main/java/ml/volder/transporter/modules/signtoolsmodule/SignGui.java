@@ -20,6 +20,8 @@ import ml.volder.unikapi.wrappers.tileentitysign.WrappedTileEntitySign;
 
 import java.awt.*;
 import java.time.Instant;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class SignGui extends WrappedGuiScreen {
 
@@ -226,12 +228,12 @@ public class SignGui extends WrappedGuiScreen {
     public void onGuiClosed() {
         InputAPI.getAPI().enableRepeatEvents(false);
         if(sendPlacePacket) {
-            tileEntitySign.setLine(0, signText.getLine(1));
-            tileEntitySign.setLine(1, signText.getLine(2));
-            tileEntitySign.setLine(2, signText.getLine(3));
-            tileEntitySign.setLine(3, signText.getLine(4));
-            tileEntitySign.sendUpdatePacket();
-            tileEntitySign.setEditable(true);
+                tileEntitySign.setLine(0, signText.getLine(1));
+                tileEntitySign.setLine(1, signText.getLine(2));
+                tileEntitySign.setLine(2, signText.getLine(3));
+                tileEntitySign.setLine(3, signText.getLine(4));
+                tileEntitySign.sendUpdatePacket();
+                tileEntitySign.setEditable(true);
         }
     }
 

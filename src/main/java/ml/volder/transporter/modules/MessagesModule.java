@@ -163,15 +163,6 @@ public class MessagesModule extends SimpleModule implements Listener {
         messagesMap.put(stringElementSendSelf.getConfigEntryName(), stringElementSendSelf.getCurrentValue());
         subSettings.add(stringElementSendSelf);
 
-        StringElement stringElementCooldown = new StringElement("Besked - Cooldown",
-                "cooldown",
-                new ControlElement.IconData(Material.PAPER),
-                "&cDer er 2 sekunders cooldown på transporteren.",
-                getDataManager());
-        stringElementCooldown.addCallback(value -> messagesMap.put(stringElementCooldown.getConfigEntryName(), value));
-        messagesMap.put(stringElementCooldown.getConfigEntryName(), stringElementCooldown.getCurrentValue());
-        subSettings.add(stringElementCooldown);
-
         StringElement stringElementToFast = new StringElement("Besked - Wait",
                 "commandDelay",
                 new ControlElement.IconData(Material.PAPER),

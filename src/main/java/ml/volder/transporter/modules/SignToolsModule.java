@@ -2,6 +2,7 @@ package ml.volder.transporter.modules;
 
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.gui.TransporterModulesMenu;
+import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.guisystem.elements.*;
 import ml.volder.transporter.modules.signtoolsmodule.SignBuffer;
@@ -12,13 +13,19 @@ import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.event.events.opensignevent.OpenSignEvent;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.types.Material;
+import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.wrappers.tileentitysign.WrappedTileEntitySign;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class SignToolsModule extends SimpleModule implements Listener {
     private boolean isFeatureActive;
 
     private static Key pasteKey = Key.V;
     private static Key copyKey = Key.C;
+
+    private int placeDelay = 1000;
 
     private boolean openSignEditor = true;
 
@@ -33,24 +40,40 @@ public class SignToolsModule extends SimpleModule implements Listener {
         isFeatureActive = hasConfigEntry("isFeatureActive") ? getConfigEntry("isFeatureActive", Boolean.class) : true;
     }
 
+    boolean isSendingUpdatePacket = false;
+
     @EventHandler
     public void onSignOpen(OpenSignEvent event) {
         if(!TransporterAddon.isEnabled() || !this.isFeatureActive)
             return;
         if(!openSignEditor) {
+            if (isSendingUpdatePacket) {
+                PlayerAPI.getAPI().displayChatMessage(ModColor.RED + "Du placere skilte for hurtigt!");
+                event.setCancelled(true);
+                return;
+            }
             WrappedTileEntitySign tileEntitySign = event.getTileEntitySign();
             SignBuffer signText = SignGui.getBufferedText();
             tileEntitySign.setLine(0, signText == null ? "" : signText.getLine(1));
             tileEntitySign.setLine(1, signText == null ? "" : signText.getLine(2));
             tileEntitySign.setLine(2, signText == null ? "" : signText.getLine(3));
             tileEntitySign.setLine(3, signText == null ? "" : signText.getLine(4));
-            tileEntitySign.sendUpdatePacket();
-            tileEntitySign.setEditable(true);
+            isSendingUpdatePacket = true;
+            new Timer("sendSignUpdate").schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    tileEntitySign.sendUpdatePacket();
+                    tileEntitySign.setEditable(true);
+                    isSendingUpdatePacket = false;
+                }
+            }, placeDelay);
             event.setCancelled(true);
             return;
         }
         event.setScreen(new SignGui(getDataManager(), event.getTileEntitySign()));
     }
+
+
 
     private void fillSettings() {
         ModuleElement moduleElement = new ModuleElement("Sign Tools", "En feature til at forbedre skilte så man kan kopiere og indsætte.", ModTextures.MISC_HEAD_QUESTION, isActive -> {
@@ -81,6 +104,17 @@ public class SignToolsModule extends SimpleModule implements Listener {
         this.openSignEditor = booleanElement.getCurrentValue();
         booleanElement.addCallback(shouldOpen -> this.openSignEditor = shouldOpen);
         subSettings.add(booleanElement);
+
+        NumberElement numberElement = new NumberElement(
+                "Place delay",
+                getDataManager(),
+                "placeDelay",
+                new ControlElement.IconData(Material.DIODE),
+                500
+        );
+        placeDelay = numberElement.getCurrentValue();
+        numberElement.addCallback(i -> placeDelay = i);
+        subSettings.add(numberElement);
 
         TransporterModulesMenu.addSetting(moduleElement);
     }

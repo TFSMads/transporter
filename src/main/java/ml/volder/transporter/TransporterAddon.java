@@ -30,7 +30,7 @@ import java.util.UUID;
 // Sign Tools               -
 // Messages module          - Done
 // Transporter info module  - Done
-// Mcmmo module - update    - Venter
+// Mcmmo module - update    - Done
 // Server selector          - Done
 // Transporter Menu         - Done
 // Gui Modules på skærm     - Done
@@ -117,10 +117,12 @@ public class TransporterAddon extends AddonMain {
             new ServerListModule("serverSelector");
             messagesModule = new MessagesModule("messageModule");
             new McmmoModule("mcmmoModule");
+            new ServerModule("serverTrackerModule", this);
             new GuiModulesModule("guiModule");
             new TransporterMenuModule("transporterMenuModule");
             autoGetModule = new AutoGetModule("autoGetModule", this);
             new SignToolsModule("signToolsModule");
+            new BalanceModule("balanceTrackerModule", this);
 
             //Events
             EventManager.registerEvents(new KeyboardListener());

@@ -2,8 +2,10 @@ package ml.volder.transporter.modules.guimodules;
 
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.classes.items.Item;
+import ml.volder.transporter.modules.BalanceModule;
 import ml.volder.transporter.modules.GuiModulesModule;
 import ml.volder.transporter.modules.McmmoModule;
+import ml.volder.transporter.modules.ServerModule;
 import ml.volder.transporter.utils.FormatingUtils;
 import ml.volder.unikapi.types.Material;
 import ml.volder.unikapi.types.ModColor;
@@ -115,7 +117,19 @@ public class ModuleRegistry {
                     return FormatingUtils.formatNumber((long) value) + " EMs";                }
         );
 
+        ModuleSystem.registerModule(
+                "balance",
+                "Balance",
+                false,
+                otherCategory,
+                Material.EMERALD,
+                s -> BalanceModule.isActive()
+                            ? FormatingUtils.formatNumber(BalanceModule.getBalance()) + " EMs"
+                            : "Balance featuren er ikke aktiv!"
+        );
+
         McmmoModule.registerModules();
+        ServerModule.registerModules(otherCategory);
     }
 
 }
