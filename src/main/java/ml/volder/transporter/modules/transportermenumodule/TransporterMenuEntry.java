@@ -2,6 +2,8 @@ package ml.volder.transporter.modules.transportermenumodule;
 
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.classes.items.Item;
+import ml.volder.transporter.modules.MessagesModule;
+import ml.volder.transporter.modules.ModuleManager;
 import ml.volder.transporter.modules.TransporterMenuModule;
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.api.input.InputAPI;
@@ -38,7 +40,7 @@ public class TransporterMenuEntry {
         int color = item.getAmountInTransporter() == null || item.getAmountInTransporter() <= 0
                 ? ModColor.toRGB(100, 50, 50, isMouseOver ? 90 : 70)
                 : ModColor.toRGB(50, 100, 50, isMouseOver ? 90 : 70);
-        if(!TransporterAddon.getInstance().getMessagesModule().isFeatureActive())
+        if(!ModuleManager.getInstance().getModule(MessagesModule.class).isFeatureActive())
             color = ModColor.toRGB(50, 100, 50, isMouseOver ? 90 : 70);
         drawAPI.drawRect(x, y, x + width, y + height, color);
         drawAPI.drawRect(x, y, x + width, y + outlineWidth, ModColor.toRGB(128,128, 128, 255));
@@ -48,7 +50,7 @@ public class TransporterMenuEntry {
 
         drawAPI.drawItem(item.getMaterial(), item.getItemDamage(), x + 2, y + 3, "", 2);
         drawAPI.drawString(item.getDisplayName(), x + 32 + 4, y + 5, 0xFFFFFF);
-        if(TransporterAddon.getInstance().getMessagesModule().isFeatureActive())
+        if(ModuleManager.getInstance().getModule(MessagesModule.class).isFeatureActive())
             drawAPI.drawString("Du har " + getAmountString(), x + 32 + 4, y + 14, 0x808080, 0.8);
         this.hoverGetButton = this.drawButton(ModTextures.BUTTON_GET, x + 36 ,y + 22, 12, mouseX, mouseY);
         this.hoverPutButton = this.drawButton(ModTextures.BUTTON_PUT, x + 52 ,y + 22, 12, mouseX, mouseY);
@@ -80,7 +82,7 @@ public class TransporterMenuEntry {
             if(InputAPI.getAPI().isShiftKeyDown()) {
                 PlayerAPI.getAPI().sendCommand("transporter get " + item.getCommandName());
             } else {
-                PlayerAPI.getAPI().sendCommand("transporter get " + item.getCommandName() + " " + TransporterMenuModule.getInstance().getWithdrawAmount());
+                PlayerAPI.getAPI().sendCommand("transporter get " + item.getCommandName() + " " + ModuleManager.getInstance().getModule(TransporterMenuModule.class).getWithdrawAmount());
 
             }
             PlayerAPI.getAPI().openGuiScreen(null);

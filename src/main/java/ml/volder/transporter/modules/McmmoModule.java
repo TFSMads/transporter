@@ -22,22 +22,29 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class McmmoModule extends SimpleModule implements Listener {
-    private boolean isFeatureActive;
     private McmmoManager mcmmoManager;
-    private static McmmoModule instance;
 
-    public McmmoModule(String moduleName) {
-        super(moduleName);
-        instance = this;
-        EventManager.registerEvents(this);
-        fillSettings();
-        this.mcmmoManager = new McmmoManager(getDataManager());
-        mcmmoManager.init();
+    public McmmoModule(ModuleManager.ModuleInfo moduleInfo) {
+        super(moduleInfo);
     }
 
     @Override
-    protected void loadConfig() {
-        isFeatureActive = hasConfigEntry("isFeatureActive") ? getConfigEntry("isFeatureActive", Boolean.class) : true;
+    public SimpleModule init() {
+        this.mcmmoManager = new McmmoManager(getDataManager());
+        mcmmoManager.init();
+        return this;
+    }
+
+    @Override
+    public SimpleModule enable() {
+        mcmmoManager.registerModules();
+        EventManager.registerEvents(this);
+        return this;
+    }
+
+    @Override
+    public void fillSettings(Settings subSettings) {
+
     }
 
     @EventHandler
@@ -68,23 +75,7 @@ public class McmmoModule extends SimpleModule implements Listener {
 
     }
 
-    private void fillSettings() {
-        ModuleElement moduleElement = new ModuleElement("McMMO", "En feature der tilføjer moduler der viser nogen af dine McMMO stats!", ModTextures.MISC_HEAD_QUESTION, isActive -> {
-            isFeatureActive = isActive;
-            setConfigEntry("isFeatureActive", isFeatureActive);
-        });
-        moduleElement.setActive(isFeatureActive);
-        TransporterModulesMenu.addSetting(moduleElement);
-    }
-
-
     public boolean isFeatureActive() {
         return isFeatureActive;
-    }
-
-    public static void registerModules() {
-        if(instance == null)
-            return;
-        instance.mcmmoManager.registerModules();
     }
 }

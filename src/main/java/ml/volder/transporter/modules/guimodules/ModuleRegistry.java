@@ -2,10 +2,7 @@ package ml.volder.transporter.modules.guimodules;
 
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.classes.items.Item;
-import ml.volder.transporter.modules.BalanceModule;
-import ml.volder.transporter.modules.GuiModulesModule;
-import ml.volder.transporter.modules.McmmoModule;
-import ml.volder.transporter.modules.ServerModule;
+import ml.volder.transporter.modules.*;
 import ml.volder.transporter.utils.FormatingUtils;
 import ml.volder.unikapi.types.Material;
 import ml.volder.unikapi.types.ModColor;
@@ -18,13 +15,22 @@ public class ModuleRegistry {
     private GuiModulesModule guiModulesModule;
 
     private Object itemAmountCategory;
+
     private Object itemValueCategory;
     private Object otherCategory;
 
 
+    private boolean isActiveOnCurrentServer() {
+        if(!guiModulesModule.isViewOnSelected())
+            return true;
+        if(TransporterAddon.getInstance().getServerList().contains(ModuleManager.getInstance().getModule(ServerModule.class).getCurrentServer()))
+            return true;
+        return false;
+    }
+
     public ModuleRegistry(GuiModulesModule guiModulesModule) {
         this.guiModulesModule = guiModulesModule;
-        ModuleSystem.shouldRenderPredicate = () -> guiModulesModule.isFeatureActive() && TransporterAddon.isEnabled();
+        ModuleSystem.shouldRenderPredicate = () -> guiModulesModule.isFeatureActive() && TransporterAddon.isEnabled() && isActiveOnCurrentServer();
     }
 
     public void registerCategories() {
@@ -43,9 +49,9 @@ public class ModuleRegistry {
                     itemAmountCategory,
                     item.getMaterial(),
                     s -> {
-                        if(!TransporterAddon.getInstance().getAutoTransporter().hasTransporterData())
+                        if(!ModuleManager.getInstance().getModule(AutoTransporter.class).hasTransporterData())
                             return "Ingen Transporter Data tilgængelig! (skriv /transporter info)";
-                        return TransporterAddon.getInstance().getMessagesModule().isFeatureActive() ? (item.getAmountInTransporter() == null ? "0" : FormatingUtils.formatNumber(item.getAmountInTransporter())) : "Besked featuren er deaktiveret!";
+                        return ModuleManager.getInstance().getModule(MessagesModule.class).isFeatureActive() ? (item.getAmountInTransporter() == null ? "0" : FormatingUtils.formatNumber(item.getAmountInTransporter())) : "Besked featuren er deaktiveret!";
                     }
             );
         }
@@ -58,9 +64,9 @@ public class ModuleRegistry {
                     itemValueCategory,
                     item.getMaterial(),
                     s -> {
-                        if(!TransporterAddon.getInstance().getAutoTransporter().hasTransporterData())
+                        if(!ModuleManager.getInstance().getModule(AutoTransporter.class).hasTransporterData())
                             return "Ingen Transporter Data tilgængelig! (skriv /transporter info)";
-                        return TransporterAddon.getInstance().getMessagesModule().isFeatureActive()
+                        return ModuleManager.getInstance().getModule(MessagesModule.class).isFeatureActive()
                                 ?   (item.getAmountInTransporter() == null
                                 ? "0 EMs"
                                 : FormatingUtils.formatNumber((long)((item.getAmountInTransporter().doubleValue() / 6400) * item.getSellValue().doubleValue())) + " EMs"
@@ -77,9 +83,9 @@ public class ModuleRegistry {
                 otherCategory,
                 Material.DIODE,
                 s -> {
-                    if(!TransporterAddon.getInstance().getAutoTransporter().hasTransporterData())
+                    if(!ModuleManager.getInstance().getModule(AutoTransporter.class).hasTransporterData())
                         return "Ingen Transporter Data tilgængelig! (skriv /transporter info)";
-                    return TransporterAddon.getInstance().getAutoTransporter().isFeatureActive() && TransporterAddon.getInstance().getAutoTransporter().isEnabled() ? ModColor.GREEN + "Til" : ModColor.RED + "Fra";
+                    return ModuleManager.getInstance().getModule(AutoTransporter.class).isFeatureActive() && ModuleManager.getInstance().getModule(AutoTransporter.class).isEnabled() ? ModColor.GREEN + "Til" : ModColor.RED + "Fra";
                 }
         );
 
@@ -90,9 +96,9 @@ public class ModuleRegistry {
                 otherCategory,
                 Material.REDSTONE_LAMP,
                 s -> {
-                    if(!TransporterAddon.getInstance().getAutoTransporter().hasTransporterData())
+                    if(!ModuleManager.getInstance().getModule(AutoTransporter.class).hasTransporterData())
                         return "Ingen Transporter Data tilgængelig! (skriv /transporter info)";
-                    return TransporterAddon.getInstance().getAutoGetModule().isFeatureActive() && TransporterAddon.getInstance().getAutoGetModule().isEnabled() ? ModColor.GREEN + "Til" : ModColor.RED + "Fra";
+                    return ModuleManager.getInstance().getModule(AutoGetModule.class).isFeatureActive() && ModuleManager.getInstance().getModule(AutoGetModule.class).isEnabled() ? ModColor.GREEN + "Til" : ModColor.RED + "Fra";
                 }
         );
 
@@ -103,9 +109,9 @@ public class ModuleRegistry {
                 otherCategory,
                 Material.EMERALD,
                 s -> {
-                    if(!TransporterAddon.getInstance().getMessagesModule().isFeatureActive())
+                    if(!ModuleManager.getInstance().getModule(MessagesModule.class).isFeatureActive())
                         return "Besked featuren er deaktiveret!";
-                    if(!TransporterAddon.getInstance().getAutoTransporter().hasTransporterData())
+                    if(!ModuleManager.getInstance().getModule(AutoTransporter.class).hasTransporterData())
                         return "Ingen Transporter Data tilgængelig! (skriv /transporter info)";
                     double value = 0;
                     for(Item item : TransporterAddon.getInstance().getTransporterItemManager().getItemList()) {
@@ -118,18 +124,27 @@ public class ModuleRegistry {
         );
 
         ModuleSystem.registerModule(
-                "balance",
+                "transporter-balance",
                 "Balance",
                 false,
                 otherCategory,
                 Material.EMERALD,
-                s -> BalanceModule.isActive()
-                            ? FormatingUtils.formatNumber(BalanceModule.getBalance()) + " EMs"
+                s -> ModuleManager.getInstance().getModule(BalanceModule.class).isFeatureActive()
+                            ? FormatingUtils.formatNumber(ModuleManager.getInstance().getModule(BalanceModule.class).getBalance().longValue()) + " EMs"
                             : "Balance featuren er ikke aktiv!"
         );
+    }
 
-        McmmoModule.registerModules();
-        ServerModule.registerModules(otherCategory);
+    public Object getItemAmountCategory() {
+        return itemAmountCategory;
+    }
+
+    public Object getItemValueCategory() {
+        return itemValueCategory;
+    }
+
+    public Object getOtherCategory() {
+        return otherCategory;
     }
 
 }

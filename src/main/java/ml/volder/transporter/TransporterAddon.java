@@ -22,7 +22,10 @@ import ml.volder.unikapi.types.ModColor;
 import java.io.File;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 //Feature todo list
 // Auto Transporter feature - Done
@@ -41,13 +44,7 @@ public class TransporterAddon extends AddonMain {
     private static TransporterAddon instance;
 
     private ItemManager transporterItemManager;
-
-    private AutoTransporter autoTransporter;
-    private MessagesModule messagesModule;
-    private AutoGetModule autoGetModule;
-
     DataManager<Data> dataManager;
-
     private Key settingsKeybind;
 
     public static boolean isEnabled() {
@@ -108,21 +105,26 @@ public class TransporterAddon extends AddonMain {
 
             TransporterModulesMenu.addSetting(dropDownElement);
 
+            StringElement element = new StringElement(
+                    "Lobbyer",
+                    "updateServere",
+                    new ControlElement.IconData(Material.PAPER),
+                    "limbo,larmelobby,shoppylobby,maskinrummet,creepylobby",
+                    dataManager
+            );
+            element.addCallback(this::updateServers);
+            updateServers(element.getCurrentValue());
+            TransporterModulesMenu.addSetting(element);
+
 
             TransporterModulesMenu.addSetting(new HeaderElement(ModColor.WHITE + "Transporter Addon" + ModColor.GRAY + " - " + ModColor.WHITE + "Features"));
 
 
             //Modules
-            autoTransporter = new AutoTransporter("autoTransporter", this);
-            new ServerListModule("serverSelector");
-            messagesModule = new MessagesModule("messageModule");
-            new McmmoModule("mcmmoModule");
-            new ServerModule("serverTrackerModule", this);
-            new GuiModulesModule("guiModule");
-            new TransporterMenuModule("transporterMenuModule");
-            autoGetModule = new AutoGetModule("autoGetModule", this);
-            new SignToolsModule("signToolsModule");
-            new BalanceModule("balanceTrackerModule", this);
+            ModuleManager.getInstance().registerModules();
+            ModuleManager.getInstance().initModules();
+            ModuleManager.getInstance().enableModules();
+
 
             //Events
             EventManager.registerEvents(new KeyboardListener());
@@ -139,30 +141,27 @@ public class TransporterAddon extends AddonMain {
         UnikAPI.LOGGER.info("TransporterAddon finished loading");
     }
 
+    private List<String> serverList;
+
+    private void updateServers(String serverString) {
+        serverList = Arrays.stream(serverString.split(",")).collect(Collectors.toList());
+    }
+
+    public List<String> getServerList() {
+        return serverList;
+    }
+
     public ItemManager getTransporterItemManager() {
         return transporterItemManager;
     }
-
-    public MessagesModule getMessagesModule() {
-        return messagesModule;
-    }
-
-    public AutoTransporter getAutoTransporter() {
-        return autoTransporter;
-    }
-
     public Key getSettingsKeybind() {
         return settingsKeybind;
-    }
-
-    public AutoGetModule getAutoGetModule() {
-        return autoGetModule;
     }
 
     //@Override
     public void openSettings(Object o) {
         if (PlayerAPI.getAPI().getCurrentScreen() instanceof TransporterModulesMenu)
             return;
-        PlayerAPI.getAPI().openGuiScreen(new TransporterModulesMenu(TransporterAddon.getInstance(), null));
+        PlayerAPI.getAPI().openGuiScreen(new TransporterModulesMenu(null));
     }
 }

@@ -28,6 +28,8 @@ import java.util.zip.ZipInputStream;
 
 public class UpdateManager {
 
+    public static String currentVersion = "ukendt";
+
     private static class UpdateInfoJson {
         public String version;
         public String forceupdate;
@@ -51,6 +53,7 @@ public class UpdateManager {
             throw new RuntimeException(e);
         }
 
+        currentVersion = localUpdateInfo.version;
         return localUpdateInfo.version.equals(remoteUpdateInfo.version);
     }
 
@@ -153,8 +156,11 @@ public class UpdateManager {
         }
     }
 
-    private static String getJarLocation() {
-        return findPathJar(UpdateManager.class);
+    private static String jarLocation;
+    public static String getJarLocation() {
+        if(jarLocation == null)
+            jarLocation = findPathJar(UpdateManager.class);
+        return jarLocation;
     }
 
     private static String getDownloadURL() {

@@ -17,6 +17,6 @@ public class KeyboardListener implements Listener {
         if(TransporterAddon.getInstance().getSettingsKeybind() == null || TransporterAddon.getInstance().getSettingsKeybind().equals(Key.NONE))
             return;
         if (InputAPI.getAPI().isKeyDown(TransporterAddon.getInstance().getSettingsKeybind()) && !PlayerAPI.getAPI().hasOpenScreen())
-            PlayerAPI.getAPI().openGuiScreen(new TransporterModulesMenu(TransporterAddon.getInstance(), null));
+            PlayerAPI.getAPI().openGuiScreen(new TransporterModulesMenu(null));
     }
 }

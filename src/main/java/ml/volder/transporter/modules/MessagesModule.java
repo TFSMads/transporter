@@ -1,16 +1,16 @@
 package ml.volder.transporter.modules;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.gui.TransporterModulesMenu;
-import ml.volder.unikapi.guisystem.ModTextures;
-import ml.volder.unikapi.guisystem.elements.*;
 import ml.volder.transporter.modules.messagemodule.*;
-import ml.volder.transporter.modules.serverlistmodule.ServerSelecterGui;
-import ml.volder.unikapi.api.player.PlayerAPI;
+import ml.volder.transporter.utils.FormatingUtils;
 import ml.volder.unikapi.event.EventHandler;
 import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.event.events.clientmessageevent.ClientMessageEvent;
+import ml.volder.unikapi.guisystem.ModTextures;
+import ml.volder.unikapi.guisystem.elements.*;
 import ml.volder.unikapi.types.Material;
 
 import java.util.ArrayList;
@@ -18,51 +18,48 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
 
 public class MessagesModule extends SimpleModule implements Listener {
-    private boolean isFeatureActive;
-
     private String itemRegex = "[0-9A-Za-z:_]+";
     private Map<String, String> messagesMap = new HashMap<>();
     private MessageModes messageMode = MessageModes.ACTIONBAR_MESSAGES;
     private List<IMessageHandler> messageHandlers = new ArrayList<>();
 
-    public MessagesModule(String moduleName) {
-        super(moduleName);
-        EventManager.registerEvents(this);
-        fillSettings();
+    private boolean onlyActiveInLobby = true;
+
+    public MessagesModule(ModuleManager.ModuleInfo moduleInfo) {
+        super(moduleInfo);
+    }
+
+    @Override
+    public SimpleModule init() {
         messageHandlers.add(new TransporterFailedHandler(this));
         messageHandlers.add(new TransporterGetMessageHandler(this));
         messageHandlers.add(new TransporterPutMessageHandler(this));
         messageHandlers.add(new TransporterInfoHandler(this));
         messageHandlers.add(new TransporterSendMessageHandler(this));
+        return this;
     }
 
     @Override
-    protected void loadConfig() {
-        isFeatureActive = hasConfigEntry("isFeatureActive") ? getConfigEntry("isFeatureActive", Boolean.class) : true;
+    public SimpleModule enable() {
+        EventManager.registerEvents(this);
+        return this;
     }
 
-    @EventHandler
-    public void onChatMessage(ClientMessageEvent event) {
-        if(!TransporterAddon.isEnabled() || !this.isFeatureActive)
-            return;
-        AtomicBoolean isCancelled = new AtomicBoolean(false);
-        messageHandlers.forEach(iMessageHandler -> {
-            isCancelled.set(iMessageHandler.messageReceived(event.getMessage(), event.getCleanMessage()) ? true : isCancelled.get());
-        });
-        if(isCancelled.get())
-            event.setCancelled(isCancelled.get());
-    }
+    @Override
+    public void fillSettings(Settings subSettings) {
 
-    private void fillSettings() {
-        ModuleElement moduleElement = new ModuleElement("Beskeder", "En feature der benytter beskeder i chatten til at samle data omkring din transporter.", ModTextures.MISC_HEAD_QUESTION, isActive -> {
-            isFeatureActive = isActive;
-            setConfigEntry("isFeatureActive", isFeatureActive);
-        });
-        moduleElement.setActive(isFeatureActive);
-        Settings subSettings = moduleElement.getSubSettings();
+        BooleanElement onlyActiveInLobbyElement  = new BooleanElement(
+                "Kun aktiv i lobbyer!",
+                getDataManager(),
+                "onlyActiveInLobby",
+                new ControlElement.IconData(Material.DIODE),
+                true
+        );
+        this.onlyActiveInLobby = onlyActiveInLobbyElement.getCurrentValue();
+        onlyActiveInLobbyElement.addCallback(b -> this.onlyActiveInLobby = b);
+        subSettings.add(onlyActiveInLobbyElement);
 
         DropDownMenu<MessageModes> dropDownMenu = new DropDownMenu<>("", 0, 0, 0, 0);
         dropDownMenu.fill(MessageModes.values());
@@ -171,8 +168,20 @@ public class MessagesModule extends SimpleModule implements Listener {
         stringElementToFast.addCallback(value -> messagesMap.put(stringElementToFast.getConfigEntryName(), value));
         messagesMap.put(stringElementToFast.getConfigEntryName(), stringElementToFast.getCurrentValue());
         subSettings.add(stringElementToFast);
+    }
 
-        TransporterModulesMenu.addSetting(moduleElement);
+    @EventHandler
+    public void onChatMessage(ClientMessageEvent event) {
+        if(!TransporterAddon.isEnabled() || !this.isFeatureActive)
+            return;
+        if(onlyActiveInLobby && !TransporterAddon.getInstance().getServerList().contains(ModuleManager.getInstance().getModule(ServerModule.class).getCurrentServer()))
+            return;
+        AtomicBoolean isCancelled = new AtomicBoolean(false);
+        messageHandlers.forEach(iMessageHandler -> {
+            isCancelled.set(iMessageHandler.messageReceived(event.getMessage(), event.getCleanMessage()) ? true : isCancelled.get());
+        });
+        if(isCancelled.get())
+            event.setCancelled(isCancelled.get());
     }
 
     public String getItemRegex() {
@@ -184,6 +193,13 @@ public class MessagesModule extends SimpleModule implements Listener {
     }
 
     public String getMessage(String message, String item, String antal, String total, String spiller){
+
+        try {
+            antal = FormatingUtils.formatNumber(Integer.parseInt(antal));
+        }catch (Exception ignored){}
+        try {
+            total = FormatingUtils.formatNumber(Integer.parseInt(total));
+        }catch (Exception ignored){}
 
         message = message.replace('&','§');
 

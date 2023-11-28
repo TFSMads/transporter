@@ -2,6 +2,7 @@ package ml.volder.transporter.modules;
 
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.gui.TransporterModulesMenu;
+import ml.volder.transporter.modules.guimodules.ModuleRegistry;
 import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.api.minecraft.MinecraftAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
@@ -23,45 +24,33 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ServerModule extends SimpleModule implements Listener {
-    private boolean isFeatureActive;
-    private TransporterAddon addon;
-
-    public ServerModule(String moduleName, TransporterAddon addon) {
-        super(moduleName);
-        EventManager.registerEvents(this);
-        this.addon = addon;
-        instance = this;
-        fillSettings();
+    public ServerModule(ModuleManager.ModuleInfo moduleInfo) {
+        super(moduleInfo);
     }
 
     @Override
-    protected void loadConfig() {
-        isFeatureActive = hasConfigEntry("isFeatureActive") ? getConfigEntry("isFeatureActive", Boolean.class) : true;
+    public SimpleModule init() {
+        return this;
     }
 
+    @Override
+    public SimpleModule enable() {
+        registerModules();
+        EventManager.registerEvents(this);
+        return this;
+    }
 
-    private void fillSettings() {
-        ModuleElement moduleElement = new ModuleElement("Server Tracker", "En feature der tracker hvilken server du er forbundet til.", ModTextures.MISC_HEAD_QUESTION, isActive -> {
-            isFeatureActive = isActive;
-            setConfigEntry("isFeatureActive", isFeatureActive);
-        });
-        moduleElement.setActive(isFeatureActive);
+    @Override
+    public void fillSettings(Settings subSettings) {
 
-        TransporterModulesMenu.addSetting(moduleElement);
+    }
+
+    public String getCurrentServer() {
+        return currentServer;
     }
 
     public boolean isFeatureActive() {
         return isFeatureActive;
-    }
-
-    private static ServerModule instance;
-
-    public static String getCurrentServer() {
-        return instance.currentServer;
-    }
-
-    public static boolean isActive() {
-        return instance.isFeatureActive();
     }
 
     private String currentServer;
@@ -101,7 +90,8 @@ public class ServerModule extends SimpleModule implements Listener {
         }, 100L);
     }
 
-    public static void registerModules(Object otherCategory) {
-        ModuleSystem.registerModule("server", "Server", false, otherCategory, Material.PAPER, s -> instance.isFeatureActive ? instance.currentServer == null ? "Opdatere!" : instance.currentServer : "Server Tracker featuren er ikke aktiv!");
+    private void registerModules() {
+        ServerModule instance = ModuleManager.getInstance().getModule(ServerModule.class);
+        ModuleSystem.registerModule("server", "Server", false, GuiModulesModule.getModuleRegistry().getOtherCategory(), Material.PAPER, s -> instance.isFeatureActive ? instance.currentServer == null ? "Opdatere!" : instance.currentServer : "Server Tracker featuren er ikke aktiv!");
     }
 }

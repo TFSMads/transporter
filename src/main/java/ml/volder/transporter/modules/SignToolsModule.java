@@ -20,7 +20,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class SignToolsModule extends SimpleModule implements Listener {
-    private boolean isFeatureActive;
 
     private static Key pasteKey = Key.V;
     private static Key copyKey = Key.C;
@@ -29,15 +28,54 @@ public class SignToolsModule extends SimpleModule implements Listener {
 
     private boolean openSignEditor = true;
 
-    public SignToolsModule(String moduleName) {
-        super(moduleName);
-        EventManager.registerEvents(this);
-        fillSettings();
+    public SignToolsModule(ModuleManager.ModuleInfo moduleInfo) {
+        super(moduleInfo);
     }
 
     @Override
-    protected void loadConfig() {
-        isFeatureActive = hasConfigEntry("isFeatureActive") ? getConfigEntry("isFeatureActive", Boolean.class) : true;
+    public SimpleModule init() {
+        return this;
+    }
+
+    @Override
+    public SimpleModule enable() {
+        EventManager.registerEvents(this);
+        return this;
+    }
+
+    @Override
+    public void fillSettings(Settings subSettings) {
+        HeaderElement headerElement = new HeaderElement("Her under kan du vælge hvilke knapper du vil bruge til at indsætte og kopiere skilte. Bemærk du skal holde kontrol knappen inde sammen med knappen for at handlingen udføres.");
+        subSettings.add(headerElement);
+
+        KeyElement keyElement = new KeyElement("Indsæt - Knap", new ControlElement.IconData(Material.OAK_BUTTON), getDataManager(), "pasteKey", false, pasteKey);
+        pasteKey = keyElement.getCurrentKey();
+        keyElement.addCallback(key -> pasteKey = key);
+        subSettings.add(keyElement);
+
+        keyElement = new KeyElement("Kopier - Knap", new ControlElement.IconData(Material.OAK_BUTTON), getDataManager(), "copyKey", false, copyKey);
+        copyKey = keyElement.getCurrentKey();
+        keyElement.addCallback(key -> copyKey = key);
+        subSettings.add(keyElement);
+
+        headerElement = new HeaderElement("Hvis indstillingen under er slået fra vil det text du har kopieret automatisk blive indsat og skiltet placeres med det samme uden at editoren åbenes. ");
+        subSettings.add(headerElement);
+
+        BooleanElement booleanElement = new BooleanElement("Åben editor", getDataManager(), "openSignEditor", new ControlElement.IconData(Material.OAK_SIGN), openSignEditor);
+        this.openSignEditor = booleanElement.getCurrentValue();
+        booleanElement.addCallback(shouldOpen -> this.openSignEditor = shouldOpen);
+        subSettings.add(booleanElement);
+
+        NumberElement numberElement = new NumberElement(
+                "Place delay",
+                getDataManager(),
+                "placeDelay",
+                new ControlElement.IconData(Material.DIODE),
+                500
+        );
+        placeDelay = numberElement.getCurrentValue();
+        numberElement.addCallback(i -> placeDelay = i);
+        subSettings.add(numberElement);
     }
 
     boolean isSendingUpdatePacket = false;
@@ -71,52 +109,6 @@ public class SignToolsModule extends SimpleModule implements Listener {
             return;
         }
         event.setScreen(new SignGui(getDataManager(), event.getTileEntitySign()));
-    }
-
-
-
-    private void fillSettings() {
-        ModuleElement moduleElement = new ModuleElement("Sign Tools", "En feature til at forbedre skilte så man kan kopiere og indsætte.", ModTextures.MISC_HEAD_QUESTION, isActive -> {
-            isFeatureActive = isActive;
-            setConfigEntry("isFeatureActive", isFeatureActive);
-        });
-        moduleElement.setActive(isFeatureActive);
-
-        Settings subSettings = moduleElement.getSubSettings();
-
-        HeaderElement headerElement = new HeaderElement("Her under kan du vælge hvilke knapper du vil bruge til at indsætte og kopiere skilte. Bemærk du skal holde kontrol knappen inde sammen med knappen for at handlingen udføres.");
-        subSettings.add(headerElement);
-
-        KeyElement keyElement = new KeyElement("Indsæt - Knap", new ControlElement.IconData(Material.OAK_BUTTON), getDataManager(), "pasteKey", false, pasteKey);
-        pasteKey = keyElement.getCurrentKey();
-        keyElement.addCallback(key -> pasteKey = key);
-        subSettings.add(keyElement);
-
-        keyElement = new KeyElement("Kopier - Knap", new ControlElement.IconData(Material.OAK_BUTTON), getDataManager(), "copyKey", false, copyKey);
-        copyKey = keyElement.getCurrentKey();
-        keyElement.addCallback(key -> copyKey = key);
-        subSettings.add(keyElement);
-
-        headerElement = new HeaderElement("Hvis indstillingen under er slået fra vil det text du har kopieret automatisk blive indsat og skiltet placeres med det samme uden at editoren åbenes. ");
-        subSettings.add(headerElement);
-
-        BooleanElement booleanElement = new BooleanElement("Åben editor", getDataManager(), "openSignEditor", new ControlElement.IconData(Material.OAK_SIGN), openSignEditor);
-        this.openSignEditor = booleanElement.getCurrentValue();
-        booleanElement.addCallback(shouldOpen -> this.openSignEditor = shouldOpen);
-        subSettings.add(booleanElement);
-
-        NumberElement numberElement = new NumberElement(
-                "Place delay",
-                getDataManager(),
-                "placeDelay",
-                new ControlElement.IconData(Material.DIODE),
-                500
-        );
-        placeDelay = numberElement.getCurrentValue();
-        numberElement.addCallback(i -> placeDelay = i);
-        subSettings.add(numberElement);
-
-        TransporterModulesMenu.addSetting(moduleElement);
     }
 
     public static Key getPasteKey() {

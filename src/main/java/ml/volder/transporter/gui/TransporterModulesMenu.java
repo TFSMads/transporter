@@ -3,6 +3,7 @@ package ml.volder.transporter.gui;
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
+import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.guisystem.elements.*;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
@@ -34,10 +35,27 @@ public class TransporterModulesMenu extends WrappedGuiScreen {
     private boolean skipDrawDescription = false;
 
     private final double startY = 50D;
-    private TransporterAddon addon;
 
-    public TransporterModulesMenu(TransporterAddon addon, WrappedGuiScreen lastScreen) {
-        this.addon = addon;
+    private WrappedGuiButton buttonAddonInfo;
+
+    private void createButton() {
+        this.buttonAddonInfo = new WrappedGuiButton(11, 0, 0, 23, 20, "");
+    }
+
+    private void renderAddonInfoButton(int mouseX, int mouseY) {
+        if (this.path.size() < 1 && this.buttonAddonInfo != null) {
+            this.buttonAddonInfo.setX(this.getWidth() - (23 + 5));
+            this.buttonAddonInfo.setY(this.getHeight() - 25);
+            this.buttonAddonInfo.setEnabled(true);
+            this.buttonAddonInfo.drawButton(mouseX, mouseY);
+            DrawAPI drawAPI = DrawAPI.getAPI();
+            drawAPI.bindTexture(ModTextures.BUTTON_ADVANCED);
+            drawAPI.drawTexture((double)(this.buttonAddonInfo.getX() + 4), (double)(this.buttonAddonInfo.getY() + 3), 0.0, 0.0, 256.0, 256.0, 14.0, 14.0, 2.0F);
+        }
+
+    }
+
+    public TransporterModulesMenu(WrappedGuiScreen lastScreen) {
         this.lastScreen = lastScreen;
     }
 
@@ -51,6 +69,7 @@ public class TransporterModulesMenu extends WrappedGuiScreen {
         this.scrollbar.init();
         this.buttonBack = new WrappedGuiButton(1, this.getWidth() / 2 - 100, 20, 22, 20, "<");
         this.addButton(buttonBack);
+        createButton();
     }
 
     private void doQuery(String query) {
@@ -178,6 +197,8 @@ public class TransporterModulesMenu extends WrappedGuiScreen {
         if (!this.skipDrawDescription) {
             this.drawDescriptions(mouseX, mouseY, 75, this.getHeight() - 30);
         }
+
+        renderAddonInfoButton(mouseX, mouseY);
     }
 
     private void drawDescriptions(int mouseX, int mouseY, int minY, int maxY) {
@@ -298,6 +319,10 @@ public class TransporterModulesMenu extends WrappedGuiScreen {
                     }
                 }
             }
+        }
+
+        if(buttonAddonInfo.isEnabled() && buttonAddonInfo.isMouseOver()) {
+            PlayerAPI.getAPI().openGuiScreen(new AddonInfoScreen(this));
         }
     }
 

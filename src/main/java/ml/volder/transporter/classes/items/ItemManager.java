@@ -384,6 +384,17 @@ public class ItemManager {
                 Material.SPRUCE_SAPLING
         ));
 
+        itemList.add(new Item(
+                "minecraft:glass",
+                1,
+                0,
+                "Glass",
+                "glass",
+                "glass",
+                "glass",
+                Material.GLASS
+        ));
+
 
         for (int i = 0; i < 16; i++) {
             itemList.add(new Item(

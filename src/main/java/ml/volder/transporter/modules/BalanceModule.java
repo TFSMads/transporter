@@ -18,6 +18,7 @@ import ml.volder.unikapi.guisystem.elements.*;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.types.Material;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
@@ -25,47 +26,28 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class BalanceModule extends SimpleModule implements Listener {
-    private boolean isFeatureActive;
     private TransporterAddon addon;
 
-    public BalanceModule(String moduleName, TransporterAddon addon) {
-        super(moduleName);
-        instance = this;
-        EventManager.registerEvents(this);
-        this.addon = addon;
-        fillSettings();
+    public BalanceModule(ModuleManager.ModuleInfo moduleInfo) {
+        super(moduleInfo);
+        this.addon = TransporterAddon.getInstance();
     }
 
     @Override
-    protected void loadConfig() {
-        isFeatureActive = hasConfigEntry("isFeatureActive") ? getConfigEntry("isFeatureActive", Boolean.class) : true;
-        balance = hasConfigEntry("currentBalance") ? getConfigEntry("currentBalance", Integer.class) : 0;
+    public SimpleModule init() {
+        return this;
     }
 
+    @Override
+    public SimpleModule enable() {
+        EventManager.registerEvents(this);
+        return this;
+    }
 
-    private void fillSettings() {
-        ModuleElement moduleElement = new ModuleElement("Balance", "En feature der tracker hvor mange EMs du har.", ModTextures.MISC_HEAD_QUESTION, isActive -> {
-            isFeatureActive = isActive;
-            setConfigEntry("isFeatureActive", isFeatureActive);
-        });
-        moduleElement.setActive(isFeatureActive);
-
-        Settings subSettings = moduleElement.getSubSettings();
-
+    @Override
+    public void fillSettings(Settings subSettings) {
         HeaderElement headerElement = new HeaderElement("Vælg de servere hvor din balance skal opdateres!");
         subSettings.add(headerElement);
-
-
-        StringElement element = new StringElement(
-                "Servere",
-                "updateServere",
-                new ControlElement.IconData(Material.PAPER),
-                "limbo,larmelobby,shoppylobby,maskinrummet,creepylobby",
-                getDataManager()
-        );
-        element.addCallback(this::updateServers);
-        updateServers(element.getCurrentValue());
-        subSettings.add(element);
 
         BooleanElement booleanElement = new BooleanElement(
                 "Opdatere ved join",
@@ -95,36 +77,39 @@ public class BalanceModule extends SimpleModule implements Listener {
                 new ControlElement.IconData(Material.REDSTONE_TORCH),
                 60
         );
+        numberElement.setMinValue(10);
         updateIntervalSeconds = numberElement.getCurrentValue();
         numberElement.addCallback(i -> updateIntervalSeconds = i);
         subSettings.add(numberElement);
+    }
 
-        TransporterModulesMenu.addSetting(moduleElement);
+    @Override
+    public void loadConfig() {
+        super.loadConfig();
+        balance = hasConfigEntry("currentBalance") ? getDataManager().getSettings().getData().get("currentBalance").getAsBigDecimal() : BigDecimal.valueOf(0);
     }
 
     public boolean isFeatureActive() {
-        return isFeatureActive && ServerModule.isActive();
+        return isFeatureActive && ModuleManager.getInstance().getModule(ServerModule.class).isFeatureActive();
     }
 
-    private List<String> serverList;
     private boolean updateOnJoin = true;
     private boolean updateInterval = false;
     private boolean cancelNextBalanceCommand = false;
     private int updateIntervalSeconds = 60;
 
-    private int balance = 0;
-
-    private void updateServers(String serverString) {
-        serverList = Arrays.stream(serverString.split(",")).collect(Collectors.toList());
-    }
+    private BigDecimal balance = BigDecimal.valueOf(0);
 
     @EventHandler
     public void onMessage(ClientMessageEvent event) {
+        if (!isFeatureActive() || !TransporterAddon.isEnabled())
+            return;
         if(matchBalCommandMessage(event.getCleanMessage()))
             event.setCancelled(true);
         matchPaySendCommandMessage(event.getCleanMessage());
         matchReceiveCommandMessage(event.getCleanMessage());
         matchPlaceAfgift(event.getCleanMessage());
+        matchBreakPayback(event.getCleanMessage());
         matchShopBuy(event.getCleanMessage());
         matchShopBuyOther(event.getCleanMessage());
         matchShopSell(event.getCleanMessage());
@@ -135,12 +120,15 @@ public class BalanceModule extends SimpleModule implements Listener {
         final Pattern pattern = Pattern.compile("^\\[Money] Balance: ([0-9,.]+) Emeralds$");
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
-            double amount = balance;
+            BigDecimal amount = balance;
             try {
-                amount = Double.parseDouble(matcher.group(1).replace(".", "").replace(",","."));
+                amount = new BigDecimal(matcher.group(1).replace(".", "").replace(",","."));
             } catch (NumberFormatException ignored) {}
-            updateBalance((int) amount);
-            return cancelNextBalanceCommand;
+            updateBalance(amount);
+            if (cancelNextBalanceCommand) {
+                cancelNextBalanceCommand = false;
+                return true;
+            }
         }
         return false;
     }
@@ -149,11 +137,11 @@ public class BalanceModule extends SimpleModule implements Listener {
         final Pattern pattern = Pattern.compile("^\\[Money] [0-9A-Za-z_]+ has sent you ([0-9.,]+) Emerald\\.$");
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
-            double amount = balance;
+            BigDecimal amount = balance;
             try {
-                amount += Double.parseDouble(matcher.group(1).replace(".", "").replace(",","."));
+                amount = amount.add(new BigDecimal(matcher.group(1).replace(".", "").replace(",",".")));
             } catch (NumberFormatException ignored) {}
-            updateBalance((int) amount);
+            updateBalance(amount);
         }
     }
 
@@ -161,11 +149,11 @@ public class BalanceModule extends SimpleModule implements Listener {
         final Pattern pattern = Pattern.compile("^\\[Money] You have sent ([0-9.,]+) Emerald to [0-9A-Za-z_]+\\.$");
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
-            double amount = balance;
+            BigDecimal amount = balance;
             try {
-                amount -= Double.parseDouble(matcher.group(1).replace(".", "").replace(",","."));
+                amount = amount.subtract(new BigDecimal(matcher.group(1).replace(".", "").replace(",",".")));
             } catch (NumberFormatException ignored) {}
-            updateBalance((int) amount);
+            updateBalance(amount);
         }
     }
 
@@ -173,79 +161,97 @@ public class BalanceModule extends SimpleModule implements Listener {
         final Pattern pattern = Pattern.compile("^\\Du har betalt ([0-9.]+) ems for at sætte [A-Za-z_\\s]+$");
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
-            double amount = balance;
+            BigDecimal amount = balance;
             try {
-                amount -= Double.parseDouble(matcher.group(1));
+                amount = amount.subtract(new BigDecimal(matcher.group(1)));
             } catch (NumberFormatException ignored) {}
-            updateBalance((int) amount);
+            updateBalance(amount);
+        }
+    }
+
+    private void matchBreakPayback(String clean) {
+        final Pattern pattern = Pattern.compile("^\\Du har fået ([0-9.]+) ems for at fjerne [A-Za-z_\\s]+$");
+        final Matcher matcher = pattern.matcher(clean);
+        if (matcher.find()) {
+            BigDecimal amount = balance;
+            try {
+                amount = amount.add(new BigDecimal(matcher.group(1)));
+            } catch (NumberFormatException ignored) {}
+            updateBalance(amount);
         }
     }
 
     private void matchShopBuy(String clean) {
-        final Pattern pattern = Pattern.compile("^\\[Shop] [0-9A-Za-z_]+ bought [0-9]+ [A-Za-z0-9_\\s#]+ for ([0-9.,]+) Emeralder from you\\.$");
+        final Pattern pattern = Pattern.compile("^\\[Shop] [0-9A-Za-z_]+ bought [0-9]+ [A-Za-z0-9_:\\s#]+ for ([0-9.,]+) Emeralder from you\\.$");
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
-            double amount = balance;
+            BigDecimal amount = balance;
             try {
-                amount += Double.parseDouble(matcher.group(1).replace(".","").replace(",", "."));
+                amount = amount.add(new BigDecimal(matcher.group(1).replace(".","").replace(",", ".")));
             } catch (NumberFormatException ignored) {}
-            updateBalance((int) amount);
+            updateBalance(amount);
         }
     }
 
     private void matchShopBuyOther(String clean) {
-        final Pattern pattern = Pattern.compile("^\\[Shop] You bought [0-9]+ [A-Za-z0-9_\\s#]+ from [0-9A-Za-z_]+ for ([0-9.,]+) Emeralder\\.$");
+        final Pattern pattern = Pattern.compile("^\\[Shop] You bought [0-9]+ [A-Za-z0-9_:\\s#]+ from [0-9A-Za-z_]+ for ([0-9.,]+) Emeralder\\.$");
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
-            double amount = balance;
+            BigDecimal amount = balance;
             try {
-                amount -= Double.parseDouble(matcher.group(1).replace(".","").replace(",", "."));
+                amount = amount.subtract(new BigDecimal(matcher.group(1).replace(".","").replace(",", ".")));
             } catch (NumberFormatException ignored) {}
-            updateBalance((int) amount);
+            updateBalance(amount);
         }
     }
 
     private void matchShopSell(String clean) {
-        final Pattern pattern = Pattern.compile("^\\[Shop] [0-9A-Za-z_]+ sold [0-9]+ [A-Za-z0-9_\\s#]+ for ([0-9.,]+) Emeralder to you\\.$");
+        final Pattern pattern = Pattern.compile("^\\[Shop] [0-9A-Za-z_]+ sold [0-9]+ [A-Za-z0-9_:\\s#]+ for ([0-9.,]+) Emeralder to you\\.$");
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
-            double amount = balance;
+            BigDecimal amount = balance;
             try {
-                amount -= Double.parseDouble(matcher.group(1).replace(".","").replace(",", "."));
+                amount = amount.subtract(new BigDecimal(matcher.group(1).replace(".","").replace(",", ".")));
             } catch (NumberFormatException ignored) {}
-            updateBalance((int) amount);
+            updateBalance(amount);
         }
     }
 
     private void matchShopSellOther(String clean) {
-        final Pattern pattern = Pattern.compile("^\\[Shop] You sold [0-9]+ [A-Za-z0-9_\\s#]+ to [0-9A-Za-z_]+ for ([0-9.,]+) Emeralder\\.$");
+        final Pattern pattern = Pattern.compile("^\\[Shop] You sold [0-9]+ [A-Za-z0-9_:\\s#]+ to [0-9A-Za-z_]+ for ([0-9.,]+) Emeralder\\.$");
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
-            double amount = balance;
+            BigDecimal amount = balance;
             try {
-                amount += Double.parseDouble(matcher.group(1).replace(".","").replace(",", "."));
+                amount = amount.add(new BigDecimal(matcher.group(1).replace(".","").replace(",", ".")));
             } catch (NumberFormatException ignored) {}
-            updateBalance((int) amount);
+            updateBalance(amount);
         }
     }
 
     @EventHandler
     public void onServerSwitch(ServerSwitchEvent event) {
-        if (!isFeatureActive() || !updateOnJoin)
+        if (!isFeatureActive() || !updateOnJoin || !TransporterAddon.isEnabled())
             return;
         if(event.getSwitchType() == ServerSwitchEvent.SWITCH_TYPE.LEAVE)
             return;
         new Timer("updateBalance").schedule(new TimerTask() {
             @Override
             public void run() {
-                if(ServerModule.getCurrentServer() == null)
+                if(ModuleManager.getInstance().getModule(ServerModule.class).getCurrentServer() == null)
                     return;
-                if(serverList.contains(ServerModule.getCurrentServer())) {
+                if(TransporterAddon.getInstance().getServerList().contains(ModuleManager.getInstance().getModule(ServerModule.class).getCurrentServer())) {
                     cancelNextBalanceCommand = true;
                     PlayerAPI.getAPI().sendCommand("bal");
                 }
             }
-        }, 500L);
+        }, 1000L);
+        new Timer("updateCancelVar").schedule(new TimerTask() {
+            @Override
+            public void run() {
+                cancelNextBalanceCommand = false;
+            }
+        }, 1500L);
     }
 
     private int timer = 0;
@@ -255,7 +261,7 @@ public class BalanceModule extends SimpleModule implements Listener {
             return;
         timer+=1;
         if(timer/20 >= updateIntervalSeconds) {
-            if(serverList.contains(ServerModule.getCurrentServer())){
+            if(TransporterAddon.getInstance().getServerList().contains(ModuleManager.getInstance().getModule(ServerModule.class).getCurrentServer())){
                 cancelNextBalanceCommand = true;
                 PlayerAPI.getAPI().sendCommand("bal");
             }
@@ -263,18 +269,13 @@ public class BalanceModule extends SimpleModule implements Listener {
         }
     }
 
-    private void updateBalance(int newBalance) {
+    private void updateBalance(BigDecimal newBalance) {
         this.balance = newBalance;
         getDataManager().getSettings().getData().addProperty("currentBalance", balance);
         getDataManager().save();
     }
 
-    private static BalanceModule instance;
-    public static int getBalance() {
-        return instance.balance;
-    }
-
-    public static boolean isActive(){
-        return instance.isFeatureActive();
+    public BigDecimal getBalance() {
+        return balance;
     }
 }

@@ -2,7 +2,6 @@ package ml.volder.transporter.modules;
 
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.classes.items.Item;
-import ml.volder.transporter.gui.TransporterModulesMenu;
 import ml.volder.transporter.modules.autoget.AutoGetMenu;
 import ml.volder.transporter.modules.autoget.SelectItemMenu;
 import ml.volder.unikapi.api.input.InputAPI;
@@ -13,14 +12,13 @@ import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.event.events.clientkeypressevent.ClientKeyPressEvent;
 import ml.volder.unikapi.event.events.clienttickevent.ClientTickEvent;
-import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.guisystem.elements.*;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.types.Material;
 
 public class AutoGetModule extends SimpleModule implements Listener {
-    private boolean isFeatureActive;
 
+    private boolean onlyActiveInLobby = true;
     private boolean isEnabled;
     private int minimumAmount;
     private Item selectedItem;
@@ -32,18 +30,20 @@ public class AutoGetModule extends SimpleModule implements Listener {
 
     private ListContainerElement selectItemElement;
 
-    public AutoGetModule(String moduleName, TransporterAddon addon) {
-        super(moduleName);
-        EventManager.registerEvents(this);
-        this.addon = addon;
-        fillSettings();
+    public AutoGetModule(ModuleManager.ModuleInfo moduleInfo) {
+        super(moduleInfo);
+        this.addon = TransporterAddon.getInstance();
+    }
 
+    @Override
+    public SimpleModule init() {
         isEnabled = false;
-        minimumAmount = getDataManager().getSettings().getData().has("minimumAmount") ? getDataManager().getSettings().getData().get("minimumAmount").getAsInt() : 64;
-        selectedItem = addon.getTransporterItemManager().getItemByChatName(getDataManager().getSettings().getData().has("selectedItem") ? getDataManager().getSettings().getData().get("selectedItem").getAsString() : "dirt");
+        return this;
+    }
 
+    @Override
+    public SimpleModule enable() {
         //Fill auto get menu
-
         BooleanElement booleanElement = new BooleanElement("Er aktiv",  getDataManager(), null, new ControlElement.IconData(Material.REDSTONE_TORCH), isEnabled);
         booleanElement.addCallback(aBoolean -> {
             isEnabled = aBoolean;
@@ -61,17 +61,22 @@ public class AutoGetModule extends SimpleModule implements Listener {
         selectItemElement.getSubSettings().add(new HeaderElement(""));
         selectItemElement.setOpenSubSettings(false);
         AutoGetMenu.addSetting(selectItemElement);
-
+        EventManager.registerEvents(this);
+        return this;
     }
 
     @Override
-    protected void loadConfig() {
-        isFeatureActive = hasConfigEntry("isFeatureActive") ? getConfigEntry("isFeatureActive", Boolean.class) : true;
+    public void loadConfig() {
+        super.loadConfig();
+        minimumAmount = getDataManager().getSettings().getData().has("minimumAmount") ? getDataManager().getSettings().getData().get("minimumAmount").getAsInt() : 64;
+        selectedItem = addon.getTransporterItemManager().getItemByChatName(getDataManager().getSettings().getData().has("selectedItem") ? getDataManager().getSettings().getData().get("selectedItem").getAsString() : "dirt");
     }
 
     @EventHandler
     public void onTick(ClientTickEvent tickEvent) {
         if(!TransporterAddon.isEnabled() || !this.isEnabled || !this.isFeatureActive)
+            return;
+        if(onlyActiveInLobby && !TransporterAddon.getInstance().getServerList().contains(ModuleManager.getInstance().getModule(ServerModule.class).getCurrentServer()))
             return;
         timer++;
 
@@ -98,14 +103,18 @@ public class AutoGetModule extends SimpleModule implements Listener {
         this.delay = delay;
     }
 
-    private void fillSettings() {
-        ModuleElement moduleElement = new ModuleElement("Auto Get", "En feature til at automatisk tage ting fra din transporter.", ModTextures.MISC_HEAD_QUESTION, isActive -> {
-            isFeatureActive = isActive;
-            setConfigEntry("isFeatureActive", isFeatureActive);
-        });
-        moduleElement.setActive(isFeatureActive);
+    public void fillSettings(Settings subSettings) {
 
-        Settings subSettings = moduleElement.getSubSettings();
+        BooleanElement onlyActiveInLobbyElement  = new BooleanElement(
+                "Kun aktiv i lobbyer!",
+                getDataManager(),
+                "onlyActiveInLobby",
+                new ControlElement.IconData(Material.DIODE),
+                true
+        );
+        this.onlyActiveInLobby = onlyActiveInLobbyElement.getCurrentValue();
+        onlyActiveInLobbyElement.addCallback(b -> this.onlyActiveInLobby = b);
+        subSettings.add(onlyActiveInLobbyElement);
 
         SliderElement sliderElement = new SliderElement("Delay (Ticks)", getDataManager(), "autoGetDelay", new ControlElement.IconData(Material.WATCH), 125);
         sliderElement.setRange(20, 500);
@@ -119,8 +128,6 @@ public class AutoGetModule extends SimpleModule implements Listener {
         keyElement.addCallback(key -> this.openKey = key);
 
         subSettings.add(keyElement);
-
-        TransporterModulesMenu.addSetting(moduleElement);
     }
 
     public boolean isFeatureActive() {

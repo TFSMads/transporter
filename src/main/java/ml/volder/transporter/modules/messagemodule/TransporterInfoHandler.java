@@ -2,7 +2,9 @@ package ml.volder.transporter.modules.messagemodule;
 
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.classes.items.Item;
+import ml.volder.transporter.modules.AutoTransporter;
 import ml.volder.transporter.modules.MessagesModule;
+import ml.volder.transporter.modules.ModuleManager;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,7 +25,7 @@ public class TransporterInfoHandler implements IMessageHandler {
             for(Item item : TransporterAddon.getInstance().getTransporterItemManager().getItemList()){
                 if(matcher.group(1).equals(item.getTransporterInfoName())){
                     item.setAmountInTransporter(Integer.parseInt(matcher.group(2)));
-                    TransporterAddon.getInstance().getAutoTransporter().transporterInfoSet();
+                    ModuleManager.getInstance().getModule(AutoTransporter.class).transporterInfoSet();
                     return false;
                 }
             }
