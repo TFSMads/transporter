@@ -1,0 +1,14 @@
+message_regex,action
+^\[Money] Balance: (?<amountf1>[0-9,.]+) Emeralds$;SET
+^\[Money] [0-9A-Za-z_]+ has sent you (?<amountf1>[0-9.,]+) Emerald\.$;ADD
+^\[Money] You have sent (?<amountf1>[0-9.,]+) Emerald to [0-9A-Za-z_]+\.$;REMOVE
+^\Du har betalt (?<amountf2>[0-9.]+) ems for at sætte [A-Za-z_\s]+$;REMOVE
+^\Du har fået (?<amountf2>[0-9.]+) ems for at fjerne [A-Za-z_\s]+$;ADD
+^\[Shop] [0-9A-Za-z_]+ bought [0-9]+ [A-Za-z0-9_:\s#]+ for (?<amountf1>[0-9.,]+) Emeralder from you\.$;ADD
+^\[Shop] You bought [0-9]+ [A-Za-z0-9_:\s#]+ from [0-9A-Za-z_]+ for (?<amountf1>[0-9.,]+) Emeralder\.$;REMOVE
+^\[Shop] [0-9A-Za-z_]+ sold [0-9]+ [A-Za-z0-9_:\s#]+ for (?<amountf1>[0-9.,]+) Emeralder to you\.$;REMOVE
+^\[Shop] You sold [0-9]+ [A-Za-z0-9_:\s#]+ to [0-9A-Za-z_]+ for (?<amountf1>[0-9.,]+) Emeralder\.$;ADD
+^\[Shop] You sold [0-9]+ [A-Za-z0-9_:\s#]+ to [0-9A-Za-z_]+ for (?<amountf1>[0-9.,]+)\.$;ADD
+^\[Shop] You bought [0-9]+ [A-Za-z0-9_:\s#]+ from [0-9A-Za-z_]+ for (?<amountf1>[0-9.,]+)\.$;REMOVE
+^\[Shop] (?!You\b)[0-9A-Za-z_]+ sold [0-9]+ [A-Za-z0-9_:\s#]+ for (?<amountf1>[0-9.,]+)\.$;REMOVE
+^\[Shop] (?!You\b)[0-9A-Za-z_]+ bought [0-9]+ [A-Za-z0-9_:\s#]+ for (?<amountf1>[0-9.,]+)\.$;ADD

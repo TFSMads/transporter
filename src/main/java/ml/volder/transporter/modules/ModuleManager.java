@@ -2,6 +2,7 @@ package ml.volder.transporter.modules;
 
 import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.guisystem.elements.Settings;
+import ml.volder.unikapi.logger.Logger;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -74,11 +75,8 @@ public class ModuleManager {
                 try {
                     loadedModules.put(klass, klass.getDeclaredConstructor(ModuleInfo.class).newInstance(moduleInfo).init());
                 } catch (Exception e) {
+                    UnikAPI.LOGGER.printStackTrace(Logger.LOG_LEVEL.WARNING, e);
                     UnikAPI.LOGGER.warning("Kunne ikke init modulet: " + moduleInfo.displayName + " (" + moduleInfo.name + ")");
-                    StringWriter sw = new StringWriter();
-                    PrintWriter pw = new PrintWriter(sw);
-                    e.printStackTrace(pw);
-                    UnikAPI.LOGGER.debug(sw.toString());
                 }
             }
         });
@@ -92,11 +90,8 @@ public class ModuleManager {
                 Settings subSettings = module.addSetting();
                 module.fillSettings(subSettings);
             } catch (Exception e) {
+                UnikAPI.LOGGER.printStackTrace(Logger.LOG_LEVEL.WARNING, e);
                 UnikAPI.LOGGER.warning("Kunne ikke load modulet: " + module.getDisplayName() + " (" + module.getModuleName() + ")");
-                StringWriter sw = new StringWriter();
-                PrintWriter pw = new PrintWriter(sw);
-                e.printStackTrace(pw);
-                UnikAPI.LOGGER.debug(sw.toString());
             }
         });
     }

@@ -49,7 +49,7 @@ public class TransporterMenuEntry {
         drawAPI.drawRect(x + width - outlineWidth, y, x + width, y + height, ModColor.toRGB(128,128, 128, 255));
 
         drawAPI.drawItem(item.getMaterial(), item.getItemDamage(), x + 2, y + 3, "", 2);
-        drawAPI.drawString(item.getDisplayName(), x + 32 + 4, y + 5, 0xFFFFFF);
+        drawAPI.drawString(item.getDisplayName().length() >= 15 ? item.getDisplayName().substring(0, 14) : item.getDisplayName(), x + 32 + 4, y + 5, 0xFFFFFF);
         if(ModuleManager.getInstance().getModule(MessagesModule.class).isFeatureActive())
             drawAPI.drawString("Du har " + getAmountString(), x + 32 + 4, y + 14, 0x808080, 0.8);
         this.hoverGetButton = this.drawButton(ModTextures.BUTTON_GET, x + 36 ,y + 22, 12, mouseX, mouseY);
@@ -80,14 +80,14 @@ public class TransporterMenuEntry {
             return;
         if(hoverGetButton) {
             if(InputAPI.getAPI().isShiftKeyDown()) {
-                PlayerAPI.getAPI().sendCommand("transporter get " + item.getCommandName());
+                PlayerAPI.getAPI().sendCommand("transporter get " + item.getName());
             } else {
-                PlayerAPI.getAPI().sendCommand("transporter get " + item.getCommandName() + " " + ModuleManager.getInstance().getModule(TransporterMenuModule.class).getWithdrawAmount());
+                PlayerAPI.getAPI().sendCommand("transporter get " + item.getName() + " " + ModuleManager.getInstance().getModule(TransporterMenuModule.class).getWithdrawAmount());
 
             }
             PlayerAPI.getAPI().openGuiScreen(null);
         }else if (hoverPutButton) {
-            PlayerAPI.getAPI().sendCommand("transporter put " + item.getCommandName());
+            PlayerAPI.getAPI().sendCommand("transporter put " + item.getName());
             PlayerAPI.getAPI().openGuiScreen(null);
         }
     }

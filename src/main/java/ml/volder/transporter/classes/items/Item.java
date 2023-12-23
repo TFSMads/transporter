@@ -8,28 +8,25 @@ import java.util.UUID;
 
 public class Item {
 
-    @Deprecated
-    private String registryName;
+    private String name;
+    private String legacy_type;
+    private String modern_type;
+    private int id;
+
     private Integer itemDamage;
     private Integer sellValue;
-    private String displayName;
-    private String commandName;
-    private String chatName;
-    private String transporterInfoName;
     private Integer amountInTransporter;
     private Material material;
     private boolean isAutoTransporterEnabled = true;
 
     private UUID currentPlayerData;
 
-    public Item(String registryName, Integer itemDamage, Integer sellValue, String displayName, String commandName, String chatName, String transporterInfoName, Material material){
-        this.registryName = registryName;
+    public Item(int id, String name, String legacy_type, String modern_type, int itemDamage, Material material){
+        this.id = id;
+        this.name = name;
+        this.legacy_type = legacy_type;
+        this.modern_type = modern_type;
         this.itemDamage = itemDamage;
-        this.sellValue = sellValue;
-        this.displayName = displayName;
-        this.commandName = commandName;
-        this.chatName = chatName;
-        this.transporterInfoName = transporterInfoName;
         this.material = material;
     }
 
@@ -40,7 +37,7 @@ public class Item {
     public void setAmountInTransporter(Integer amountInTransporter) {
         this.amountInTransporter = amountInTransporter;
         if(TransporterAddon.getInstance().getTransporterItemManager().getDataManager() != null){
-            TransporterAddon.getInstance().getTransporterItemManager().getDataManager().getSettings().getData().addProperty("amount." + this.getChatName(), this.amountInTransporter);
+            TransporterAddon.getInstance().getTransporterItemManager().getDataManager().getSettings().getData().addProperty("amount." + this.getName(), this.amountInTransporter);
             TransporterAddon.getInstance().getTransporterItemManager().getDataManager().save();
         }
     }
@@ -49,14 +46,6 @@ public class Item {
         if(currentPlayerData == null || !currentPlayerData.equals(PlayerAPI.getAPI().getUUID()))
             loadData();
         return amountInTransporter;
-    }
-
-    /**
-     * @apiNote RegistryName er blevet tilføjet til UnikAPI Materials. Benyt det istedet for den her UnikAPI da disse registry names kun virker med legacy item (før 1.13)
-     */
-    @Deprecated
-    public String getRegistryName() {
-        return registryName;
     }
 
     public Integer getItemDamage() {
@@ -70,20 +59,28 @@ public class Item {
     }
 
     public String getDisplayName() {
-        return displayName;
+        //TODO tilføj et display navn i transporter-items.csv. Der ser bedre ud end name.
+        return name.substring(0, 1).toUpperCase() + name.substring(1);
     }
 
-    public String getCommandName() {
-        return commandName;
+    public String getName() {
+        return name;
     }
 
-    public String getChatName() {
-        return chatName;
+    public String getLegacyType() {
+        return legacy_type;
     }
 
-    public String getTransporterInfoName() {
-        return transporterInfoName;
+    public String getModernType() {
+        return modern_type;
     }
+
+    public int getSaId() {
+        return id;
+    }
+
+
+
 
     public Material getMaterial() {
         return material;
@@ -94,8 +91,8 @@ public class Item {
             return;
         UUID uuid = PlayerAPI.getAPI().getUUID();
         currentPlayerData = uuid;
-        this.amountInTransporter = TransporterAddon.getInstance().getTransporterItemManager().getDataManager().getSettings().getData().has("amount." + this.getChatName())
-                ? TransporterAddon.getInstance().getTransporterItemManager().getDataManager().getSettings().getData().get("amount." + this.getChatName()).getAsInt()
+        this.amountInTransporter = TransporterAddon.getInstance().getTransporterItemManager().getDataManager().getSettings().getData().has("amount." + this.getName())
+                ? TransporterAddon.getInstance().getTransporterItemManager().getDataManager().getSettings().getData().get("amount." + this.getName()).getAsInt()
                 : 0;
     }
 

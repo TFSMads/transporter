@@ -49,8 +49,8 @@ public class UpdateManager {
             InputStream remoteInputStream = new URL("https://github.com/TFSMads/transporter/releases/latest/download/updateInfo.json").openStream();
             reader = new InputStreamReader(remoteInputStream, "UTF-8");
             remoteUpdateInfo = gson.fromJson(reader, UpdateInfoJson.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (IOException ignored) {
+            return true;
         }
 
         currentVersion = localUpdateInfo.version;

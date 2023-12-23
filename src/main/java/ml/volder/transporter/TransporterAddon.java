@@ -1,11 +1,13 @@
 package ml.volder.transporter;
 
+import com.google.gson.JsonElement;
 import ml.volder.transporter.classes.exceptions.LoadingFailedException;
 import ml.volder.transporter.classes.items.ItemManager;
 import ml.volder.transporter.gui.TransporterModulesMenu;
 import ml.volder.transporter.listeners.KeyboardListener;
 import ml.volder.transporter.listeners.MainMenuOpenListener;
 import ml.volder.transporter.modules.*;
+import ml.volder.transporter.updater.UpdateManager;
 import ml.volder.transporter.utils.FormatingUtils;
 import ml.volder.unikapi.AddonMain;
 import ml.volder.unikapi.UnikAPI;
@@ -16,10 +18,14 @@ import ml.volder.unikapi.datasystem.DataManager;
 import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.guisystem.elements.*;
 import ml.volder.unikapi.keysystem.Key;
+import ml.volder.unikapi.logger.Logger;
 import ml.volder.unikapi.types.Material;
 import ml.volder.unikapi.types.ModColor;
 
 import java.io.File;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Arrays;
@@ -77,7 +83,64 @@ public class TransporterAddon extends AddonMain {
     }
 
     public void onEnable() {
+        //Setup logger
+        //Get loggerOptions.json dataManager
+        DataManager<Data> loggerOptions = DataManager.getOrCreateDataManager(new File(UnikAPI.getCommonDataFolder(), "loggerOptions.json"));
+        //Parse Logger.DEBUG_LEVEL from loggerOptions entry debugLevel. entry can be either enum or enum ordinal
+        String data = loggerOptions.getSettings().getEntry("debugLevel", String.class);
+        try {
+            int ordinal = Integer.parseInt(data);
+            Logger.debugLevel.set(Logger.DEBUG_LEVEL.values()[ordinal]);
+        }catch (Exception ignored) {
+            try {
+                Logger.debugLevel.set(Logger.DEBUG_LEVEL.valueOf(data));
+            }catch (Exception ignored2) {
+                loggerOptions.getSettings().getData().addProperty("debugLevel", Logger.DEBUG_LEVEL.DISABLED.toString());
+            }
+        }
+        //Parse Logger.LOG_LEVEL from loggerOptions entry logLevel. entry can be either enum or enum ordinal
+        data = loggerOptions.getSettings().getEntry("logLevel", String.class);
+        try {
+            int ordinal = Integer.parseInt(data);
+            Logger.logLevel.set(Logger.LOG_LEVEL.values()[ordinal]);
+        }catch (Exception ignored) {
+            try {
+                Logger.logLevel.set(Logger.LOG_LEVEL.valueOf(data));
+            }catch (Exception ignored2) {
+                loggerOptions.getSettings().getData().addProperty("logLevel", Logger.LOG_LEVEL.INFO.toString());
+            }
+        }
+        //Parse Logger.printStackTrace from loggerOptions entry printStackTrace. entry must be boolean
+        Boolean d = loggerOptions.getSettings().getEntry("printStackTrace", Boolean.class);
+        if(d != null)
+            Logger.printStackTrace.set(d);
+        else
+            loggerOptions.getSettings().getData().addProperty("printStackTrace", false);
+        loggerOptions.save();
+
         UnikAPI.LOGGER.info("Loading TransporterAddon");
+        UnikAPI.LOGGER.info("**************************************************");
+        UnikAPI.LOGGER.info("Debug level is " + Logger.debugLevel.get());
+        UnikAPI.LOGGER.info("Log level is " + Logger.logLevel.get());
+        UnikAPI.LOGGER.info("Print stack trace is " + Logger.printStackTrace.get());
+
+        if(Logger.debugLevel.get() == Logger.DEBUG_LEVEL.TESTING) {
+            UnikAPI.LOGGER.info("Testing logger:");
+            UnikAPI.LOGGER.debug("This is a debug message", Logger.DEBUG_LEVEL.TESTING);
+            UnikAPI.LOGGER.debug("This is a debug message", Logger.DEBUG_LEVEL.LOWEST);
+            UnikAPI.LOGGER.debug("This is a debug message", Logger.DEBUG_LEVEL.LOW);
+            UnikAPI.LOGGER.debug("This is a debug message", Logger.DEBUG_LEVEL.MEDIUM);
+            UnikAPI.LOGGER.debug("This is a debug message", Logger.DEBUG_LEVEL.HIGH);
+            UnikAPI.LOGGER.debug("This is a debug message", Logger.DEBUG_LEVEL.HIGHEST);
+            UnikAPI.LOGGER.finest("This is a finest message");
+            UnikAPI.LOGGER.finer("This is a finer message");
+            UnikAPI.LOGGER.fine("This is a fine message");
+            UnikAPI.LOGGER.info("This is an info message");
+            UnikAPI.LOGGER.warning("This is a warning message");
+            UnikAPI.LOGGER.severe("This is a severe message");
+        }
+
+
 
         try {
             instance = this;
@@ -116,6 +179,31 @@ public class TransporterAddon extends AddonMain {
             updateServers(element.getCurrentValue());
             TransporterModulesMenu.addSetting(element);
 
+            ListContainerElement autoTransporterItems = new ListContainerElement("Avanceret", new ControlElement.IconData(Material.DIODE));
+
+            ListContainerElement loggerOptionsElement = new ListContainerElement("Logger indstillinger", new ControlElement.IconData(Material.PAPER));
+
+
+            DropDownMenu<Logger.LOG_LEVEL> logLevelDropDownMenu = new DropDownMenu<>("", 0, 0, 0, 0);
+            logLevelDropDownMenu.fill(Logger.LOG_LEVEL.values());
+            DropDownElement<Logger.LOG_LEVEL> logLevelDropDownElement = new DropDownElement<>("Log Level", "logLevel", logLevelDropDownMenu, new ControlElement.IconData(Material.PAPER), Logger.LOG_LEVEL::valueOf, loggerOptions);
+            logLevelDropDownElement.setCallback(Logger.logLevel::set);
+            loggerOptionsElement.getSubSettings().add(logLevelDropDownElement);
+
+            DropDownMenu<Logger.DEBUG_LEVEL> debugLevelDropDownMenu = new DropDownMenu<>("", 0, 0, 0, 0);
+            debugLevelDropDownMenu.fill(Logger.DEBUG_LEVEL.values());
+            DropDownElement<Logger.DEBUG_LEVEL> debugLevelDropDownElement = new DropDownElement<>("Debug Level", "debugLevel", debugLevelDropDownMenu, new ControlElement.IconData(Material.PAPER), Logger.DEBUG_LEVEL::valueOf, loggerOptions);
+            debugLevelDropDownElement.setCallback(Logger.debugLevel::set);
+            loggerOptionsElement.getSubSettings().add(debugLevelDropDownElement);
+
+            BooleanElement printStackTraceElement = new BooleanElement("Print stack trace", loggerOptions, "printStackTrace", new ControlElement.IconData(Material.DIODE), Logger.printStackTrace.get());
+            printStackTraceElement.addCallback(Logger.printStackTrace::set);
+            loggerOptionsElement.getSubSettings().add(printStackTraceElement);
+
+            autoTransporterItems.getSubSettings().add(loggerOptionsElement);
+
+            TransporterModulesMenu.addSetting(autoTransporterItems);
+
 
             TransporterModulesMenu.addSetting(new HeaderElement(ModColor.WHITE + "Transporter Addon" + ModColor.GRAY + " - " + ModColor.WHITE + "Features"));
 
@@ -131,13 +219,14 @@ public class TransporterAddon extends AddonMain {
             EventManager.registerEvents(new MainMenuOpenListener());
         }catch (Exception e) {
             UnikAPI.getCommonDataFolder().delete();
-            e.printStackTrace();
+            UnikAPI.LOGGER.printStackTrace(Logger.LOG_LEVEL.SEVERE, e);
             throw new LoadingFailedException();
         }
 
 
 
         isEnabled = true;
+        UnikAPI.LOGGER.info("**************************************************");
         UnikAPI.LOGGER.info("TransporterAddon finished loading");
     }
 

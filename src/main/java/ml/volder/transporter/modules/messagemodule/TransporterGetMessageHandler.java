@@ -22,7 +22,7 @@ public class TransporterGetMessageHandler implements IMessageHandler {
     }
 
     private boolean matchGetManglerMessage(String clean){
-        final Pattern pattern = Pattern.compile("^Du har ikke nok items i din transporter!$");
+        final Pattern pattern = Pattern.compile(module.getRegexByMessageId("get_missing"));
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
             MessageModes mode = module.getMessageMode();
@@ -40,19 +40,22 @@ public class TransporterGetMessageHandler implements IMessageHandler {
     }
 
     private boolean matchGetSuccessMessage(String clean){
-        final Pattern pattern = Pattern.compile("^Du har taget ([0-9]+) (" + module.getItemRegex() + ") fra din transporter.$");
+        final Pattern pattern = Pattern.compile(module.getRegexByMessageId("get_success"));
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
-            Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByChatName(matcher.group(2));
-            item.setAmountInTransporter(item.getAmountInTransporter()-Integer.parseInt(matcher.group(1)));
+            String itemMatch = matcher.group("item") != null ? matcher.group("item") : "ukendt";
+            String amountMatch = matcher.group("amount") != null ? matcher.group("amount") : "ukendt";
+
+            Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByName(itemMatch);
+            item.setAmountInTransporter(item.getAmountInTransporter()-Integer.parseInt(amountMatch));
             MessageModes mode = module.getMessageMode();
             if(mode == MessageModes.NO_MESSAGES) {
                 return true;
             }else if(mode == MessageModes.ACTIONBAR_MESSAGES){
-                PlayerAPI.getAPI().displayActionBarMessage(module.getMessage(module.getRawMessage("getSuccess"), item.getDisplayName().toLowerCase(), matcher.group(1), String.valueOf(item.getAmountInTransporter())));
+                PlayerAPI.getAPI().displayActionBarMessage(module.getMessage(module.getRawMessage("getSuccess"), item.getDisplayName().toLowerCase(), amountMatch, String.valueOf(item.getAmountInTransporter())));
                 return true;
             }else if(mode == MessageModes.CHAT_MESSAGES){
-                PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("getSuccess"), item.getDisplayName().toLowerCase(), matcher.group(1), String.valueOf(item.getAmountInTransporter())));
+                PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("getSuccess"), item.getDisplayName().toLowerCase(), amountMatch, String.valueOf(item.getAmountInTransporter())));
                 return true;
             }
         }

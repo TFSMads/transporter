@@ -69,7 +69,7 @@ public class AutoGetModule extends SimpleModule implements Listener {
     public void loadConfig() {
         super.loadConfig();
         minimumAmount = getDataManager().getSettings().getData().has("minimumAmount") ? getDataManager().getSettings().getData().get("minimumAmount").getAsInt() : 64;
-        selectedItem = addon.getTransporterItemManager().getItemByChatName(getDataManager().getSettings().getData().has("selectedItem") ? getDataManager().getSettings().getData().get("selectedItem").getAsString() : "dirt");
+        selectedItem = addon.getTransporterItemManager().getItemByName(getDataManager().getSettings().getData().has("selectedItem") ? getDataManager().getSettings().getData().get("selectedItem").getAsString() : "dirt");
     }
 
     @EventHandler
@@ -84,7 +84,7 @@ public class AutoGetModule extends SimpleModule implements Listener {
             return;
 
         if(InventoryAPI.getAPI().getAmount(selectedItem.getMaterial(), selectedItem.getItemDamage()) < minimumAmount) {
-            PlayerAPI.getAPI().sendCommand("transporter get " + selectedItem.getCommandName());
+            PlayerAPI.getAPI().sendCommand("transporter get " + selectedItem.getName());
             timer = 0;
         }
     }
@@ -140,7 +140,7 @@ public class AutoGetModule extends SimpleModule implements Listener {
 
     public void selectItem(Item item) {
         this.selectedItem = item;
-        getDataManager().getSettings().getData().addProperty("selectedItem", selectedItem.getChatName());
+        getDataManager().getSettings().getData().addProperty("selectedItem", selectedItem.getName());
         getDataManager().save();
         ControlElement.IconData iconData = new ControlElement.IconData(selectedItem.getMaterial());
         iconData.setItemDamage(selectedItem.getItemDamage());

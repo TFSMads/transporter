@@ -2,17 +2,23 @@ package ml.volder.transporter.modules;
 
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import ml.volder.transporter.TransporterAddon;
+import ml.volder.transporter.classes.items.Item;
+import ml.volder.transporter.classes.items.ItemManager;
 import ml.volder.transporter.gui.TransporterModulesMenu;
 import ml.volder.transporter.modules.messagemodule.*;
 import ml.volder.transporter.utils.FormatingUtils;
+import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.event.EventHandler;
 import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.event.events.clientmessageevent.ClientMessageEvent;
 import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.guisystem.elements.*;
+import ml.volder.unikapi.logger.Logger;
 import ml.volder.unikapi.types.Material;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,8 +26,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MessagesModule extends SimpleModule implements Listener {
-    private String itemRegex = "[0-9A-Za-z:_]+";
     private Map<String, String> messagesMap = new HashMap<>();
+    private Map<String, String> messageRegexMap = new HashMap<>();
     private MessageModes messageMode = MessageModes.ACTIONBAR_MESSAGES;
     private List<IMessageHandler> messageHandlers = new ArrayList<>();
 
@@ -33,12 +39,52 @@ public class MessagesModule extends SimpleModule implements Listener {
 
     @Override
     public SimpleModule init() {
+        loadMessageRegexFromCsv();
+
         messageHandlers.add(new TransporterFailedHandler(this));
         messageHandlers.add(new TransporterGetMessageHandler(this));
         messageHandlers.add(new TransporterPutMessageHandler(this));
         messageHandlers.add(new TransporterInfoHandler(this));
         messageHandlers.add(new TransporterSendMessageHandler(this));
         return this;
+    }
+
+    public String getRegexByMessageId(String messageId) {
+        return messageRegexMap.getOrDefault(messageId, "");
+    }
+
+    private void loadMessageRegexFromCsv() {
+        Map<String, String> messageRegexMap = new HashMap<>();
+        InputStream inputStream = ItemManager.class.getClassLoader().getResourceAsStream("transporter-messages.csv");
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+            String line = br.readLine();
+            while (line != null) {
+                if(line.startsWith("message_id"))
+                    line = br.readLine();
+
+                try {
+                    String[] attributes = line.split(",");
+                    messageRegexMap.put(attributes[0], attributes[1]);
+                    line = br.readLine();
+                }catch (Exception e) {
+                    UnikAPI.LOGGER.printStackTrace(Logger.LOG_LEVEL.INFO, e);
+                    UnikAPI.LOGGER.debug("Failed to load message: " + line);
+                    line = br.readLine();
+                }
+            }
+        } catch (IOException e) {
+            UnikAPI.LOGGER.printStackTrace(Logger.LOG_LEVEL.INFO, e);
+            throw new RuntimeException(e);
+        }
+
+        messageRegexMap.forEach((key, value) -> {
+            //find text between % and % and replace with regex if present in messageRegexMap
+            while(value.contains("%")) {
+                String regexKey = value.substring(value.indexOf("%") + 1, value.indexOf("%", value.indexOf("%") + 1));
+                value = value.replace("%" + regexKey + "%", messageRegexMap.getOrDefault(regexKey, ""));
+            }
+            this.messageRegexMap.put(key, value);
+        });
     }
 
     @Override
@@ -178,14 +224,11 @@ public class MessagesModule extends SimpleModule implements Listener {
             return;
         AtomicBoolean isCancelled = new AtomicBoolean(false);
         messageHandlers.forEach(iMessageHandler -> {
-            isCancelled.set(iMessageHandler.messageReceived(event.getMessage(), event.getCleanMessage()) ? true : isCancelled.get());
+            boolean result = iMessageHandler.messageReceived(event.getMessage(), event.getCleanMessage());
+            isCancelled.set(result || isCancelled.get());
         });
         if(isCancelled.get())
             event.setCancelled(isCancelled.get());
-    }
-
-    public String getItemRegex() {
-        return itemRegex;
     }
 
     public String getRawMessage(String key) {

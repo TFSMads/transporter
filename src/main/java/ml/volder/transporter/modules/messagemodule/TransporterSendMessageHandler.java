@@ -22,19 +22,23 @@ public class TransporterSendMessageHandler implements IMessageHandler {
     }
 
     private boolean matchSendMessage(String clean){
-        final Pattern pattern = Pattern.compile("^Du sendte ([0-9]+) (" + module.getItemRegex() + ") til ([a-zA-Z0-9_]+)$");
+        final Pattern pattern = Pattern.compile(module.getRegexByMessageId("send_message"));
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
-            Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByChatName(matcher.group(2));
-            item.setAmountInTransporter(item.getAmountInTransporter()-Integer.parseInt(matcher.group(1)));
-            PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("sendSuccess"), item.getDisplayName().toLowerCase(), matcher.group(1), String.valueOf(item.getAmountInTransporter()), matcher.group(3)));
+            String amountMatch = matcher.group("amount") != null ? matcher.group("amount") : "ukendt";
+            String itemMatch = matcher.group("item") != null ? matcher.group("item") : "ukendt";
+            String playerMatch = matcher.group("player") != null ? matcher.group("player") : "ukendt";
+
+            Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByName(itemMatch);
+            item.setAmountInTransporter(item.getAmountInTransporter()-Integer.parseInt(amountMatch));
+            PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("sendSuccess"), item.getDisplayName().toLowerCase(), amountMatch, String.valueOf(item.getAmountInTransporter()), playerMatch));
             return true;
         }
         return false;
     }
 
     private boolean matchSendOffline(String clean){
-        final Pattern pattern = Pattern.compile("^Denne spiller er ikke online$");
+        final Pattern pattern = Pattern.compile(module.getRegexByMessageId("send_offline"));
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
             PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("sendOffline"), null, null, null));
@@ -44,7 +48,7 @@ public class TransporterSendMessageHandler implements IMessageHandler {
     }
 
     private boolean matchSendSelf(String clean){
-        final Pattern pattern = Pattern.compile("^Du kan ikke sende til dig selv$");
+        final Pattern pattern = Pattern.compile(module.getRegexByMessageId("send_self"));
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
             PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("sendSelf"), null, null, null));
@@ -54,12 +58,16 @@ public class TransporterSendMessageHandler implements IMessageHandler {
     }
 
     private boolean matchModtagMessage(String clean){
-        final Pattern pattern = Pattern.compile("^Du modtog ([0-9]+) (" + module.getItemRegex() + ") fra ([a-zA-Z0-9_]+)$");
+        final Pattern pattern = Pattern.compile(module.getRegexByMessageId("send_receive"));
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
-            Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByChatName(matcher.group(2));
-            item.setAmountInTransporter(item.getAmountInTransporter()+Integer.parseInt(matcher.group(1)));
-            PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("modtagSuccess"), item.getDisplayName().toLowerCase(), matcher.group(1), String.valueOf(item.getAmountInTransporter()), matcher.group(3)));
+            String amountMatch = matcher.group("amount") != null ? matcher.group("amount") : "ukendt";
+            String itemMatch = matcher.group("item") != null ? matcher.group("item") : "ukendt";
+            String playerMatch = matcher.group("player") != null ? matcher.group("player") : "ukendt";
+
+            Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByName(itemMatch);
+            item.setAmountInTransporter(item.getAmountInTransporter()+Integer.parseInt(amountMatch));
+            PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("modtagSuccess"), item.getDisplayName().toLowerCase(), amountMatch, String.valueOf(item.getAmountInTransporter()), playerMatch));
             return true;
         }
         return false;

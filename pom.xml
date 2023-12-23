@@ -115,18 +115,18 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-install-plugin</artifactId>
-                <version>2.5.1</version>
-                <configuration>
-                    <groupId>ml.volder</groupId>
-                    <artifactId>UnikAPI</artifactId>
-                    <version>1.0</version>
-                    <packaging>jar</packaging>
-                    <file>${basedir}/libs/UnikAPI.jar</file>
-                    <generatePom>true</generatePom>
-                </configuration>
+                <version>2.5.2</version>
                 <executions>
                     <execution>
                         <id>install-jar-lib</id>
+                        <configuration>
+                            <groupId>ml.volder</groupId>
+                            <artifactId>UnikAPI</artifactId>
+                            <version>1.0</version>
+                            <packaging>jar</packaging>
+                            <file>${basedir}/libs/UnikAPI.jar</file>
+                            <generatePom>true</generatePom>
+                        </configuration>
                         <goals>
                             <goal>install-file</goal>
                         </goals>

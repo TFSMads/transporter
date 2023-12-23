@@ -2,7 +2,9 @@ package ml.volder.transporter.modules;
 
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.classes.items.Item;
+import ml.volder.transporter.classes.items.ItemManager;
 import ml.volder.transporter.gui.TransporterModulesMenu;
+import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.api.input.InputAPI;
 import ml.volder.unikapi.api.inventory.InventoryAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
@@ -16,9 +18,12 @@ import ml.volder.unikapi.event.events.serverswitchevent.ServerSwitchEvent;
 import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.guisystem.elements.*;
 import ml.volder.unikapi.keysystem.Key;
+import ml.volder.unikapi.logger.Logger;
 import ml.volder.unikapi.types.Material;
 
+import java.io.*;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
@@ -87,6 +92,35 @@ public class BalanceModule extends SimpleModule implements Listener {
     public void loadConfig() {
         super.loadConfig();
         balance = hasConfigEntry("currentBalance") ? getDataManager().getSettings().getData().get("currentBalance").getAsBigDecimal() : BigDecimal.valueOf(0);
+        loadMessageRegexFromCsv();
+    }
+
+    private final Map<String, ACTION>  messagesMap = new HashMap<>();
+
+
+    private void loadMessageRegexFromCsv() {
+        messagesMap.clear();
+        InputStream inputStream = ItemManager.class.getClassLoader().getResourceAsStream("transporter-balance-messages.csv");
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+            String line = br.readLine();
+            while (line != null) {
+                if(line.startsWith("message_regex"))
+                    line = br.readLine();
+
+                try {
+                    String[] attributes = line.split(";");
+                    messagesMap.put(attributes[0], ACTION.valueOf(attributes[1]));
+                    line = br.readLine();
+                }catch (Exception e) {
+                    UnikAPI.LOGGER.printStackTrace(Logger.LOG_LEVEL.INFO, e);
+                    UnikAPI.LOGGER.info("Failed to load message: " + line);
+                    line = br.readLine();
+                }
+            }
+        } catch (IOException e) {
+            UnikAPI.LOGGER.printStackTrace(Logger.LOG_LEVEL.INFO, e);
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean isFeatureActive() {
@@ -106,25 +140,51 @@ public class BalanceModule extends SimpleModule implements Listener {
             return;
         if(matchBalCommandMessage(event.getCleanMessage()))
             event.setCancelled(true);
-        matchPaySendCommandMessage(event.getCleanMessage());
-        matchReceiveCommandMessage(event.getCleanMessage());
-        matchPlaceAfgift(event.getCleanMessage());
-        matchBreakPayback(event.getCleanMessage());
-        matchShopBuy(event.getCleanMessage());
-        matchShopBuyOther(event.getCleanMessage());
-        matchShopSell(event.getCleanMessage());
-        matchShopSellOther(event.getCleanMessage());
+        matchMessage(event.getCleanMessage());
     }
+
+    private void matchMessage(String clean) {
+        for (Map.Entry<String, ACTION> entry : messagesMap.entrySet()) {
+            String regex = entry.getKey();
+            ACTION action = entry.getValue();
+            final Pattern pattern = Pattern.compile(regex);
+            final Matcher matcher = pattern.matcher(clean);
+            if (matcher.find()) {
+                BigDecimal amount = null;
+                if (hasGroup(matcher, "amountf1")) {
+                    amount = new BigDecimal(matcher.group("amountf1").replace(".", "").replace(",","."));
+                }else if (hasGroup(matcher, "amountf2")) {
+                    amount = new BigDecimal(matcher.group("amountf2"));
+                }
+                switch (action) {
+                    case ADD:
+                        updateBalance(balance.add(amount));
+                        break;
+                    case REMOVE:
+                        updateBalance(balance.subtract(amount));
+                        break;
+                    case SET:
+                        updateBalance(amount);
+                        break;
+                }
+            }
+        }
+    }
+
+    private boolean hasGroup(Matcher matcher, String string) {
+        try {
+            matcher.group(string);
+            return true;
+        }catch (Exception ignored) {
+            return false;
+        }
+    }
+
 
     private boolean matchBalCommandMessage(String clean) {
         final Pattern pattern = Pattern.compile("^\\[Money] Balance: ([0-9,.]+) Emeralds$");
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
-            BigDecimal amount = balance;
-            try {
-                amount = new BigDecimal(matcher.group(1).replace(".", "").replace(",","."));
-            } catch (NumberFormatException ignored) {}
-            updateBalance(amount);
             if (cancelNextBalanceCommand) {
                 cancelNextBalanceCommand = false;
                 return true;
@@ -133,101 +193,6 @@ public class BalanceModule extends SimpleModule implements Listener {
         return false;
     }
 
-    private void matchPaySendCommandMessage(String clean) {
-        final Pattern pattern = Pattern.compile("^\\[Money] [0-9A-Za-z_]+ has sent you ([0-9.,]+) Emerald\\.$");
-        final Matcher matcher = pattern.matcher(clean);
-        if (matcher.find()) {
-            BigDecimal amount = balance;
-            try {
-                amount = amount.add(new BigDecimal(matcher.group(1).replace(".", "").replace(",",".")));
-            } catch (NumberFormatException ignored) {}
-            updateBalance(amount);
-        }
-    }
-
-    private void matchReceiveCommandMessage(String clean) {
-        final Pattern pattern = Pattern.compile("^\\[Money] You have sent ([0-9.,]+) Emerald to [0-9A-Za-z_]+\\.$");
-        final Matcher matcher = pattern.matcher(clean);
-        if (matcher.find()) {
-            BigDecimal amount = balance;
-            try {
-                amount = amount.subtract(new BigDecimal(matcher.group(1).replace(".", "").replace(",",".")));
-            } catch (NumberFormatException ignored) {}
-            updateBalance(amount);
-        }
-    }
-
-    private void matchPlaceAfgift(String clean) {
-        final Pattern pattern = Pattern.compile("^\\Du har betalt ([0-9.]+) ems for at sætte [A-Za-z_\\s]+$");
-        final Matcher matcher = pattern.matcher(clean);
-        if (matcher.find()) {
-            BigDecimal amount = balance;
-            try {
-                amount = amount.subtract(new BigDecimal(matcher.group(1)));
-            } catch (NumberFormatException ignored) {}
-            updateBalance(amount);
-        }
-    }
-
-    private void matchBreakPayback(String clean) {
-        final Pattern pattern = Pattern.compile("^\\Du har fået ([0-9.]+) ems for at fjerne [A-Za-z_\\s]+$");
-        final Matcher matcher = pattern.matcher(clean);
-        if (matcher.find()) {
-            BigDecimal amount = balance;
-            try {
-                amount = amount.add(new BigDecimal(matcher.group(1)));
-            } catch (NumberFormatException ignored) {}
-            updateBalance(amount);
-        }
-    }
-
-    private void matchShopBuy(String clean) {
-        final Pattern pattern = Pattern.compile("^\\[Shop] [0-9A-Za-z_]+ bought [0-9]+ [A-Za-z0-9_:\\s#]+ for ([0-9.,]+) Emeralder from you\\.$");
-        final Matcher matcher = pattern.matcher(clean);
-        if (matcher.find()) {
-            BigDecimal amount = balance;
-            try {
-                amount = amount.add(new BigDecimal(matcher.group(1).replace(".","").replace(",", ".")));
-            } catch (NumberFormatException ignored) {}
-            updateBalance(amount);
-        }
-    }
-
-    private void matchShopBuyOther(String clean) {
-        final Pattern pattern = Pattern.compile("^\\[Shop] You bought [0-9]+ [A-Za-z0-9_:\\s#]+ from [0-9A-Za-z_]+ for ([0-9.,]+) Emeralder\\.$");
-        final Matcher matcher = pattern.matcher(clean);
-        if (matcher.find()) {
-            BigDecimal amount = balance;
-            try {
-                amount = amount.subtract(new BigDecimal(matcher.group(1).replace(".","").replace(",", ".")));
-            } catch (NumberFormatException ignored) {}
-            updateBalance(amount);
-        }
-    }
-
-    private void matchShopSell(String clean) {
-        final Pattern pattern = Pattern.compile("^\\[Shop] [0-9A-Za-z_]+ sold [0-9]+ [A-Za-z0-9_:\\s#]+ for ([0-9.,]+) Emeralder to you\\.$");
-        final Matcher matcher = pattern.matcher(clean);
-        if (matcher.find()) {
-            BigDecimal amount = balance;
-            try {
-                amount = amount.subtract(new BigDecimal(matcher.group(1).replace(".","").replace(",", ".")));
-            } catch (NumberFormatException ignored) {}
-            updateBalance(amount);
-        }
-    }
-
-    private void matchShopSellOther(String clean) {
-        final Pattern pattern = Pattern.compile("^\\[Shop] You sold [0-9]+ [A-Za-z0-9_:\\s#]+ to [0-9A-Za-z_]+ for ([0-9.,]+) Emeralder\\.$");
-        final Matcher matcher = pattern.matcher(clean);
-        if (matcher.find()) {
-            BigDecimal amount = balance;
-            try {
-                amount = amount.add(new BigDecimal(matcher.group(1).replace(".","").replace(",", ".")));
-            } catch (NumberFormatException ignored) {}
-            updateBalance(amount);
-        }
-    }
 
     @EventHandler
     public void onServerSwitch(ServerSwitchEvent event) {
@@ -277,5 +242,11 @@ public class BalanceModule extends SimpleModule implements Listener {
 
     public BigDecimal getBalance() {
         return balance;
+    }
+
+    private enum ACTION {
+        ADD,
+        REMOVE,
+        SET
     }
 }
