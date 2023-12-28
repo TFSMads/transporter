@@ -37,24 +37,8 @@ public class UpdateManager {
     }
 
     public static boolean isUpToDate() {
-        Gson gson = new Gson();
-        UpdateInfoJson localUpdateInfo;
-        UpdateInfoJson remoteUpdateInfo;
-
-        try {
-            InputStream updateInfoSteam = UpdateManager.class.getClassLoader().getResourceAsStream("updateInfo.json");
-            Reader reader = new InputStreamReader(updateInfoSteam, "UTF-8");
-            localUpdateInfo = gson.fromJson(reader, UpdateInfoJson.class);
-
-            InputStream remoteInputStream = new URL("https://github.com/TFSMads/transporter/releases/latest/download/updateInfo.json").openStream();
-            reader = new InputStreamReader(remoteInputStream, "UTF-8");
-            remoteUpdateInfo = gson.fromJson(reader, UpdateInfoJson.class);
-        } catch (IOException ignored) {
-            return true;
-        }
-
-        currentVersion = localUpdateInfo.version;
-        return localUpdateInfo.version.equals(remoteUpdateInfo.version);
+        //Updated through FlintUpdater.
+        return true;
     }
 
 
