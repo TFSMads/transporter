@@ -31,5 +31,5 @@ jobs:
     - name: Upload Artifact To Workflow
       uses: actions/upload-artifact@v3
       with:
-        name: TransporterAddon
-        path: target/*.jar
+        name: Artifacts
+        path: target/transporter-2.0-laby4.jar
