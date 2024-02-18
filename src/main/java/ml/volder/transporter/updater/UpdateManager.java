@@ -9,6 +9,9 @@ import ml.volder.transporter.utils.ArchDetect;
 import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.api.minecraft.MinecraftAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
+import ml.volder.unikapi.datasystem.Data;
+import ml.volder.unikapi.datasystem.DataManager;
+import org.apache.commons.io.FileUtils;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -167,5 +170,115 @@ public class UpdateManager {
 
     private static Path getUpdaterPath() {
         return Paths.get(UnikAPI.getCommonDataFolder().getPath(), "TransporterUpdater.jar");
+    }
+
+
+
+    /*
+     * Csv update system
+     *
+     * Auto update csv files from github.
+     */
+
+    public static void updateCsvFiles(DataManager<Data> dataManager) {
+        updateCsvFile(
+                new File(UnikAPI.getCommonDataFolder(), "transporter-items.csv"),
+                "https://raw.githubusercontent.com/TFSMads/transporter/master/src/main/resources/transporter-items.csv",
+                !dataManager.getSettings().getData().has("updateItemsFromGithub")
+                        || dataManager.getSettings().getData().get("updateItemsFromGithub").getAsBoolean()
+        );
+        updateCsvFile(
+                new File(UnikAPI.getCommonDataFolder(), "transporter-messages.csv"),
+                "https://raw.githubusercontent.com/TFSMads/transporter/master/src/main/resources/transporter-messages.csv",
+                !dataManager.getSettings().getData().has("updateMessagesFromGithub")
+                        || dataManager.getSettings().getData().get("updateMessagesFromGithub").getAsBoolean()
+        );
+        updateCsvFile(
+                new File(UnikAPI.getCommonDataFolder(), "transporter-balance-messages.csv"),
+                "https://raw.githubusercontent.com/TFSMads/transporter/master/src/main/resources/transporter-balance-messages.csv",
+                !dataManager.getSettings().getData().has("updateBalanceMessagesFromGithub")
+                        || dataManager.getSettings().getData().get("updateBalanceMessagesFromGithub").getAsBoolean()
+        );
+    }
+
+    private static void updateCsvFile(File csvFile, String url, boolean update) {
+        try {
+            updateCsvFile(csvFile, new URL(url), update);
+        } catch (Exception ignored) {
+            UnikAPI.LOGGER.warning("Failed to update " + csvFile.getName() + " from url: " + url);
+        }
+    }
+
+    private static void updateCsvFile(File csvFile, URL downloadURL, boolean update) {
+        if (csvFile.exists()) {
+            try {
+                if(!update)
+                    return;
+                String localHash = getHash(csvFile);
+                String remoteHash = getRemoteHash(downloadURL);
+                if (localHash.equals(remoteHash)){
+                    UnikAPI.LOGGER.finest("Csv file is up to date: " + csvFile.getName());
+                    return;
+                }
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        try {
+            UnikAPI.LOGGER.info("Updating csv file: " + csvFile.getName());
+            InputStream in = downloadURL.openStream();
+
+            //Force delete file if it exists
+            FileUtils.forceDelete(csvFile);
+
+            Files.copy(in, csvFile.toPath());
+        } catch (IOException e) {
+            UnikAPI.LOGGER.warning("Failed updating csv file: " + csvFile.getName());
+            //If file is missing use the one packaged with the jar
+            if (!csvFile.exists()) {
+                InputStream in = TransporterAddon.class.getClassLoader().getResourceAsStream(csvFile.getName());
+                try {
+                    assert in != null;
+                    Files.copy(in, csvFile.toPath());
+                } catch (IOException ioException) {
+                    UnikAPI.LOGGER.severe("Failed to load csv file from jar: " + csvFile.getName());
+                    throw new RuntimeException(ioException);
+                }
+            }
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static String getRemoteHash(URL downloadURL) {
+        try {
+            InputStream in = downloadURL.openStream();
+            return getHash(in);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static String getHash(File file) throws IOException {
+        return getHash(Files.newInputStream(file.toPath()));
+    }
+
+    private static String getHash(InputStream inputStream) throws IOException {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] buffer = new byte[1024];
+            int read;
+            while ((read = inputStream.read(buffer)) != -1) {
+                md.update(buffer, 0, read);
+            }
+            byte[] hash = md.digest();
+            StringBuilder sb = new StringBuilder(2 * hash.length);
+            for (byte b : hash) {
+                sb.append(String.format("%02x", b & 0xff));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

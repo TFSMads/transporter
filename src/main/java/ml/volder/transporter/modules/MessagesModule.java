@@ -53,9 +53,32 @@ public class MessagesModule extends SimpleModule implements Listener {
         return messageRegexMap.getOrDefault(messageId, "");
     }
 
+    public void reloadMessagesFromCSV() {
+        UnikAPI.LOGGER.info("Reloading messages from CSV");
+        loadMessageRegexFromCsv();
+    }
+
     private void loadMessageRegexFromCsv() {
+
+        // Get file from common resources
+        File file = new File(UnikAPI.getCommonDataFolder(), "transporter-messages.csv");
+        // Check if file exists
+        if(!file.exists()) {
+            UnikAPI.LOGGER.warning("Failed to load messages from CSV: File does not exist");
+            return;
+        }
+        // Get input stream from file
+        InputStream inputStream;
+        try {
+            inputStream = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            UnikAPI.LOGGER.printStackTrace(Logger.LOG_LEVEL.INFO, e);
+            UnikAPI.LOGGER.warning("Failed to load messages from CSV: Could not get input stream from file");
+            return;
+        }
+
+        this.messageRegexMap.clear();
         Map<String, String> messageRegexMap = new HashMap<>();
-        InputStream inputStream = ItemManager.class.getClassLoader().getResourceAsStream("transporter-messages.csv");
         try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             String line = br.readLine();
             while (line != null) {

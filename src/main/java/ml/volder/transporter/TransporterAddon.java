@@ -3,6 +3,7 @@ package ml.volder.transporter;
 import com.google.gson.JsonElement;
 import ml.volder.transporter.classes.exceptions.LoadingFailedException;
 import ml.volder.transporter.classes.items.ItemManager;
+import ml.volder.transporter.gui.CsvEditor;
 import ml.volder.transporter.gui.TransporterModulesMenu;
 import ml.volder.transporter.listeners.KeyboardListener;
 import ml.volder.transporter.listeners.MainMenuOpenListener;
@@ -21,6 +22,7 @@ import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.logger.Logger;
 import ml.volder.unikapi.types.Material;
 import ml.volder.unikapi.types.ModColor;
+import ml.volder.unikapi.widgets.ModuleSystem;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -140,13 +142,13 @@ public class TransporterAddon extends AddonMain {
             UnikAPI.LOGGER.severe("This is a severe message");
         }
 
-
-
         try {
             instance = this;
+            this.dataManager = DataManager.getOrCreateDataManager(new File(UnikAPI.getCommonDataFolder(), "settings.json"));
+
+            UpdateManager.updateCsvFiles(dataManager);
 
             transporterItemManager = new ItemManager();
-            this.dataManager = DataManager.getOrCreateDataManager(new File(UnikAPI.getCommonDataFolder(), "settings.json"));
 
             KeyElement keyElement = new KeyElement("Indstillinger - Keybind", new ControlElement.IconData(Material.OAK_BUTTON), dataManager, "settingsKeybind", false, Key.R_SHIFT);
             keyElement.addCallback(key -> settingsKeybind = key);
@@ -179,7 +181,7 @@ public class TransporterAddon extends AddonMain {
             updateServers(element.getCurrentValue());
             TransporterModulesMenu.addSetting(element);
 
-            ListContainerElement autoTransporterItems = new ListContainerElement("Avanceret", new ControlElement.IconData(Material.DIODE));
+            ListContainerElement advancedSettings = new ListContainerElement("Avanceret", new ControlElement.IconData(Material.DIODE));
 
             ListContainerElement loggerOptionsElement = new ListContainerElement("Logger indstillinger", new ControlElement.IconData(Material.PAPER));
 
@@ -200,9 +202,36 @@ public class TransporterAddon extends AddonMain {
             printStackTraceElement.addCallback(Logger.printStackTrace::set);
             loggerOptionsElement.getSubSettings().add(printStackTraceElement);
 
-            autoTransporterItems.getSubSettings().add(loggerOptionsElement);
+            advancedSettings.getSubSettings().add(loggerOptionsElement);
 
-            TransporterModulesMenu.addSetting(autoTransporterItems);
+            //transporter-item.csv editor
+            BooleanElement updateItemsElement = new BooleanElement("Opdatere items automatisk", dataManager, "updateItemsFromGithub", new ControlElement.IconData(Material.DIODE), true);
+
+            ListContainerElement itemsEditor = new ListContainerElement("Items", new ControlElement.IconData(Material.IRON_INGOT));
+            itemsEditor.setAdvancedButtonCallback(aBoolean -> CsvEditor.openEditor(new File(UnikAPI.getCommonDataFolder(), "transporter-items.csv"), ',', csvFile -> transporterItemManager.reloadItemsFromCSV()));
+
+            advancedSettings.getSubSettings().add(updateItemsElement);
+            advancedSettings.getSubSettings().add(itemsEditor);
+
+            //transporter-messages.csv editor
+            BooleanElement updateMessagesElement = new BooleanElement("Opdatere beskeder automatisk", dataManager, "updateMessagesFromGithub", new ControlElement.IconData(Material.DIODE), true);
+
+            ListContainerElement messagesEditor = new ListContainerElement("Beskeder", new ControlElement.IconData(Material.PAINTING));
+            messagesEditor.setAdvancedButtonCallback(aBoolean -> CsvEditor.openEditor(new File(UnikAPI.getCommonDataFolder(), "transporter-messages.csv"), ',', csvFile -> ModuleManager.getInstance().getModule(MessagesModule.class).reloadMessagesFromCSV()));
+
+            advancedSettings.getSubSettings().add(updateMessagesElement);
+            advancedSettings.getSubSettings().add(messagesEditor);
+
+            //transporter-balance-messages.csv editor
+            BooleanElement updateBalanceMessagesElement = new BooleanElement("Opdatere balance beskeder automatisk", dataManager, "updateBalanceMessagesFromGithub", new ControlElement.IconData(Material.DIODE), true);
+
+            ListContainerElement balanceMessagesEditor = new ListContainerElement("Balance beskeder", new ControlElement.IconData(Material.EMERALD));
+            balanceMessagesEditor.setAdvancedButtonCallback(aBoolean -> CsvEditor.openEditor(new File(UnikAPI.getCommonDataFolder(), "transporter-balance-messages.csv"), ';', csvFile -> ModuleManager.getInstance().getModule(BalanceModule.class).reloadMessagesFromCSV()));
+
+            advancedSettings.getSubSettings().add(updateBalanceMessagesElement);
+            advancedSettings.getSubSettings().add(balanceMessagesEditor);
+
+            TransporterModulesMenu.addSetting(advancedSettings);
 
 
             TransporterModulesMenu.addSetting(new HeaderElement(ModColor.WHITE + "Transporter Addon" + ModColor.GRAY + " - " + ModColor.WHITE + "Features"));

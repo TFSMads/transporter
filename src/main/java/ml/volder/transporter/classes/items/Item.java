@@ -35,7 +35,7 @@ public class Item {
     }
 
     public void setAmountInTransporter(Integer amountInTransporter) {
-        this.amountInTransporter = amountInTransporter;
+        this.amountInTransporter = amountInTransporter < 0 ? 0 : amountInTransporter;
         if(TransporterAddon.getInstance().getTransporterItemManager().getDataManager() != null){
             TransporterAddon.getInstance().getTransporterItemManager().getDataManager().getSettings().getData().addProperty("amount." + this.getName(), this.amountInTransporter);
             TransporterAddon.getInstance().getTransporterItemManager().getDataManager().save();
@@ -45,7 +45,7 @@ public class Item {
     public Integer getAmountInTransporter() {
         if(currentPlayerData == null || !currentPlayerData.equals(PlayerAPI.getAPI().getUUID()))
             loadData();
-        return amountInTransporter;
+        return amountInTransporter < 0 ? 0 : amountInTransporter;
     }
 
     public Integer getItemDamage() {

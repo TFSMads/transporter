@@ -97,10 +97,29 @@ public class BalanceModule extends SimpleModule implements Listener {
 
     private final Map<String, ACTION>  messagesMap = new HashMap<>();
 
+    public void reloadMessagesFromCSV() {
+        UnikAPI.LOGGER.info("Reloading balance messages from CSV");
+        loadMessageRegexFromCsv();
+    }
 
     private void loadMessageRegexFromCsv() {
+        // Get file from common resources
+        File file = new File(UnikAPI.getCommonDataFolder(), "transporter-balance-messages.csv");
+        // Check if file exists
+        if(!file.exists()) {
+            UnikAPI.LOGGER.warning("Failed to load balance messages from CSV: File does not exist");
+            return;
+        }
+        // Get input stream from file
+        InputStream inputStream;
+        try {
+            inputStream = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            UnikAPI.LOGGER.printStackTrace(Logger.LOG_LEVEL.INFO, e);
+            UnikAPI.LOGGER.warning("Failed to load balance messages from CSV: Could not get input stream from file");
+            return;
+        }
         messagesMap.clear();
-        InputStream inputStream = ItemManager.class.getClassLoader().getResourceAsStream("transporter-balance-messages.csv");
         try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             String line = br.readLine();
             while (line != null) {

@@ -27,8 +27,31 @@ public class ItemManager {
         loadItemsFromCSV();
     }
 
+    public void reloadItemsFromCSV() {
+        UnikAPI.LOGGER.info("Reloading items from CSV");
+        loadItemsFromCSV();
+    }
+
     private void loadItemsFromCSV() {
-        InputStream inputStream = ItemManager.class.getClassLoader().getResourceAsStream("transporter-items.csv");
+        // Get file from common resources
+        File file = new File(UnikAPI.getCommonDataFolder(), "transporter-items.csv");
+        // Check if file exists
+        if(!file.exists()) {
+            UnikAPI.LOGGER.warning("Failed to load items from CSV: File does not exist");
+            return;
+        }
+        // Get input stream from file
+        InputStream inputStream;
+        try {
+            inputStream = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            UnikAPI.LOGGER.printStackTrace(Logger.LOG_LEVEL.INFO, e);
+            UnikAPI.LOGGER.warning("Failed to load items from CSV: Could not get input stream from file");
+            return;
+        }
+
+        itemList.clear();
+
         try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             // read the first line from the text file
             String line = br.readLine();
