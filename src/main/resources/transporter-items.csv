@@ -68,3 +68,5 @@ id,name,legacy_type,modern_type,unikapi_material
 68,cocoa_beans,ink_sack:3,cocoa_beans,COCAO_BEANS
 69,spruce_sapling,sapling:1,spruce_sapling,SPRUCE_SAPLING
 70,glass,glass,glass,GLASS
+71,emerald,emerald,emerald,EMERALD
+72,emerald_block,emerald_block,emerald_block,EMERALD_BLOCK

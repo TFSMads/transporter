@@ -1,4 +1,4 @@
-message_regex,action
+message_regex;action
 ^\[Money] Balance: (?<amountf1>[0-9,.]+) Emeralds$;SET
 ^\[Money] [0-9A-Za-z_]+ has sent you (?<amountf1>[0-9.,]+) Emerald\.$;ADD
 ^\[Money] You have sent (?<amountf1>[0-9.,]+) Emerald to [0-9A-Za-z_]+\.$;REMOVE
