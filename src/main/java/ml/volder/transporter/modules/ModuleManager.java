@@ -74,6 +74,7 @@ public class ModuleManager {
             if(isSupported(klass)) {
                 try {
                     loadedModules.put(klass, klass.getDeclaredConstructor(ModuleInfo.class).newInstance(moduleInfo).init());
+                    UnikAPI.LOGGER.finest("Initialized module: " + moduleInfo.displayName + " (" + moduleInfo.name + ")");
                 } catch (Exception e) {
                     UnikAPI.LOGGER.printStackTrace(Logger.LOG_LEVEL.WARNING, e);
                     UnikAPI.LOGGER.warning("Kunne ikke init modulet: " + moduleInfo.displayName + " (" + moduleInfo.name + ")");
@@ -89,6 +90,7 @@ public class ModuleManager {
                 module.enable();
                 Settings subSettings = module.addSetting();
                 module.fillSettings(subSettings);
+                UnikAPI.LOGGER.finest("Enabled module: " + module.getDisplayName() + " (" + module.getModuleName() + ")");
             } catch (Exception e) {
                 UnikAPI.LOGGER.printStackTrace(Logger.LOG_LEVEL.WARNING, e);
                 UnikAPI.LOGGER.warning("Kunne ikke load modulet: " + module.getDisplayName() + " (" + module.getModuleName() + ")");
@@ -112,6 +114,7 @@ public class ModuleManager {
     public ModuleInfo registerModule(String name, String displayName, String description, Class<? extends SimpleModule> klass) {
         ModuleInfo moduleInfo = new ModuleInfo(name, displayName, description, klass);
         registeredModules.put(klass, moduleInfo);
+        UnikAPI.LOGGER.finest("Registered module: " + moduleInfo.displayName + " (" + moduleInfo.name + ")");
         return moduleInfo;
     }
 
@@ -133,6 +136,7 @@ public class ModuleManager {
         registerModule("signToolsModule", "Sign Tools", "En feature til at forbedre skilte så man kan kopiere og indsætte.", SignToolsModule.class);
         moduleInfo = registerModule("balanceTrackerModule", "Balance", "En feature der tracker hvor mange EMs du har.", BalanceModule.class);
         moduleInfo.dependsOnList.add(ServerModule.class);
+        UnikAPI.LOGGER.finest("Registered " + registeredModules.size() + " modules successfully!");
     }
 
     public Map<Class<? extends SimpleModule>, SimpleModule> getLoadedModules() {
