@@ -40,11 +40,6 @@ public class ItemManager {
         loadItemsFromCSV();
     }
 
-    public void reloadItemsFromCSV() {
-        UnikAPI.LOGGER.info("Reloading items from CSV");
-        loadItemsFromCSV();
-    }
-
     private void loadItemsFromCSV() {
         // Get file from common resources
         File file = new File(UnikAPI.getCommonDataFolder(), "transporter-items.csv");
