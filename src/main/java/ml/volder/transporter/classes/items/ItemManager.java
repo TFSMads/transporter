@@ -25,6 +25,19 @@ public class ItemManager {
 
     public ItemManager() {
         loadItemsFromCSV();
+        updateItemSellValues();
+    }
+
+    public void updateItemSellValues() {
+        itemList.forEach(item -> {
+            if(item.getAutoUpdateSellValue())
+                item.updateSellValueFromPriceServer();
+        });
+    }
+
+    public void reloadItemsFromCSV() {
+        UnikAPI.LOGGER.info("Reloading items from CSV");
+        loadItemsFromCSV();
     }
 
     public void reloadItemsFromCSV() {
@@ -102,6 +115,8 @@ public class ItemManager {
     }
 
     private DataManager<Data> dataManager;
+    private DataManager<Data> globalDataManager;
+
     private UUID dataManagerUUID;
 
     private void initDataManager() {
@@ -117,12 +132,15 @@ public class ItemManager {
         return dataManager;
     }
 
-    public void loadPriceConfig(JsonObject priceConfig) {
-        for (String key : priceConfig.keySet()) {
-            Item item = getItemByName(key);
-            if(item != null && priceConfig.has(key)) {
-                item.setSellValue(priceConfig.get(key).getAsInt());
-            }
-        }
+    private void initDataManagerGlobal() {
+        if(UnikAPI.getCommonDataFolder() == null)
+            return;
+        this.globalDataManager = DataManager.getOrCreateDataManager(new File(UnikAPI.getCommonDataFolder(), "itemData.json"));
+    }
+
+    public DataManager<Data> getDataManagerGlobal() {
+        if(globalDataManager == null)
+            initDataManagerGlobal();
+        return globalDataManager;
     }
 }

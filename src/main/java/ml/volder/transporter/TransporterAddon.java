@@ -1,10 +1,10 @@
 package ml.volder.transporter;
 
-import com.google.gson.JsonElement;
 import ml.volder.transporter.classes.exceptions.LoadingFailedException;
 import ml.volder.transporter.classes.items.ItemManager;
 import ml.volder.transporter.gui.CsvEditor;
 import ml.volder.transporter.gui.TransporterModulesMenu;
+import ml.volder.transporter.gui.pricegui.PriceMenu;
 import ml.volder.transporter.listeners.KeyboardListener;
 import ml.volder.transporter.listeners.MainMenuOpenListener;
 import ml.volder.transporter.modules.*;
@@ -22,17 +22,12 @@ import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.logger.Logger;
 import ml.volder.unikapi.types.Material;
 import ml.volder.unikapi.types.ModColor;
-import ml.volder.unikapi.widgets.ModuleSystem;
 
 import java.io.File;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 //Feature todo list
@@ -233,9 +228,11 @@ public class TransporterAddon extends AddonMain {
 
             TransporterModulesMenu.addSetting(advancedSettings);
 
+            ListContainerElement valueMenu = new ListContainerElement("Værdi indstillinger", new ControlElement.IconData(Material.EMERALD));
+            valueMenu.setAdvancedButtonCallback(aBoolean ->  PlayerAPI.getAPI().openGuiScreen(new PriceMenu(PlayerAPI.getAPI().getCurrentScreen())));
+            TransporterModulesMenu.addSetting(valueMenu);
 
             TransporterModulesMenu.addSetting(new HeaderElement(ModColor.WHITE + "Transporter Addon" + ModColor.GRAY + " - " + ModColor.WHITE + "Features"));
-
 
             //Modules
             ModuleManager.getInstance().registerModules();

@@ -267,7 +267,7 @@ public class MessagesModule extends SimpleModule implements Listener {
             total = FormatingUtils.formatNumber(Integer.parseInt(total));
         }catch (Exception ignored){}
 
-        message = message.replace('&','§');
+        message = message.replace('&','\u00a7');
 
         message = message.replace("%item%", item != null ? item : "%item%");
 

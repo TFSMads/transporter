@@ -1,8 +1,9 @@
-package ml.volder.transporter.modules.transportermenumodule;
+package ml.volder.transporter.gui.pricegui;
 
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.classes.items.Item;
 import ml.volder.unikapi.api.draw.DrawAPI;
+import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.guisystem.elements.Scrollbar;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
@@ -13,13 +14,19 @@ import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TransporterMenu extends WrappedGuiScreen {
+public class PriceMenu extends WrappedGuiScreen {
 
+    private WrappedGuiScreen lastScreen;
+    private boolean isInBackground = false;
     private int entryWidth = 120;
     private int entryHeight = 37;
     private Scrollbar scrollbar = new Scrollbar(entryHeight);
 
-    private List<TransporterMenuEntry> itemEntries = new ArrayList<>();
+    private List<PriceMenuEntry> itemEntries = new ArrayList<>();
+
+    public PriceMenu(WrappedGuiScreen lastScreen) {
+        this.lastScreen = lastScreen;
+    }
 
     @Override
     public void updateScreen() {
@@ -28,12 +35,15 @@ public class TransporterMenu extends WrappedGuiScreen {
 
     @Override
     public void initGui() {
+        isInBackground = false;
         itemEntries.clear();
         for(Item item : TransporterAddon.getInstance().getTransporterItemManager().getItemList()) {
-            itemEntries.add(new TransporterMenuEntry(item, entryWidth, entryHeight));
+            itemEntries.add(new PriceMenuEntry(this, item, entryWidth, entryHeight));
         }
         this.scrollbar.setSpeed(39);
         this.scrollbar.init();
+
+        this.addButton(new WrappedGuiButton(1, 5, 10, 22, 21, "<"));
     }
 
     @Override
@@ -50,7 +60,7 @@ public class TransporterMenu extends WrappedGuiScreen {
         double startY = 45;
         int rows = 1;
 
-        for(TransporterMenuEntry entry : itemEntries) {
+        for(PriceMenuEntry entry : itemEntries) {
             if(currentX + entryWidth >= startX + entriesWidth) {
                 rows++;
                 currentX = startX;
@@ -64,26 +74,28 @@ public class TransporterMenu extends WrappedGuiScreen {
         drawAPI.drawGradientShadowTop(41.0, 0.0, this.getWidth());
         drawAPI.drawOverlayBackground(this.getHeight() - 40, this.getHeight());
         drawAPI.drawGradientShadowBottom(this.getHeight() - 40, 0.0, this.getWidth());
-        drawAPI.drawCenteredString(ModColor.cl("a")+ModColor.cl("l")+"Transporter Menu", (double)(this.getWidth() / 2), 20.0D, 2.0D);
+        drawAPI.drawCenteredString(ModColor.cl("a")+ModColor.cl("l")+"Værdi indstillinger", (double)(this.getWidth() / 2), 10.0D, 2.0D);
 
         this.scrollbar.setPosition(startX + entriesWidth + 3, 43, startX + entriesWidth + 6, getHeight() - 42);
         this.scrollbar.update(rows + 1);
         this.scrollbar.draw();
 
-        for(TransporterMenuEntry entry : itemEntries) {
+        for(PriceMenuEntry entry : itemEntries) {
             entry.drawHoverText();
         }
     }
 
     @Override
     public void actionPerformed(WrappedGuiButton button) {
-
+        if(button.getId() == 1) {
+            PlayerAPI.getAPI().openGuiScreen(lastScreen);
+        }
     }
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, MouseButton mouseButton) {
         if(mouseY > 41 && mouseY < getHeight() - 40)
-            itemEntries.forEach(transporterMenuEntry -> transporterMenuEntry.mouseClicked(mouseX, mouseY, mouseButton));
+            itemEntries.forEach(priceMenuEntry -> priceMenuEntry.mouseClicked(mouseX, mouseY, mouseButton));
         this.scrollbar.mouseAction(mouseX, mouseY, Scrollbar.EnumMouseAction.CLICKED);
     }
 
@@ -110,5 +122,13 @@ public class TransporterMenu extends WrappedGuiScreen {
     @Override
     public void onGuiClosed() {
 
+    }
+
+    public void setInBackground(boolean inBackground) {
+        isInBackground = inBackground;
+    }
+
+    public boolean isInBackground() {
+        return isInBackground;
     }
 }

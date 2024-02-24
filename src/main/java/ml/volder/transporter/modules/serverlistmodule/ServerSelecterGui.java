@@ -97,7 +97,7 @@ public class ServerSelecterGui extends WrappedGuiScreen {
         drawAPI.drawOverlayBackground(this.getHeight() - 40, this.getWidth());
         drawAPI.drawGradientShadowBottom(this.getHeight() - 40, 0.0, this.getWidth());
 
-        drawAPI.drawCenteredString(ModColor.cl("8")+ModColor.cl("l")+"["+ModColor.cl("a")+ModColor.cl("l")+" Server Selecter "+ModColor.cl("8")+ModColor.cl("l")+"]", (double)(this.getWidth() / 2), 20.0D, 2.0D);
+        drawAPI.drawCenteredString(ModColor.cl("a")+ModColor.cl("l")+"Server Selecter", (double)(this.getWidth() / 2), 20.0D, 2.0D);
         this.scrollbar.draw();
     }
 

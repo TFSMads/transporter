@@ -85,21 +85,6 @@ public class AutoTransporter extends SimpleModule implements Listener {
 
         ListContainerElement autoTransporterItems = new ListContainerElement("Items", new ControlElement.IconData(Material.CHEST));
 
-        autoTransporterItems.getSubSettings().add(new HeaderElement("Vælg de items der skal gemmes i din transporter."));
-
-        addon.getTransporterItemManager().getItemList().forEach(item -> {
-            ControlElement.IconData iconData = new ControlElement.IconData(item.getMaterial());
-            iconData.setItemDamage(item.getItemDamage());
-            BooleanElement booleanElement = new BooleanElement(item.getDisplayName(), getDataManager(), "items." + item.getName(), iconData, true);
-            booleanElement.addCallback(item::setAutoTransporterEnabled);
-            item.setAutoTransporterEnabled(booleanElement.getCurrentValue());
-            NumberElement numberElement = new NumberElement("Værdi (EMs)", getDataManager(), "items." + item.getName() + ".value", new ControlElement.IconData(Material.EMERALD), item.getSellValue());
-            item.setSellValue(numberElement.getCurrentValue());
-            numberElement.addCallback(integer -> item.setSellValue(integer));
-            booleanElement.getSubSettings().add(numberElement);
-            autoTransporterItems.getSubSettings().add(booleanElement);
-        });
-
         subSettings.add(autoTransporterItems);
     }
 
@@ -130,8 +115,7 @@ public class AutoTransporter extends SimpleModule implements Listener {
         Map<String, Integer> itemAmountMap = new HashMap<>();
 
         for (Item item: addon.getTransporterItemManager().getItemList())
-            if(item.isAutoTransporterEnabled())
-                itemAmountMap.put(item.getName(), InventoryAPI.getAPI().getAmount(item.getMaterial(), item.getItemDamage()));
+            itemAmountMap.put(item.getName(), InventoryAPI.getAPI().getAmount(item.getMaterial(), item.getItemDamage()));
 
 
         int maxAmount = -1;
@@ -152,8 +136,7 @@ public class AutoTransporter extends SimpleModule implements Listener {
         int itemAmount = 0;
 
         for (Item item: addon.getTransporterItemManager().getItemList())
-            if(item.isAutoTransporterEnabled())
-                itemAmount += InventoryAPI.getAPI().getAmount(item.getMaterial(), item.getItemDamage());
+            itemAmount += InventoryAPI.getAPI().getAmount(item.getMaterial(), item.getItemDamage());
         if (itemAmount < 1)
             return;
         PlayerAPI.getAPI().sendCommand("transporter put mine");
