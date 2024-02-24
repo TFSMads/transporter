@@ -117,10 +117,12 @@ public class Item {
 
     public void updateSellValueFromPriceServer(Consumer<Integer> consumer) {
         Thread taskThread = new Thread(() -> {
-            int value = this.getSellValueFromPriceServer();
-            this.setSellValue(value);
-            if(consumer != null)
-                consumer.accept(value);
+            try {
+                int value = this.getSellValueFromPriceServer();
+                this.setSellValue(value);
+                if(consumer != null)
+                    consumer.accept(value);
+            } catch (Exception ignored) {}
         });
         taskThread.start();
     }
