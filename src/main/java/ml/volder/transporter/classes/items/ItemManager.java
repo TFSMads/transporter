@@ -1,8 +1,6 @@
 package ml.volder.transporter.classes.items;
 
 
-import com.google.gson.JsonObject;
-import ml.volder.transporter.updater.UpdateManager;
 import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.datasystem.Data;
@@ -12,9 +10,6 @@ import ml.volder.unikapi.types.Material;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

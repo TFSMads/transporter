@@ -1,8 +1,6 @@
 package ml.volder.transporter.gui;
 
-import ml.volder.transporter.updater.UpdateManager;
 import ml.volder.unikapi.api.draw.DrawAPI;
-import ml.volder.unikapi.api.minecraft.MinecraftAPI;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.types.ModColor;

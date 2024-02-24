@@ -20,8 +20,6 @@ import ml.volder.unikapi.wrappers.tileentitysign.WrappedTileEntitySign;
 
 import java.awt.*;
 import java.time.Instant;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class SignGui extends WrappedGuiScreen {
 

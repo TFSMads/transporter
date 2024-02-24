@@ -1,12 +1,10 @@
 package ml.volder.transporter.gui;
 
-import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.modules.ModuleManager;
 import ml.volder.transporter.modules.SimpleModule;
 import ml.volder.transporter.updater.UpdateManager;
 import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.api.draw.DrawAPI;
-import ml.volder.unikapi.api.minecraft.MinecraftAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
@@ -14,13 +12,11 @@ import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
 import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 public class AddonInfoScreen extends WrappedGuiScreen {
     private static String jarChecksum = null;

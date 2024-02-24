@@ -4,6 +4,7 @@ import ml.volder.transporter.classes.items.Item;
 import ml.volder.transporter.modules.MessagesModule;
 import ml.volder.transporter.modules.ModuleManager;
 import ml.volder.transporter.modules.TransporterMenuModule;
+import ml.volder.transporter.utils.FormatingUtils;
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.api.input.InputAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
@@ -11,7 +12,6 @@ import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.types.ResourceLocation;
-import ml.volder.transporter.utils.FormatingUtils;
 
 import java.util.Collections;
 

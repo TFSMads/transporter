@@ -13,7 +13,6 @@ import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
 import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
 
 import java.util.Collections;
-import java.util.function.Consumer;
 
 public class PriceMenuEntry {
     private int width = 120;
