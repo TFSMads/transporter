@@ -1,10 +1,12 @@
 package ml.volder.transporter.classes.items;
 
 import ml.volder.transporter.TransporterAddon;
+import ml.volder.transporter.classes.api.TransporterPriceApi;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.types.Material;
 
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class Item {
 
@@ -17,7 +19,7 @@ public class Item {
     private Integer sellValue;
     private Integer amountInTransporter;
     private Material material;
-    private boolean isAutoTransporterEnabled = true;
+    private boolean autoUpdateSellValue = true;
 
     private UUID currentPlayerData;
 
@@ -32,6 +34,10 @@ public class Item {
 
     public void setSellValue(Integer sellValue) {
         this.sellValue = sellValue;
+        if(TransporterAddon.getInstance().getTransporterItemManager().getDataManagerGlobal() != null){
+            TransporterAddon.getInstance().getTransporterItemManager().getDataManagerGlobal().getSettings().getData().addProperty("sellValue." + this.getName(), this.sellValue);
+            TransporterAddon.getInstance().getTransporterItemManager().getDataManagerGlobal().save();
+        }
     }
 
     public void setAmountInTransporter(Integer amountInTransporter) {
@@ -87,6 +93,10 @@ public class Item {
     }
 
     private void loadData() {
+        this.sellValue = TransporterAddon.getInstance().getTransporterItemManager().getDataManagerGlobal().getSettings().getData().has("sellValue." + this.getName())
+                ? TransporterAddon.getInstance().getTransporterItemManager().getDataManagerGlobal().getSettings().getData().get("sellValue." + this.getName()).getAsInt()
+                : 0;
+        this.autoUpdateSellValue = !TransporterAddon.getInstance().getTransporterItemManager().getDataManagerGlobal().getSettings().getData().has("autoUpdateSellValue." + this.getName()) || TransporterAddon.getInstance().getTransporterItemManager().getDataManagerGlobal().getSettings().getData().get("autoUpdateSellValue." + this.getName()).getAsBoolean();
         if(PlayerAPI.getAPI().getUUID() == null)
             return;
         UUID uuid = PlayerAPI.getAPI().getUUID();
@@ -96,17 +106,35 @@ public class Item {
                 : 0;
     }
 
-    /**
-     * @return True if this item should be put in transporter by Auto Transporter
-     */
-    public boolean isAutoTransporterEnabled() {
-        return isAutoTransporterEnabled;
+    private int getSellValueFromPriceServer() {
+        return TransporterPriceApi.getInstance().getSellValueFromPriceServer(this.getName());
     }
 
-    /**
-     * @param autoTransporterEnabled Whether this item should be put in transporter by Auto Transporter.
-     */
-    public void setAutoTransporterEnabled(boolean autoTransporterEnabled) {
-        isAutoTransporterEnabled = autoTransporterEnabled;
+
+    public void updateSellValueFromPriceServer() {
+        updateSellValueFromPriceServer(null);
     }
+
+    public void updateSellValueFromPriceServer(Consumer<Integer> consumer) {
+        Thread taskThread = new Thread(() -> {
+            int value = this.getSellValueFromPriceServer();
+            this.setSellValue(value);
+            if(consumer != null)
+                consumer.accept(value);
+        });
+        taskThread.start();
+    }
+
+    public boolean getAutoUpdateSellValue() {
+        return autoUpdateSellValue;
+    }
+
+    public void setAutoUpdateSellValue(boolean autoUpdateSellValue) {
+        this.autoUpdateSellValue = autoUpdateSellValue;
+        if(TransporterAddon.getInstance().getTransporterItemManager().getDataManagerGlobal() != null){
+            TransporterAddon.getInstance().getTransporterItemManager().getDataManagerGlobal().getSettings().getData().addProperty("autoUpdateSellValue." + this.getName(), this.autoUpdateSellValue);
+            TransporterAddon.getInstance().getTransporterItemManager().getDataManagerGlobal().save();
+        }
+    }
+
 }

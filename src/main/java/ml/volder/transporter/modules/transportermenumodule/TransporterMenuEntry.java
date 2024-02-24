@@ -1,6 +1,5 @@
 package ml.volder.transporter.modules.transportermenumodule;
 
-import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.classes.items.Item;
 import ml.volder.transporter.modules.MessagesModule;
 import ml.volder.transporter.modules.ModuleManager;
@@ -13,6 +12,8 @@ import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.types.ResourceLocation;
 import ml.volder.transporter.utils.FormatingUtils;
+
+import java.util.Collections;
 
 public class TransporterMenuEntry {
     private int width = 120;
@@ -32,6 +33,9 @@ public class TransporterMenuEntry {
     }
 
     public void draw(int x, int y, int mouseX, int mouseY) {
+        hoverText = null;
+        hoverTextX = -1000;
+        hoverTextY = -1000;
         if(item == null)
             return;
         boolean isMouseOver = mouseX > x && mouseX < x + width && mouseY > y && mouseY < y + height;
@@ -55,6 +59,23 @@ public class TransporterMenuEntry {
         this.hoverGetButton = this.drawButton(ModTextures.BUTTON_GET, x + 36 ,y + 22, 12, mouseX, mouseY);
         this.hoverPutButton = this.drawButton(ModTextures.BUTTON_PUT, x + 52 ,y + 22, 12, mouseX, mouseY);
 
+        if(hoverGetButton || hoverPutButton) {
+            hoverText = hoverGetButton
+                    ? "Klik for at tage " + item.getDisplayName() + " fra din transporter!"
+                    : "Klik for at gemme " + item.getDisplayName() + " i din transporter!";
+            hoverTextX = mouseX;
+            hoverTextY = mouseY;
+        }
+    }
+
+    private String hoverText = null;
+    private int hoverTextX = -1000;
+    private int hoverTextY = -1000;
+
+    public void drawHoverText() {
+        if(hoverText == null || hoverTextX == -1000 || hoverTextY == -1000)
+            return;
+        DrawAPI.getAPI().drawHoverText(Collections.singletonList(hoverText), hoverTextX, hoverTextY);
     }
 
     private String getAmountString() {
