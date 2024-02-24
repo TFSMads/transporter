@@ -1,0 +1,12 @@
+[submodule "core/src/main/java/ml/volder/transporter"]
+	path = core/src/main/java/ml/volder/transporter
+	url = https://github.com/TFSMads/transporter.git
+	branch = transporter-src
+[submodule "core/src/main/java/ml/volder/unikapi"]
+	path = core/src/main/java/ml/volder/unikapi
+	url = https://github.com/TFSMads/UnikAPI.git
+	branch = laby4-unikapi
+[submodule "game-runner/src"]
+	path = game-runner/src
+	url = https://github.com/TFSMads/UnikAPI.git
+	branch = laby4-gamerunner
