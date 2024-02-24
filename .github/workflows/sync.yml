@@ -47,8 +47,8 @@ jobs:
           
       - name: Copy Assets to transporter-assets Branch
         run: |
-          git checkout master -- src/main/resources/assets/minecraft/*
-          mv ./src/main/resources/assets/minecraft/* ./
+          git checkout master -- src/main/resources/assets/minecraft/transporter/*
+          mv ./src/main/resources/assets/minecraft/transporter/* ./
           git add .
           git commit -m "Copy Assets to transporter-assets Branch"
           git push origin temp2:transporter-assets --force
