@@ -41,7 +41,7 @@ public class UpdateManager {
 
     private static void extractUpdater(Path jarFileLocation) throws IOException {
         Path targetFile = getUpdaterPath();
-        extractFile(jarFileLocation, "updater/TransporterUpdater.jar", targetFile);
+        extractFile(jarFileLocation, "transporter/updater/TransporterUpdater.jar", targetFile);
     }
 
     /**
@@ -118,7 +118,7 @@ public class UpdateManager {
                 PlayerAPI.getAPI().openGuiScreen(new UpdateFailedScreen());
                 return;
             }
-            Path path = Paths.get(UnikAPI.getCommonDataFolder() + "/updater/");
+            Path path = Paths.get(UnikAPI.getCommonDataFolder() + "/transporter/updater/");
             path.toFile().mkdirs();
             String javaBin = javaHome + File.separator + "bin" + File.separator + "java";
             List<String> arguments = new ArrayList();
@@ -128,7 +128,7 @@ public class UpdateManager {
             arguments.add(downloadURL);
             arguments.add(jarLocation);
             ProcessBuilder pb = new ProcessBuilder(arguments);
-            pb.directory(new File(UnikAPI.getCommonDataFolder() + "/updater/"));
+            pb.directory(new File(UnikAPI.getCommonDataFolder() + "/transporter/updater/"));
             Process p = pb.start();
             System.exit(0);
         } catch (IOException e) {
