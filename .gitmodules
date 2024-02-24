@@ -14,5 +14,7 @@
 	path = core/src/main/resources/assets/transporter/transporter
 	url = https://github.com/TFSMads/transporter.git
 	branch = transporter-assets
-
-
+[submodule "core/src/main/resources/assets/transporter/unikapi"]
+	path = core/src/main/resources/assets/transporter/unikapi
+	url = https://github.com/TFSMads/UnikAPI.git
+	branch = laby4-assets
