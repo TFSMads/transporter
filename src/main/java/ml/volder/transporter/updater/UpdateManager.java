@@ -1,20 +1,14 @@
 package ml.volder.transporter.updater;
 
-import com.google.gson.Gson;
-import jdk.tools.jlink.internal.Platform;
 import ml.volder.transporter.TransporterAddon;
-import ml.volder.transporter.classes.helper.OsCheck;
 import ml.volder.transporter.gui.UpdateFailedScreen;
-import ml.volder.transporter.utils.ArchDetect;
 import ml.volder.unikapi.UnikAPI;
-import ml.volder.unikapi.api.minecraft.MinecraftAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.datasystem.Data;
 import ml.volder.unikapi.datasystem.DataManager;
 import org.apache.commons.io.FileUtils;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
@@ -24,7 +18,6 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;

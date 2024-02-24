@@ -53,6 +53,12 @@
             <scope>provided</scope>
             <version>3.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>24.0.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <repositories>
@@ -81,7 +87,7 @@
                         <configuration>
                             <tasks>
                                 <delete>
-                                    <fileset dir="${basedir}/libs" includes="UnikAPI.jar"/>
+                                    <fileset dir="${basedir}/libs" includes="UnikAPI2.jar"/>
                                 </delete>
                             </tasks>
                         </configuration>
@@ -105,7 +111,7 @@
                         <configuration>
                             <skipCache>true</skipCache>
                             <url>https://github.com/TFSMads/UnikAPI/releases/latest/download/UnikAPI.jar</url>
-                            <outputFileName>UnikAPI.jar</outputFileName>
+                            <outputFileName>UnikAPI2.jar</outputFileName>
                             <!-- default target location, just to demonstrate the parameter -->
                             <outputDirectory>${basedir}/libs</outputDirectory>
                         </configuration>

@@ -1,7 +1,6 @@
 package ml.volder.transporter.modules;
 
 import com.google.gson.JsonObject;
-import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.gui.TransporterModulesMenu;
 import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.datasystem.Data;
@@ -9,8 +8,8 @@ import ml.volder.unikapi.datasystem.DataManager;
 import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.guisystem.elements.ModuleElement;
 import ml.volder.unikapi.guisystem.elements.Settings;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.io.File;
 
 public abstract class SimpleModule {
