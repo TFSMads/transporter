@@ -1,35 +1,28 @@
+name: Transporter Build (Labymod 4)
+
 on:
-  workflow_dispatch:
   push:
     branches: [ "labymod-4" ]
   pull_request:
     branches: [ "labymod-4" ]
+  workflow_dispatch:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: maven
-    - name: Add UnikAPI to local repo
-      run: |
-        mkdir libs/
-        wget -O libs/UnikAPI.jar --no-cache https://github.com/TFSMads/UnikAPI/releases/download/v1.0.0/UnikAPI.jar
-        mvn deploy:deploy-file -DgroupId=ml.volder -DartifactId=unikapi -Dversion=1.0 -Durl=file:./my-repo/ -DrepositoryId=my-repo -DupdateReleaseInfo=true -Dfile=./libs/UnikAPI.jar
-    - name: Build with Maven
-      run: |
-        mvn validate --file pom.xml
-        mvn clean --file pom.xml
-        mvn package --file pom.xml
-    - name: Upload Artifact To Workflow
-      uses: actions/upload-artifact@v3
-      with:
-        name: Artifacts
-        path: target/transporter-2.0-laby4.jar
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Build with Gradle
+        run: ./gradlew build --full-stacktrace
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Artifacts
+          path: build/libs/*-release.jar
