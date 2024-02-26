@@ -17,6 +17,8 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: '17'
+      - name: Pull all submodules
+        run: git submodule foreach git pull
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
