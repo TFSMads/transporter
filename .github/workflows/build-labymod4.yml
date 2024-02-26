@@ -20,7 +20,7 @@ jobs:
       - name: Update all submodules
         run: |
           git rm -r core/src/main/java/ml/volder/transporter
-          git submodule add -b transporter-src https://github.com/TFSMads/transporter.git core/src/main/java/ml/volder/transporter -f
+          git submodule add -b transporter-src https://github.com/TFSMads/transporter.git core/src/main/java/ml/volder/transporter
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
