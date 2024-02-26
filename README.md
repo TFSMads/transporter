@@ -27,7 +27,3 @@
 <br/>
   
 Et LabyMod addon til at transporter-systemet på <a href="https://discord.gg/superawesomedk">SuperAwesome.dk</a>
-  
-  
-<h1>Installations Guide</h1>
-#TODO
