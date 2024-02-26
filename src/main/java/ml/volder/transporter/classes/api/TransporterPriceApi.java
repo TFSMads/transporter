@@ -61,7 +61,7 @@ public class TransporterPriceApi {
                 this.url = "https://transporter-price-api-479a42778d13.herokuapp.com";
             }
 
-            UnikAPI.LOGGER.log(Logger.LOG_LEVEL.FINE, "Transporter Price API URL: " + url);
+            UnikAPI.LOGGER.debug("Transporter Price API URL: " + url, Logger.DEBUG_LEVEL.MEDIUM);
         }
         return url;
     }

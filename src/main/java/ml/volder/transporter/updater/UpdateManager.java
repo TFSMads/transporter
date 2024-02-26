@@ -176,19 +176,19 @@ public class UpdateManager {
     public static void updateCsvFiles(DataManager<Data> dataManager) {
         updateCsvFile(
                 new File(UnikAPI.getCommonDataFolder(), "transporter-items.csv"),
-                "https://raw.githubusercontent.com/TFSMads/transporter/master/src/main/resources/transporter-items.csv",
+                "https://raw.githubusercontent.com/TFSMads/transporter/master/src/main/resources/transporter/transporter-items.csv",
                 !dataManager.getSettings().getData().has("updateItemsFromGithub")
                         || dataManager.getSettings().getData().get("updateItemsFromGithub").getAsBoolean()
         );
         updateCsvFile(
                 new File(UnikAPI.getCommonDataFolder(), "transporter-messages.csv"),
-                "https://raw.githubusercontent.com/TFSMads/transporter/master/src/main/resources/transporter-messages.csv",
+                "https://raw.githubusercontent.com/TFSMads/transporter/master/src/main/resources/transporter/transporter-messages.csv",
                 !dataManager.getSettings().getData().has("updateMessagesFromGithub")
                         || dataManager.getSettings().getData().get("updateMessagesFromGithub").getAsBoolean()
         );
         updateCsvFile(
                 new File(UnikAPI.getCommonDataFolder(), "transporter-balance-messages.csv"),
-                "https://raw.githubusercontent.com/TFSMads/transporter/master/src/main/resources/transporter-balance-messages.csv",
+                "https://raw.githubusercontent.com/TFSMads/transporter/master/src/main/resources/transporter/transporter-balance-messages.csv",
                 !dataManager.getSettings().getData().has("updateBalanceMessagesFromGithub")
                         || dataManager.getSettings().getData().get("updateBalanceMessagesFromGithub").getAsBoolean()
         );
