@@ -17,8 +17,20 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: '17'
-      - name: Pull all submodules
-        run: git submodule foreach git pull
+      - name: Update all submodules
+        run: |
+          git rm -r core/src/main/java/ml/volder/transporter
+          git submodule add -b transporter-src https://github.com/TFSMads/transporter.git core/src/main/java/ml/volder/transporter -f
+          git rm -r core/src/main/java/ml/volder/unikapi
+          git submodule add -b laby4-unikapi https://github.com/TFSMads/UnikAPI.git core/src/main/java/ml/volder/unikapi -f
+          git rm -r game-runner/src
+          git submodule add -b laby4-gamerunner https://github.com/TFSMads/UnikAPI.git game-runner/src -f
+          git rm -r core/src/main/resources/assets/transporter/transporter
+          git submodule add -b transporter-assets https://github.com/TFSMads/transporter.git core/src/main/resources/assets/transporter/transporter -f
+          git rm -r core/src/main/resources/assets/transporter/unikapi
+          git submodule add -b laby4-assets https://github.com/TFSMads/UnikAPI.git core/src/main/resources/assets/transporter/unikapi -f
+          git rm -r core/src/main/resources/transporter
+          git submodule add -b transporter-assets2 https://github.com/TFSMads/transporter.git core/src/main/resources/transporter -f
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
