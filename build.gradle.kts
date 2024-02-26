@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "ml.volder"
-version = "1.0.0"
+version = "1.0.1"
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 
@@ -15,9 +15,9 @@ labyMod {
         namespace = "transporter"
         displayName = "Transporter Addon"
         author = "Mads_Gamer_DK"
-        description = "Et addon med redskaber der forbedre din spil oplevelse på SA."
-        minecraftVersion = "*"
-        version = "2.0"
+        description = "An addon with tools that improve your gaming experience on superawesome.dk."
+        minecraftVersion = "*<1.20.2"
+        version = "2.0.11"
     }
 
     minecraft {
