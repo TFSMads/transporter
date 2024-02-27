@@ -38,15 +38,12 @@ public class UpdateManager {
     public static boolean isUpToDate() {
         InputStream transporterInputStream = UpdateManager.class.getClassLoader().getResourceAsStream("transporter.json");
         if(transporterInputStream != null){
-            Reader r = null;
             try {
-                r = new InputStreamReader(transporterInputStream, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                return true;
-            }
-            JsonObject transporterJson = new JsonParser().parse(r).getAsJsonObject();
-            if(transporterJson.has("autoUpdate") && !transporterJson.get("autoUpdate").getAsBoolean())
-                return true;
+                Reader r = new InputStreamReader(transporterInputStream, "UTF-8");
+                JsonObject transporterJson = new JsonParser().parse(r).getAsJsonObject();
+                if(transporterJson.has("autoUpdate") && !transporterJson.get("autoUpdate").getAsBoolean())
+                    return true;
+            } catch (Exception ignored) {}
         }
         Gson gson = new Gson();
         UpdateInfoJson localUpdateInfo;
