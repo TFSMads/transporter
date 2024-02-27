@@ -40,34 +40,24 @@ public class TransporterPriceApi {
             }
             reader.close();
 
-            // Parse JSON response
-            JsonElement jsonElement = JsonParser.parseString(response.toString());
-            return jsonElement.getAsJsonObject();
+            //JsonElement jsonElement = JsonParser.parseString(response.toString());
+            return new JsonParser().parse(response.toString()).getAsJsonObject();
         } catch (Exception e) {
+            UnikAPI.LOGGER.printStackTrace(Logger.LOG_LEVEL.FINER, e);
             UnikAPI.LOGGER.debug("Failed to get JSON from URL: " + stringURL, Logger.DEBUG_LEVEL.MEDIUM);
         }
         return null;
     }
 
     private String getUrl() {
-        if(url == null) {
-            JsonObject jsonObject = getJsonFromUrl("https://raw.githubusercontent.com/TransporterAddon/TransporterPriceAPI/main/info.json");
+        return "https://transporter-price-api-479a42778d13.herokuapp.com";
 
-            String url = (jsonObject != null && jsonObject.get("url") != null) ? jsonObject.get("url").getAsString() : null;
-
-            if(url != null) {
-                this.url = url;
-            } else {
-                this.url = "https://transporter-price-api-479a42778d13.herokuapp.com";
-            }
-
-            UnikAPI.LOGGER.debug("Transporter Price API URL: " + url, Logger.DEBUG_LEVEL.MEDIUM);
-        }
-        return url;
     }
 
     public int getSellValueFromPriceServer(String itemName) {
+        UnikAPI.LOGGER.debug("Hent item pris: " + itemName, Logger.DEBUG_LEVEL.LOW);
         JsonObject jsonObject = getJsonFromUrl(getUrl() + "/items/" + itemName);
+        UnikAPI.LOGGER.debug("Hent item pris (response): " + jsonObject, Logger.DEBUG_LEVEL.TESTING);
         if(jsonObject == null) {
             return 0;
         }

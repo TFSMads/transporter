@@ -1,5 +1,8 @@
 package ml.volder.transporter.updater;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.gui.UpdateFailedScreen;
 import ml.volder.unikapi.UnikAPI;
@@ -33,8 +36,35 @@ public class UpdateManager {
     }
 
     public static boolean isUpToDate() {
-        //Updated through FlintUpdater.
-        return true;
+        InputStream transporterInputStream = UpdateManager.class.getClassLoader().getResourceAsStream("transporter.json");
+        if(transporterInputStream != null){
+            Reader r = null;
+            try {
+                r = new InputStreamReader(transporterInputStream, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                return true;
+            }
+            JsonObject transporterJson = new JsonParser().parse(r).getAsJsonObject();
+            if(transporterJson.has("autoUpdate") && !transporterJson.get("autoUpdate").getAsBoolean())
+                return true;
+        }
+        Gson gson = new Gson();
+        UpdateInfoJson localUpdateInfo;
+        UpdateInfoJson remoteUpdateInfo;
+        try {
+            InputStream updateInfoSteam = UpdateManager.class.getClassLoader().getResourceAsStream("transporter/updateInfo.json");
+            Reader reader = new InputStreamReader(updateInfoSteam, "UTF-8");
+            localUpdateInfo = gson.fromJson(reader, UpdateInfoJson.class);
+
+            InputStream remoteInputStream = new URL("https://github.com/TFSMads/transporter/releases/latest/download/updateInfo.json").openStream();
+            reader = new InputStreamReader(remoteInputStream, "UTF-8");
+            remoteUpdateInfo = gson.fromJson(reader, UpdateInfoJson.class);
+        } catch (IOException ignored) {
+            return true;
+        }
+
+        currentVersion = localUpdateInfo.version;
+        return localUpdateInfo.version.equals(remoteUpdateInfo.version);
     }
 
 
