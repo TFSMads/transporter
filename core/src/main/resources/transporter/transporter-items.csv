@@ -1,0 +1,72 @@
+id,name,legacy_type,modern_type,display_name
+1,sand,sand:0,sand,Sand
+2,redsand,sand:1,red_sand,Red Sand
+3,stone,stone,stone,Stone
+4,cobblestone,cobblestone,cobblestone,Cobblestone
+5,smooth_brick,stonebrick,stone_bricks,Stonebrick
+6,dirt,dirt,dirt,Dirt
+7,grass,grass,grass_block,Grass
+8,charcoal,coal:1,char_coal,Charcoal
+9,coal,coal,coal,Coal
+10,ironore,iron_ore,iron_ore,Iron Ore
+11,goldore,gold_ore,gold_ore,Gold Ore
+12,ironingot,iron_ingot,iron_ingot,Iron Ingot
+13,goldingot,gold_ingot,gold_ingot,Gold Ingot
+14,bone,bone,bone,Bone
+15,glowstonedust,glowstone_dust,glowstone_dust,Glowstone Dust
+16,glowstone,glowstone,glowstone,Glowstone
+17,lapislazuli,dye:4,lapis_lazuli,Lapis Lazuli
+18,quartz,quartz,quartz,Quartz
+19,redstone,redstone,redstone,Redstone
+20,diamond,diamond,diamond,Diamond
+21,obsidian,obsidian,obsidian,Obsidian
+22,blazerod,blaze_rod,blaze_rod,Blaze Rod
+23,enderpearl,ender_pearl,ender_pearl,Ender Pearl
+24,book,book,book,Book
+25,sugarcane,reeds,sugar_cane,Sugar Cane
+26,leather,leather,leather,Leather
+27,oaklog,log,oak_log,Oak Log
+28,sprucelog,log:1,spurce_log,Spruce Log
+29,birchlog,log:2,birch_log,Birch Log
+30,junglelog,log:3,jungle_log,Jungle Log
+31,slimeball,slime_ball,slime_ball,Slimeball
+32,chest,chest,chest,Chest
+33,trappedchest,trapped_chest,trapped_chest,Trapped Chest
+34,hopper,hopper,hopper,Hopper
+35,white_wool,wool,white_wool,White Wool
+36,orange_wool,wool:1,orange_wool,Orange Wool
+37,magenta_wool,wool:2,magenta_wool,Magenta Wool
+38,light_blue_wool,wool:3,lighe_blue_wool,Light Blue Wool
+39,yellow_wool,wool:4,yellow_wool,Yellow Wool
+40,lime_wool,wool:5,lime_wool,Lime Wool
+41,pink_wool,wool:6,pink_wool,Pink Wool
+42,gray_wool,wool:7,gray_wool,Gray Wool
+43,light_gray_wool,wool:8,light_gray_wool,Light Gray Wool
+44,cyan_wool,wool:9,cyan_wool,Cyan Wool
+45,purple_wool,wool:10,purple_wool,Purple Wool
+46,blue_wool,wool:11,blue_wool,Blue Wool
+47,brown_wool,wool:12,brown_wool,Brown Wool
+48,green_wool,wool:13,green_wool,Green Wool
+49,red_wool,wool:14,red_wool,Red Wool
+50,black_wool,wool:15,black_wool,Black Wool
+51,white_stained_glass,stained_glass,white_stained_glass,White Glass
+52,orange_stained_glass,stained_glass:1,orange_stained_glass,Orange Glass
+53,magenta_stained_glass,stained_glass:2,magenta_stained_glass,Magenta Glass
+54,light_blue_stained_glass,stained_glass:3,light_blue_stained_glass,Light Blue Glass
+55,yellow_stained_glass,stained_glass:4,yellow_stained_glass,Yellow Glass
+56,lime_stained_glass,stained_glass:5,lime_stained_glass,Lime Glass
+57,pink_stained_glass,stained_glass:6,pink_stained_glass,Pink Glass
+58,gray_stained_glass,stained_glass:7,gray_stained_glass,Gray Glass
+59,light_gray_stained_glass,stained_glass:8,light_gray_stained_glass,Light Gray Glass
+60,cyan_stained_glass,stained_glass:9,cyan_stained_glass,Cyan Glass
+61,purple_stained_glass,stained_glass:10,purple_stained_glass,Purple Glass
+62,blue_stained_glass,stained_glass:11,blue_stained_glass,Blue Glass
+63,brown_stained_glass,stained_glass:12,brown_stained_glass,Brown Glass
+64,green_stained_glass,stained_glass:13,green_stained_glass,Green Glass
+66,red_stained_glass,stained_glass:14,red_stained_glass,Red Glass
+67,black_stained_glass,stained_glass:15,black_stained_glass,Black Glass
+68,cocoa_beans,dye:3,cocoa_beans,Cocoa Beans
+69,spruce_sapling,sapling:1,spruce_sapling,Spruce Sapling
+70,glass,glass,glass,Glass
+71,emerald,emerald,emerald,Emerald
+72,emerald_block,emerald_block,emerald_block,Emerald Block

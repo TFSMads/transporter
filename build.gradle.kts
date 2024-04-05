@@ -4,18 +4,18 @@ plugins {
     id("net.labymod.gradle.addon")
 }
 
-group = "org.example"
+group = "ml.volder"
 version = "1.0.0"
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 
 labyMod {
-    defaultPackageName = "org.example" //change this to your main package name (used by all modules)
+    defaultPackageName = "ml.volder" //change this to your main package name (used by all modules)
     addonInfo {
-        namespace = "example"
-        displayName = "ExampleAddon"
-        author = "Example Author"
-        description = "Example Description"
+        namespace = "transporter"
+        displayName = "Transporter Addon"
+        author = "Mads_Gamer_DK"
+        description = "Et addon med redskaber der forbedre din spil oplevelse på SA."
         minecraftVersion = "*"
         version = System.getenv().getOrDefault("VERSION", "0.0.1")
     }
