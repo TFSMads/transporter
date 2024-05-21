@@ -51,7 +51,7 @@ public class TransporterAddon extends AddonMain {
     private Key settingsKeybind;
 
     public static boolean isEnabled() {
-        if (instance == null || !instance.isEnabled)
+        if (instance == null || !instance.isEnabled || Laby.references().labyNetController().getCurrentServer().isEmpty())
             return false;
         if(!Laby.references().labyNetController().getCurrentServer().get().getDirectIp().endsWith("superawesome.dk"))
           return false;

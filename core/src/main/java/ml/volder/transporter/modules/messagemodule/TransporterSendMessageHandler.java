@@ -3,6 +3,7 @@ package ml.volder.transporter.modules.messagemodule;
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.classes.items.Item;
 import ml.volder.transporter.modules.MessagesModule;
+import ml.volder.transporter.utils.Parser;
 import ml.volder.unikapi.api.player.PlayerAPI;
 
 import java.util.regex.Matcher;
@@ -30,7 +31,7 @@ public class TransporterSendMessageHandler implements IMessageHandler {
             String playerMatch = matcher.group("player") != null ? matcher.group("player") : "ukendt";
 
             Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByName(itemMatch);
-            item.setAmountInTransporter(item.getAmountInTransporter()-Integer.parseInt(amountMatch));
+            item.setAmountInTransporter(item.getAmountInTransporter()- Parser.parseInt(amountMatch));
             PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("sendSuccess"), item.getDisplayName().toLowerCase(), amountMatch, String.valueOf(item.getAmountInTransporter()), playerMatch));
             return true;
         }
@@ -66,7 +67,7 @@ public class TransporterSendMessageHandler implements IMessageHandler {
             String playerMatch = matcher.group("player") != null ? matcher.group("player") : "ukendt";
 
             Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByName(itemMatch);
-            item.setAmountInTransporter(item.getAmountInTransporter()+Integer.parseInt(amountMatch));
+            item.setAmountInTransporter(item.getAmountInTransporter()+Parser.parseInt(amountMatch));
             PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("modtagSuccess"), item.getDisplayName().toLowerCase(), amountMatch, String.valueOf(item.getAmountInTransporter()), playerMatch));
             return true;
         }

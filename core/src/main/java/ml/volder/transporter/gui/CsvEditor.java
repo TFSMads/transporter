@@ -256,6 +256,7 @@ public class CsvEditor extends WrappedGuiScreen {
             this.backgroundScreen.setHeight(this.getHeight());
             this.expandedField = new ModTextField(0, this.getWidth() / 2 - 150, this.getHeight() / 4 + 45, 300, 20);
             this.expandedField.setFocused(true);
+            this.expandedField.setMaxStringLength(10000);
             this.expandedField.setText(csvEntry.entryValue);
             this.addButton(new WrappedGuiButton(1, this.getWidth() / 2 - 50, this.getHeight() / 4 + 85, 100, 20, "Done"));
         }

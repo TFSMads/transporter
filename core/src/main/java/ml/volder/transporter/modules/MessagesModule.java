@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MessagesModule extends SimpleModule implements Listener {
+
     private Map<String, String> messagesMap = new HashMap<>();
     private Map<String, String> messageRegexMap = new HashMap<>();
     private MessageModes messageMode = MessageModes.ACTIONBAR_MESSAGES;
@@ -287,5 +288,12 @@ public class MessagesModule extends SimpleModule implements Listener {
 
     public boolean isFeatureActive() {
         return isFeatureActive;
+    }
+
+    public LatestTitle LAST_TITLE = LatestTitle.TRANSPORTER_INFO;
+
+    public enum LatestTitle {
+        TRANSPORTER_INFO,
+        TRANSPORTER_PUT_MINE
     }
 }
