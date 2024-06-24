@@ -90,7 +90,7 @@ public class ItemManager {
                             && modernType.equals("dragon_head")
                             || modernType.endsWith("bed") && !modernType.equals("white_bed")
                             || modernType.startsWith("potted_")
-                            || modernType.endsWith("wall_skull")
+                            || modernType.endsWith("wall_head")
                     ) {
                         UnikAPI.LOGGER.info("Item is not supported by client version: " + modernType);
                         line = br.readLine();
