@@ -1,16 +1,13 @@
 package ml.volder.unikapi.api;
 
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.function.Function;
 import ml.volder.unikapi.NotSupportedAPIException;
 import ml.volder.unikapi.SupportedClient;
 import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.utils.AnnotationsScanner;
 
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Function;
-
-//TODO Omkode til ikke at benytte Refelctions.
 public class ApiManager {
 
     public static <T> T getAPI(ApiProvider<T> apiProvider, String packageName, Function<ApiReferenceStorage, T> referenceStorageFunction, Class<T> expectedReturnType) {

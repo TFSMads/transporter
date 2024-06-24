@@ -2,43 +2,37 @@ package ml.volder.transporter.classes.items;
 
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.classes.api.TransporterPriceApi;
+import ml.volder.transporter.events.ItemAmountUpdatedEvent;
 import ml.volder.unikapi.api.player.PlayerAPI;
+import ml.volder.unikapi.event.EventManager;
+import ml.volder.unikapi.event.EventType;
 import ml.volder.unikapi.types.Material;
 
+import java.util.Arrays;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class Item {
 
-    private String name;
-    private String legacy_type;
-    private String modern_type;
-    private int id;
+    private Material material;
 
-    private String displayName;
-
-    private Integer itemDamage;
     private Integer sellValue;
     private Integer amountInTransporter;
-    private Material material;
+
     private boolean autoUpdateSellValue = true;
 
     private UUID currentPlayerData;
 
-    public Item(int id, String name, String legacy_type, String modern_type, String displayName, int itemDamage, Material material){
-        this.id = id;
-        this.name = name;
-        this.legacy_type = legacy_type;
-        this.modern_type = modern_type;
-        this.itemDamage = itemDamage;
-        this.displayName = displayName;
-        this.material = material;
+    public Item(String type, String legacy_type){
+        this.material = Material.create("minecraft", type, legacy_type);
+        loadData();
     }
 
     public void setSellValue(Integer sellValue) {
         this.sellValue = sellValue;
         if(TransporterAddon.getInstance().getTransporterItemManager().getDataManagerGlobal() != null){
-            TransporterAddon.getInstance().getTransporterItemManager().getDataManagerGlobal().getSettings().getData().addProperty("sellValue." + this.getName(), this.sellValue);
+            TransporterAddon.getInstance().getTransporterItemManager().getDataManagerGlobal().getSettings().getData().addProperty("sellValue." + this.getModernType(), this.sellValue);
             TransporterAddon.getInstance().getTransporterItemManager().getDataManagerGlobal().save();
         }
     }
@@ -46,9 +40,10 @@ public class Item {
     public void setAmountInTransporter(Integer amountInTransporter) {
         this.amountInTransporter = amountInTransporter < 0 ? 0 : amountInTransporter;
         if(TransporterAddon.getInstance().getTransporterItemManager().getDataManager() != null){
-            TransporterAddon.getInstance().getTransporterItemManager().getDataManager().getSettings().getData().addProperty("amount." + this.getName(), this.amountInTransporter);
+            TransporterAddon.getInstance().getTransporterItemManager().getDataManager().getSettings().getData().addProperty("amount." + this.getModernType(), this.amountInTransporter);
             TransporterAddon.getInstance().getTransporterItemManager().getDataManager().save();
         }
+      EventManager.callEvent(new ItemAmountUpdatedEvent(EventType.POST));
     }
 
     public Integer getAmountInTransporter() {
@@ -58,7 +53,7 @@ public class Item {
     }
 
     public Integer getItemDamage() {
-        return itemDamage;
+        return material.getItemDamage();
     }
 
     public Integer getSellValue() {
@@ -67,49 +62,46 @@ public class Item {
         return sellValue;
     }
 
-    public String getDisplayName() {
-       return displayName;
-    }
+    private String displayName;
 
-    public String getName() {
-        return name;
+    public String getDisplayName() {
+      if(displayName == null) {
+        String input = getModernType().replace("_", " ");
+        displayName = Arrays.stream(input.split("\\s+"))
+            .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+            .collect(Collectors.joining(" "));
+      }
+      return displayName;
     }
 
     public String getLegacyType() {
-        return legacy_type;
+        return material.getPath(true);
     }
 
     public String getModernType() {
-        return modern_type;
+        return material.getPath(false);
     }
-
-    public int getSaId() {
-        return id;
-    }
-
-
-
 
     public Material getMaterial() {
         return material;
     }
 
     private void loadData() {
-        this.sellValue = TransporterAddon.getInstance().getTransporterItemManager().getDataManagerGlobal().getSettings().getData().has("sellValue." + this.getName())
-                ? TransporterAddon.getInstance().getTransporterItemManager().getDataManagerGlobal().getSettings().getData().get("sellValue." + this.getName()).getAsInt()
+        this.sellValue = TransporterAddon.getInstance().getTransporterItemManager().getDataManagerGlobal().getSettings().getData().has("sellValue." + this.getModernType())
+                ? TransporterAddon.getInstance().getTransporterItemManager().getDataManagerGlobal().getSettings().getData().get("sellValue." + this.getModernType()).getAsInt()
                 : 0;
-        this.autoUpdateSellValue = !TransporterAddon.getInstance().getTransporterItemManager().getDataManagerGlobal().getSettings().getData().has("autoUpdateSellValue." + this.getName()) || TransporterAddon.getInstance().getTransporterItemManager().getDataManagerGlobal().getSettings().getData().get("autoUpdateSellValue." + this.getName()).getAsBoolean();
+        this.autoUpdateSellValue = !TransporterAddon.getInstance().getTransporterItemManager().getDataManagerGlobal().getSettings().getData().has("autoUpdateSellValue." + this.getModernType()) || TransporterAddon.getInstance().getTransporterItemManager().getDataManagerGlobal().getSettings().getData().get("autoUpdateSellValue." + this.getModernType()).getAsBoolean();
         if(PlayerAPI.getAPI().getUUID() == null)
             return;
         UUID uuid = PlayerAPI.getAPI().getUUID();
         currentPlayerData = uuid;
-        this.amountInTransporter = TransporterAddon.getInstance().getTransporterItemManager().getDataManager().getSettings().getData().has("amount." + this.getName())
-                ? TransporterAddon.getInstance().getTransporterItemManager().getDataManager().getSettings().getData().get("amount." + this.getName()).getAsInt()
+        this.amountInTransporter = TransporterAddon.getInstance().getTransporterItemManager().getDataManager().getSettings().getData().has("amount." + this.getModernType())
+                ? TransporterAddon.getInstance().getTransporterItemManager().getDataManager().getSettings().getData().get("amount." + this.getModernType()).getAsInt()
                 : 0;
     }
 
     private int getSellValueFromPriceServer() {
-        return TransporterPriceApi.getInstance().getSellValueFromPriceServer(this.getName());
+        return TransporterPriceApi.getInstance().getSellValueFromPriceServer(this.getModernType());
     }
 
 
@@ -136,7 +128,7 @@ public class Item {
     public void setAutoUpdateSellValue(boolean autoUpdateSellValue) {
         this.autoUpdateSellValue = autoUpdateSellValue;
         if(TransporterAddon.getInstance().getTransporterItemManager().getDataManagerGlobal() != null){
-            TransporterAddon.getInstance().getTransporterItemManager().getDataManagerGlobal().getSettings().getData().addProperty("autoUpdateSellValue." + this.getName(), this.autoUpdateSellValue);
+            TransporterAddon.getInstance().getTransporterItemManager().getDataManagerGlobal().getSettings().getData().addProperty("autoUpdateSellValue." + this.getModernType(), this.autoUpdateSellValue);
             TransporterAddon.getInstance().getTransporterItemManager().getDataManagerGlobal().save();
         }
     }

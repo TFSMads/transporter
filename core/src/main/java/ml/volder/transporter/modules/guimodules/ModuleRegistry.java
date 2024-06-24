@@ -43,7 +43,7 @@ public class ModuleRegistry {
     public void registerModules() {
         for(Item item : TransporterAddon.getInstance().getTransporterItemManager().getItemList()) {
             ModuleSystem.registerModule(
-                    item.getName() + "-antal",
+                    item.getModernType() + "-antal",
                     item.getDisplayName(),
                     false,
                     itemAmountCategory,
@@ -58,7 +58,7 @@ public class ModuleRegistry {
 
         for(Item item : TransporterAddon.getInstance().getTransporterItemManager().getItemList()) {
             ModuleSystem.registerModule(
-                    item.getName() + "-value",
+                    item.getModernType() + "-value",
                     item.getDisplayName(),
                     false,
                     itemValueCategory,

@@ -2,6 +2,7 @@ package ml.volder.transporter.gui.pricegui;
 
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.classes.items.Item;
+import ml.volder.transporter.modules.transportermenumodule.TransporterMenuEntry;
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.guisystem.elements.Scrollbar;
@@ -44,6 +45,7 @@ public class PriceMenu extends WrappedGuiScreen {
         this.scrollbar.init();
 
         this.addButton(new WrappedGuiButton(1, 5, 10, 22, 21, "<"));
+        this.addButton(new WrappedGuiButton(2, 5, getHeight() - 31, 120, 21, "Opdatere alle priser"));
     }
 
     @Override
@@ -58,17 +60,33 @@ public class PriceMenu extends WrappedGuiScreen {
         double currentX = startX;
 
         double startY = 45;
-        int rows = 1;
+      int rows = (int)Math.ceil((double)itemEntries.size() / (double)entryAmountHorizontal);
 
-        for(PriceMenuEntry entry : itemEntries) {
-            if(currentX + entryWidth >= startX + entriesWidth) {
-                rows++;
-                currentX = startX;
-                startY += entryHeight + 2;
-            }
-            entry.draw((int)currentX, (int)(startY + this.scrollbar.getScrollY()), mouseX, mouseY);
-            currentX += entryWidth + 2;
+      //Only draw the entries that are visible
+      int scrollY = (int)this.scrollbar.getScrollY();
+      int outOfViewEntryRows = Math.abs(scrollY) / (entryHeight + 2);
+      int inViewEntryRows = (getHeight() - 90) / (entryHeight + 2) + 1;
+      int outOfViewAmount = entryAmountHorizontal * outOfViewEntryRows;
+      int visibleEntriesAmount = entryAmountHorizontal * inViewEntryRows;
+
+      int firstIndex = Math.max(Math.min(outOfViewAmount, itemEntries.size() - visibleEntriesAmount), 0);
+      int lastIndex = Math.max(Math.min(outOfViewAmount + visibleEntriesAmount, itemEntries.size()),0);
+
+      List<PriceMenuEntry> visibleEntries = itemEntries.subList(firstIndex, lastIndex);
+
+      if(lastIndex == itemEntries.size()) {
+        startY -= (getHeight() - 90);
+        startY -= Math.abs(scrollY) - (lastIndex / entryAmountHorizontal) * (entryHeight + 2);
+      }
+
+      for(PriceMenuEntry entry : visibleEntries) {
+        if(currentX + entryWidth >= startX + entriesWidth) {
+          currentX = startX;
+          startY += entryHeight + 2;
         }
+        entry.draw((int)currentX, (int)(startY), mouseX, mouseY);
+        currentX += entryWidth + 2;
+      }
 
         drawAPI.drawOverlayBackground(0, 41);
         drawAPI.drawGradientShadowTop(41.0, 0.0, this.getWidth());
@@ -77,10 +95,10 @@ public class PriceMenu extends WrappedGuiScreen {
         drawAPI.drawCenteredString(ModColor.cl("a")+ModColor.cl("l")+"Værdi indstillinger", (double)(this.getWidth() / 2), 10.0D, 2.0D);
 
         this.scrollbar.setPosition(startX + entriesWidth + 3, 43, startX + entriesWidth + 6, getHeight() - 42);
-        this.scrollbar.update(rows + 1);
+        this.scrollbar.update(rows + 5);
         this.scrollbar.draw();
 
-        for(PriceMenuEntry entry : itemEntries) {
+        for(PriceMenuEntry entry : visibleEntries) {
             entry.drawHoverText();
         }
     }
@@ -89,6 +107,9 @@ public class PriceMenu extends WrappedGuiScreen {
     public void actionPerformed(WrappedGuiButton button) {
         if(button.getId() == 1) {
             PlayerAPI.getAPI().openGuiScreen(lastScreen);
+        }
+        else if(button.getId() == 2) {
+            itemEntries.forEach(PriceMenuEntry::updateSellValueFromPriceServer);
         }
     }
 

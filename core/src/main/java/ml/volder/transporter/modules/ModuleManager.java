@@ -134,6 +134,7 @@ public class ModuleManager {
         registerModule("signToolsModule", "Sign Tools", "En feature til at forbedre skilte så man kan kopiere og indsætte.", SignToolsModule.class);
         moduleInfo = registerModule("balanceTrackerModule", "Balance", "En feature der tracker hvor mange EMs du har.", BalanceModule.class);
         moduleInfo.dependsOnList.add(ServerModule.class);
+        //registerModule("transporterStatsModule", "Transporter Stats", "En feature der tracker diverse stats.", TransporterStatsModule.class);
         UnikAPI.LOGGER.finest("Registered " + registeredModules.size() + " modules successfully!");
     }
 

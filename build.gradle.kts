@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "ml.volder"
-version = "1.0.0"
+version = System.getenv().getOrDefault("VERSION", "1.0.0")
 
 labyMod {
     defaultPackageName = "ml.volder" //change this to your main package name (used by all modules)
@@ -15,7 +15,7 @@ labyMod {
         author = "Mads_Gamer_DK"
         description = "Et addon med redskaber der forbedre din spil oplevelse på SA."
         minecraftVersion = "*"
-        version = System.getenv().getOrDefault("VERSION", "0.0.1")
+        version = getVersion().toString()
     }
 
     minecraft {
@@ -30,7 +30,10 @@ labyMod {
                 "1.19.4",
                 "1.20.1",
                 "1.20.2",
-                "1.20.4"
+                "1.20.4",
+                "1.20.5",
+                "1.20.6",
+                "1.21"
         ) { version, provider ->
             configureRun(provider, version)
         }

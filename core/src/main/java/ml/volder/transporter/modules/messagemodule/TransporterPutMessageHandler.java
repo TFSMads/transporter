@@ -36,7 +36,7 @@ public class TransporterPutMessageHandler implements IMessageHandler {
         if (matcher.find()) {
           String itemMatch = Parser.parseFormattedItemName(matcher.group("item") != null ? matcher.group("item") : "ukendt");
 
-          Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByName(itemMatch);
+          Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByDisplayName(itemMatch);
             MessageModes mode = module.getMessageMode();
             if(mode == MessageModes.NO_MESSAGES) {
                 return true;
@@ -58,7 +58,7 @@ public class TransporterPutMessageHandler implements IMessageHandler {
           String itemMatch = Parser.parseFormattedItemName(matcher.group("item") != null ? matcher.group("item") : "ukendt");
           String amountMatch = matcher.group("amount") != null ? matcher.group("amount") : "ukendt";
 
-            Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByName(itemMatch);
+            Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByType(itemMatch);
             item.setAmountInTransporter(item.getAmountInTransporter()+ Parser.parseInt(amountMatch));
             MessageModes mode = module.getMessageMode();
             if(mode == MessageModes.NO_MESSAGES) {
@@ -82,7 +82,7 @@ public class TransporterPutMessageHandler implements IMessageHandler {
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
             for(Item item : TransporterAddon.getInstance().getTransporterItemManager().getItemList()){
-                if(Parser.parseFormattedItemName(matcher.group("item")).equals(item.getName())){
+                if(Parser.parseFormattedItemName(matcher.group("item")).equals(item.getModernType())){
                     item.setAmountInTransporter((item.getAmountInTransporter() + Parser.parseInt(matcher.group("amount"))));
                     return ModuleManager.getInstance().getModule(AutoTransporter.class).isEnabled();
                 }

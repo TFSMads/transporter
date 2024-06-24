@@ -112,14 +112,18 @@ public class PriceMenuEntry {
         if(!mouseButton.isLeft())
             return;
         if(hoverUpdateButton) {
-            isUpdating = true;
-            item.updateSellValueFromPriceServer(integer -> isUpdating = false);
-            item.setAutoUpdateSellValue(true);
+            updateSellValueFromPriceServer();
         }else if(hoverAutoButton) {
             item.setAutoUpdateSellValue(!item.getAutoUpdateSellValue());
         }else if (hoverSetButton) {
             PlayerAPI.getAPI().openGuiScreen(new SetSellValueGui(item, backgroundScreen));
         }
+    }
+
+    public void updateSellValueFromPriceServer() {
+        isUpdating = true;
+        item.updateSellValueFromPriceServer(integer -> isUpdating = false);
+        item.setAutoUpdateSellValue(true);
     }
 
     public class SetSellValueGui extends WrappedGuiScreen {

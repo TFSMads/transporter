@@ -30,7 +30,7 @@ public class TransporterSendMessageHandler implements IMessageHandler {
             String itemMatch = matcher.group("item") != null ? matcher.group("item") : "ukendt";
             String playerMatch = matcher.group("player") != null ? matcher.group("player") : "ukendt";
 
-            Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByName(itemMatch);
+            Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByDisplayName(itemMatch);
             item.setAmountInTransporter(item.getAmountInTransporter()- Parser.parseInt(amountMatch));
             PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("sendSuccess"), item.getDisplayName().toLowerCase(), amountMatch, String.valueOf(item.getAmountInTransporter()), playerMatch));
             return true;
@@ -66,7 +66,7 @@ public class TransporterSendMessageHandler implements IMessageHandler {
             String itemMatch = matcher.group("item") != null ? matcher.group("item") : "ukendt";
             String playerMatch = matcher.group("player") != null ? matcher.group("player") : "ukendt";
 
-            Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByName(itemMatch);
+            Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByDisplayName(itemMatch);
             item.setAmountInTransporter(item.getAmountInTransporter()+Parser.parseInt(amountMatch));
             PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("modtagSuccess"), item.getDisplayName().toLowerCase(), amountMatch, String.valueOf(item.getAmountInTransporter()), playerMatch));
             return true;

@@ -110,7 +110,7 @@ public class AutoTransporter extends SimpleModule implements Listener {
         Map<String, Integer> itemAmountMap = new HashMap<>();
 
         for (Item item: addon.getTransporterItemManager().getItemList())
-            itemAmountMap.put(item.getName(), InventoryAPI.getAPI().getAmount(item.getMaterial(), item.getItemDamage()));
+            itemAmountMap.put(item.getModernType(), InventoryAPI.getAPI().getAmount(item.getMaterial(), item.getItemDamage()));
 
 
         int maxAmount = -1;

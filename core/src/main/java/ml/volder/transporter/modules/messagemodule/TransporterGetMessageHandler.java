@@ -47,7 +47,7 @@ public class TransporterGetMessageHandler implements IMessageHandler {
             String itemMatch = Parser.parseFormattedItemName(matcher.group("item") != null ? matcher.group("item") : "ukendt");
             String amountMatch = matcher.group("amount") != null ? matcher.group("amount") : "ukendt";
 
-            Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByName(itemMatch);
+            Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByType(itemMatch);
             item.setAmountInTransporter(item.getAmountInTransporter()-Parser.parseInt(amountMatch));
             MessageModes mode = module.getMessageMode();
             if(mode == MessageModes.NO_MESSAGES) {

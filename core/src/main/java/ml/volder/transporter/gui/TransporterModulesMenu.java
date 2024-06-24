@@ -51,7 +51,6 @@ public class TransporterModulesMenu extends WrappedGuiScreen {
             drawAPI.bindTexture(ModTextures.BUTTON_ADVANCED);
             drawAPI.drawTexture((double)(this.buttonAddonInfo.getX() + 4), (double)(this.buttonAddonInfo.getY() + 3), 0.0, 0.0, 256.0, 256.0, 14.0, 14.0, 2.0F);
         }
-
     }
 
     public TransporterModulesMenu(WrappedGuiScreen lastScreen) {

@@ -101,14 +101,14 @@ public class TransporterMenuEntry {
             return;
         if(hoverGetButton) {
             if(InputAPI.getAPI().isShiftKeyDown()) {
-                PlayerAPI.getAPI().sendCommand("transporter get " + item.getName());
+                PlayerAPI.getAPI().sendCommand("transporter get " + item.getModernType());
             } else {
-                PlayerAPI.getAPI().sendCommand("transporter get " + item.getName() + " " + ModuleManager.getInstance().getModule(TransporterMenuModule.class).getWithdrawAmount());
+                PlayerAPI.getAPI().sendCommand("transporter get " + item.getModernType() + " " + ModuleManager.getInstance().getModule(TransporterMenuModule.class).getWithdrawAmount());
 
             }
             PlayerAPI.getAPI().openGuiScreen(null);
         }else if (hoverPutButton) {
-            PlayerAPI.getAPI().sendCommand("transporter put " + item.getName());
+            PlayerAPI.getAPI().sendCommand("transporter put " + item.getModernType());
             PlayerAPI.getAPI().openGuiScreen(null);
         }
     }

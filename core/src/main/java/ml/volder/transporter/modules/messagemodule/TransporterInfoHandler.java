@@ -28,7 +28,7 @@ public class TransporterInfoHandler implements IMessageHandler {
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
             for(Item item : TransporterAddon.getInstance().getTransporterItemManager().getItemList()){
-                if(Parser.parseFormattedItemName(matcher.group("item")).equals(item.getName())){
+                if(Parser.parseFormattedItemName(matcher.group("item")).equals(item.getModernType())){
                     item.setAmountInTransporter(Parser.parseInt(matcher.group("amount")));
                     ModuleManager.getInstance().getModule(AutoTransporter.class).transporterInfoSet();
                     return false;
@@ -42,8 +42,13 @@ public class TransporterInfoHandler implements IMessageHandler {
     final Pattern pattern = Pattern.compile(module.getRegexByMessageId("info_title"));
     final Matcher matcher = pattern.matcher(clean);
     boolean result = matcher.find();
-    if(result)
+    if(result) {
       ModuleManager.getInstance().getModule(MessagesModule.class).LAST_TITLE = LatestTitle.TRANSPORTER_INFO;
+      for(Item item : TransporterAddon.getInstance().getTransporterItemManager().getItemList()){
+        item.setAmountInTransporter(0);
+      }
+    }
+
   }
 
 

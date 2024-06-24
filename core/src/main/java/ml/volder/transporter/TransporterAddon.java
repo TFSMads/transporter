@@ -139,6 +139,7 @@ public class TransporterAddon extends AddonMain {
             UpdateManager.updateCsvFiles(dataManager);
 
             transporterItemManager = new ItemManager();
+            transporterItemManager.loadItems();
 
             KeyElement keyElement = new KeyElement("Indstillinger - Keybind", new ControlElement.IconData(
                 Material.OAK_BUTTON), dataManager, "settingsKeybind", false, Key.R_SHIFT);
@@ -207,7 +208,8 @@ public class TransporterAddon extends AddonMain {
 
             ListContainerElement itemsEditor = new ListContainerElement("Items", new ControlElement.IconData(
                 Material.IRON_INGOT));
-            itemsEditor.setAdvancedButtonCallback(aBoolean -> CsvEditor.openEditor(new File(UnikAPI.getCommonDataFolder(), "transporter-items.csv"), ',', csvFile -> transporterItemManager.reloadItemsFromCSV()));
+            itemsEditor.setAdvancedButtonCallback(aBoolean -> CsvEditor.openEditor(new File(UnikAPI.getCommonDataFolder(),
+                "transporter/transporter-items.csv"), ',', csvFile -> transporterItemManager.reloadItemsFromCSV()));
 
             advancedSettings.getSubSettings().add(updateItemsElement);
             advancedSettings.getSubSettings().add(itemsEditor);

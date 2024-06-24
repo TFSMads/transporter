@@ -2,25 +2,28 @@ package ml.volder.transporter.classes.items;
 
 
 import ml.volder.unikapi.UnikAPI;
+import ml.volder.unikapi.api.minecraft.MinecraftAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.datasystem.Data;
 import ml.volder.unikapi.datasystem.DataManager;
 import ml.volder.unikapi.logger.Logger;
-import ml.volder.unikapi.types.Material;
+import net.labymod.api.Laby;
+import net.labymod.api.client.world.item.ItemStack;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ItemManager {
     private List<Item> itemList = new ArrayList<>();
 
-    public ItemManager() {
+    public void loadItems() {
         loadItemsFromCSV();
-        updateItemSellValues();
+      updateItemSellValues();
     }
 
     public void updateItemSellValues() {
@@ -61,19 +64,48 @@ public class ItemManager {
             // loop until all lines are read
             while (line != null) {
                 //skip title line
-                if(line.startsWith("id"))
+                if(line.startsWith("type"))
                     line = br.readLine();
                 // use string.split to load a string array with the values from
                 // each line of
                 // the file, using a comma as the delimiter
                 try {
                     String[] attributes = line.split(",");
-                    String legacyType = attributes[2];
-                    //Extra number after : in legacyType if present
-                    int itemDamage = legacyType.contains(":") ? Integer.parseInt(legacyType.split(":")[1]) : 0;
-                    Material material = Material.create("minecraft", attributes[3], attributes[2]);
-                    Item item = new Item(Integer.parseInt(attributes[0]), attributes[1], attributes[2], attributes[3], attributes[4], itemDamage, material);
-                    // adding item into ArrayList
+                    String modernType = attributes[0];
+                    String legacyType = attributes[1];
+                    //Check if item is supported by client version
+                    ItemStack itemStack;
+                    if(MinecraftAPI.getAPI().isLegacy()) {
+                      itemStack = Laby.references().itemStackFactory().create("minecraft", legacyType.split(":")[0], 1);
+                      int itemDamage = legacyType.contains(":") ? Integer.parseInt(legacyType.split(":")[1]) : 0;
+                      itemStack.setLegacyItemData(itemDamage);
+                    }else {
+                      itemStack = Laby.references().itemStackFactory().create("minecraft", modernType, 1);
+                    }
+
+                    UnikAPI.LOGGER.debug(modernType + ": " + itemStack.getAsItem().getIdentifier().getPath() + " - ");
+                    if(
+                        Objects.equals(itemStack.getAsItem().getIdentifier().getPath(), "apple") && !Objects.equals(modernType, "apple")
+                        || MinecraftAPI.getAPI().isLegacy()
+                            && modernType.equals("dragon_head")
+                            || modernType.endsWith("bed") && !modernType.equals("white_bed")
+                            || modernType.startsWith("potted_")
+                            || modernType.endsWith("wall_skull")
+                    ) {
+                        UnikAPI.LOGGER.info("Item is not supported by client version: " + modernType);
+                        line = br.readLine();
+                        continue;
+                    }
+
+                    if(modernType.equals("white_bed")) {
+                      modernType = "bed";
+                    }
+                    if(modernType.equals("grass_block")) {
+                      modernType = "grass";
+                    }
+
+
+                    Item item = new Item(modernType, legacyType);
                     itemList.add(item);
                     line = br.readLine();
                 }catch (Exception e) {
@@ -94,14 +126,23 @@ public class ItemManager {
         return this.itemList;
     }
 
-    public Item getItemByName(String name) {
+    public Item getItemByDisplayName(String name) {
         AtomicReference<Item> returnItem = new AtomicReference<>();
         itemList.forEach(item -> {
-            if(item.getName().equals(name))
+            if(item.getDisplayName().equals(name))
                 returnItem.set(item);
         });
         return returnItem.get();
     }
+
+  public Item getItemByType(String name) {
+    AtomicReference<Item> returnItem = new AtomicReference<>();
+    itemList.forEach(item -> {
+      if(item.getModernType().equals(name))
+        returnItem.set(item);
+    });
+    return returnItem.get();
+  }
 
     private DataManager<Data> dataManager;
     private DataManager<Data> globalDataManager;
