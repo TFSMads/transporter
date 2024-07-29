@@ -3,7 +3,6 @@ package ml.volder.unikapi.api.input;
 import ml.volder.unikapi.api.ApiManager;
 import ml.volder.unikapi.api.ApiProvider;
 import ml.volder.unikapi.api.ApiReferenceStorage;
-import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.keysystem.Key;
 
 public interface InputAPI {

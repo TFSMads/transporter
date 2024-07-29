@@ -1,12 +1,13 @@
 package ml.volder.unikapi.api;
 
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.function.Function;
 import ml.volder.unikapi.NotSupportedAPIException;
 import ml.volder.unikapi.SupportedClient;
 import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.utils.AnnotationsScanner;
+
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.function.Function;
 
 public class ApiManager {
 

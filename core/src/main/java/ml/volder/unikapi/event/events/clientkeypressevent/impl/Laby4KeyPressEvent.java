@@ -7,8 +7,6 @@ import ml.volder.unikapi.event.EventType;
 import net.labymod.api.Laby;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.input.KeyEvent;
-import net.labymod.api.event.client.input.MouseEvent;
-import net.labymod.api.event.client.input.MouseScrollEvent;
 
 @SupportedClient(clientBrand = "labymod4", minecraftVersion = "*")
 public class Laby4KeyPressEvent implements EventImpl {

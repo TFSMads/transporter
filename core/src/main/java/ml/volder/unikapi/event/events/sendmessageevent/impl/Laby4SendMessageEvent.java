@@ -4,13 +4,10 @@ import ml.volder.unikapi.SupportedClient;
 import ml.volder.unikapi.event.EventImpl;
 import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.EventType;
-import ml.volder.unikapi.event.events.clienttickevent.ClientTickEvent;
 import ml.volder.unikapi.event.events.sendmessageevent.SendMessageEvent;
 import net.labymod.api.Laby;
-import net.labymod.api.event.Phase;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatMessageSendEvent;
-import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import org.jetbrains.annotations.NotNull;
 
 @SupportedClient(clientBrand = "labymod4", minecraftVersion = "*")

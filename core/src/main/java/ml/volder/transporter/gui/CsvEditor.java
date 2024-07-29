@@ -9,6 +9,8 @@ import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
 import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
+import net.labymod.api.Laby;
+import net.labymod.api.client.gui.screen.ScreenWrapper;
 
 import java.awt.*;
 import java.io.File;
@@ -22,12 +24,12 @@ public class CsvEditor extends WrappedGuiScreen {
     private Consumer<CsvFile> saveCallback;
 
     public static void openEditor(InputStream inputStream) {
-        CsvEditor csvEditor = new CsvEditor(new CsvFile(inputStream, ','), PlayerAPI.getAPI().getCurrentScreen());
+        CsvEditor csvEditor = new CsvEditor(new CsvFile(inputStream, ','), Laby.labyAPI().minecraft().minecraftWindow().currentScreen());
         PlayerAPI.getAPI().openGuiScreen(csvEditor);
     }
 
     public static void openEditor(File file, char seperator, Consumer<CsvFile> saveCallback) {
-        CsvEditor csvEditor = new CsvEditor(CsvFile.fromFile(file, seperator), PlayerAPI.getAPI().getCurrentScreen());
+        CsvEditor csvEditor = new CsvEditor(CsvFile.fromFile(file, seperator), Laby.labyAPI().minecraft().minecraftWindow().currentScreen());
         csvEditor.saveCallback = saveCallback;
         PlayerAPI.getAPI().openGuiScreen(csvEditor);
     }
@@ -66,9 +68,9 @@ public class CsvEditor extends WrappedGuiScreen {
 
     private CsvEditorEntry hoveredEntry = null;
 
-    private final WrappedGuiScreen previousScreen;
+    private final ScreenWrapper previousScreen;
 
-    public CsvEditor(CsvFile csvFile, WrappedGuiScreen previousScreen) {
+    public CsvEditor(CsvFile csvFile, ScreenWrapper previousScreen) {
         this.csvFile = csvFile;
         this.previousScreen = previousScreen;
 
@@ -116,7 +118,7 @@ public class CsvEditor extends WrappedGuiScreen {
     @Override
     public void actionPerformed(WrappedGuiButton button) {
         if(button.getId() == 1) {
-            PlayerAPI.getAPI().openGuiScreen(previousScreen);
+            Laby.labyAPI().minecraft().minecraftWindow().displayScreen(previousScreen);
         }
         else if (button.getId() == 2) {
             csvFile.addRow();

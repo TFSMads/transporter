@@ -2,22 +2,22 @@ package ml.volder.transporter.gui.pricegui;
 
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.classes.items.Item;
-import ml.volder.transporter.modules.transportermenumodule.TransporterMenuEntry;
 import ml.volder.unikapi.api.draw.DrawAPI;
-import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.guisystem.elements.Scrollbar;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
 import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
+import net.labymod.api.Laby;
+import net.labymod.api.client.gui.screen.ScreenWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PriceMenu extends WrappedGuiScreen {
 
-    private WrappedGuiScreen lastScreen;
+    private ScreenWrapper lastScreen;
     private boolean isInBackground = false;
     private int entryWidth = 120;
     private int entryHeight = 37;
@@ -25,7 +25,7 @@ public class PriceMenu extends WrappedGuiScreen {
 
     private List<PriceMenuEntry> itemEntries = new ArrayList<>();
 
-    public PriceMenu(WrappedGuiScreen lastScreen) {
+    public PriceMenu(ScreenWrapper lastScreen) {
         this.lastScreen = lastScreen;
     }
 
@@ -106,7 +106,7 @@ public class PriceMenu extends WrappedGuiScreen {
     @Override
     public void actionPerformed(WrappedGuiButton button) {
         if(button.getId() == 1) {
-            PlayerAPI.getAPI().openGuiScreen(lastScreen);
+            Laby.labyAPI().minecraft().minecraftWindow().displayScreen(lastScreen);
         }
         else if(button.getId() == 2) {
             itemEntries.forEach(PriceMenuEntry::updateSellValueFromPriceServer);

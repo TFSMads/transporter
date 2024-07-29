@@ -1,13 +1,12 @@
 package ml.volder.transporter.modules;
 
 import com.google.gson.JsonObject;
-import ml.volder.transporter.gui.TransporterModulesMenu;
+import ml.volder.transporter.settings.accesors.SettingRegistryAccessor;
+import ml.volder.transporter.settings.widgets.TransporterModuleWidget;
 import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.datasystem.Data;
 import ml.volder.unikapi.datasystem.DataManager;
 import ml.volder.unikapi.guisystem.ModTextures;
-import ml.volder.unikapi.guisystem.elements.ModuleElement;
-import ml.volder.unikapi.guisystem.elements.Settings;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -29,7 +28,7 @@ public abstract class SimpleModule {
 
     public abstract SimpleModule init();
     public abstract SimpleModule enable();
-    public abstract void fillSettings(Settings subSettings);
+    public abstract void fillSettings(SettingRegistryAccessor subSettings);
 
     public void loadConfig() {
         isFeatureActive = hasConfigEntry("isFeatureActive") ? getConfigEntry("isFeatureActive", Boolean.class) : true;
@@ -47,15 +46,18 @@ public abstract class SimpleModule {
         return isFeatureActive;
     }
 
-    public Settings addSetting() {
-        ModuleElement moduleElement = new ModuleElement(displayName, moduleDescription, ModTextures.MISC_HEAD_QUESTION, isActive -> {
-            isFeatureActive = isActive;
-            setConfigEntry("isFeatureActive", isFeatureActive);
-        });
-        moduleElement.setActive(isFeatureActive);
-
-        TransporterModulesMenu.addSetting(moduleElement);
-        return moduleElement.getSubSettings();
+    public TransporterModuleWidget getModuleWidget() {
+        return new TransporterModuleWidget(
+                moduleName,
+                displayName,
+                moduleDescription,
+                ModTextures.MISC_HEAD_QUESTION,
+                isActive -> {
+                    isFeatureActive = isActive;
+                    setConfigEntry("isFeatureActive", isFeatureActive);
+                },
+                isFeatureActive
+        );
     }
 
 
