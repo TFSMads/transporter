@@ -133,6 +133,17 @@ public class ModuleRegistry {
                             ? FormatingUtils.formatNumber(ModuleManager.getInstance().getModule(BalanceModule.class).getBalance().longValue()) + " EMs"
                             : "Balance featuren er ikke aktiv!"
         );
+
+        ModuleSystem.registerModule(
+                "signtools-toogle",
+                "Åben Editor",
+                false,
+                otherCategory,
+                Material.OAK_SIGN,
+                s -> ModuleManager.getInstance().getModule(SignToolsModule.class).isFeatureActive()
+                        ? ModuleManager.getInstance().getModule(SignToolsModule.class).isOpenSignEditor() ? ModColor.GREEN + "Ja" : ModColor.RED + "Nej"
+                        : "Sign Tools featuren er ikke aktiv!"
+        );
     }
 
     public Object getItemAmountCategory() {
