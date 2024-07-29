@@ -46,4 +46,8 @@ public class SignBuffer {
         setLine(3, bufferToCopy.getLine(3));
         setLine(4, bufferToCopy.getLine(4));
     }
+
+    public boolean isEmpty() {
+        return bufferTextLine1.isEmpty() && bufferTextLine2.isEmpty() && bufferTextLine3.isEmpty() && bufferTextLine4.isEmpty();
+    }
 }

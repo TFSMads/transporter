@@ -49,6 +49,10 @@ public class SignToolsModule extends SimpleModule implements Listener {
         return this;
     }
 
+    private boolean hasCopiedText() {
+        return SignGui.getBufferedText() != null && !SignGui.getBufferedText().isEmpty();
+    }
+
     @Override
     public void fillSettings(SettingRegistryAccessor subSettings) {
         subSettings.add(new SettingHeader(
@@ -110,7 +114,7 @@ public class SignToolsModule extends SimpleModule implements Listener {
     public void onSignOpen(OpenSignEvent event) {
         if(!TransporterAddon.isEnabled() || !this.isFeatureActive)
             return;
-        if(!openSignEditor) {
+        if(!openSignEditor && hasCopiedText()) {
             if (isSendingUpdatePacket) {
                 PlayerAPI.getAPI().displayChatMessage(ModColor.RED + "Du placere skilte for hurtigt!");
                 event.setCancelled(true);
