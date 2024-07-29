@@ -3,16 +3,24 @@ package ml.volder.transporter.modules;
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.modules.signtoolsmodule.SignBuffer;
 import ml.volder.transporter.modules.signtoolsmodule.SignGui;
+import ml.volder.transporter.settings.accesors.SettingRegistryAccessor;
+import ml.volder.transporter.settings.action.TransporterAction;
+import ml.volder.transporter.settings.classes.TransporterSettingElementFactory;
+import ml.volder.transporter.settings.classes.TransporterWidgetFactory;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.event.EventHandler;
 import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.event.events.opensignevent.OpenSignEvent;
-import ml.volder.unikapi.guisystem.elements.*;
+import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.keysystem.Key;
-import ml.volder.unikapi.types.Material;
+import ml.volder.unikapi.keysystem.impl.Laby4KeyMapper;
 import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.wrappers.tileentitysign.WrappedTileEntitySign;
+import net.labymod.api.client.gui.icon.Icon;
+import net.labymod.api.client.gui.screen.widget.widgets.input.KeybindWidget;
+import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget;
+import net.labymod.api.configuration.settings.type.SettingHeader;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -46,38 +54,58 @@ public class SignToolsModule extends SimpleModule implements Listener {
     }
 
     @Override
-    public void fillSettings(Settings subSettings) {
-        HeaderElement headerElement = new HeaderElement("Her under kan du vælge hvilke knapper du vil bruge til at indsætte og kopiere skilte. Bemærk du skal holde kontrol knappen inde sammen med knappen for at handlingen udføres.");
-        subSettings.add(headerElement);
+    public void fillSettings(SettingRegistryAccessor subSettings) {
+        subSettings.add(new SettingHeader(
+                "header",
+                true,
+                "",
+                "header"
+        ));
 
-        KeyElement keyElement = new KeyElement("Indsæt - Knap", new ControlElement.IconData(Material.OAK_BUTTON), getDataManager(), "pasteKey", false, pasteKey);
-        pasteKey = keyElement.getCurrentKey();
-        keyElement.addCallback(key -> pasteKey = key);
-        subSettings.add(keyElement);
-
-        keyElement = new KeyElement("Kopier - Knap", new ControlElement.IconData(Material.OAK_BUTTON), getDataManager(), "copyKey", false, copyKey);
-        copyKey = keyElement.getCurrentKey();
-        keyElement.addCallback(key -> copyKey = key);
-        subSettings.add(keyElement);
-
-        headerElement = new HeaderElement("Hvis indstillingen under er slået fra vil det text du har kopieret automatisk blive indsat og skiltet placeres med det samme uden at editoren åbenes. ");
-        subSettings.add(headerElement);
-
-        BooleanElement booleanElement = new BooleanElement("Åben editor", getDataManager(), "openSignEditor", new ControlElement.IconData(Material.OAK_SIGN), openSignEditor);
-        this.openSignEditor = booleanElement.getCurrentValue();
-        booleanElement.addCallback(shouldOpen -> this.openSignEditor = shouldOpen);
-        subSettings.add(booleanElement);
-
-        NumberElement numberElement = new NumberElement(
-                "Place delay",
-                getDataManager(),
-                "placeDelay",
-                new ControlElement.IconData(Material.DIODE),
-                500
+        subSettings.add(TransporterSettingElementFactory.Builder.begin()
+                .addWidget(TransporterWidgetFactory.createWidget(
+                        KeybindWidget.class,
+                        new TransporterAction<net.labymod.api.client.gui.screen.key.Key>(key -> pasteKey = Laby4KeyMapper.convert(key)),
+                        getDataManager(),
+                        "pasteKey",
+                        net.labymod.api.client.gui.screen.key.Key.V))
+                .id("pasteKey")
+                .icon(Icon.sprite16(ModTextures.COMMON_ICONS, 4, 5))
+                .build()
         );
-        placeDelay = numberElement.getCurrentValue();
-        numberElement.addCallback(i -> placeDelay = i);
-        subSettings.add(numberElement);
+
+        subSettings.add(TransporterSettingElementFactory.Builder.begin()
+                .addWidget(TransporterWidgetFactory.createWidget(
+                        KeybindWidget.class,
+                        new TransporterAction<net.labymod.api.client.gui.screen.key.Key>(key -> copyKey = Laby4KeyMapper.convert(key)),
+                        getDataManager(),
+                        "copyKey",
+                        net.labymod.api.client.gui.screen.key.Key.C))
+                .id("copyKey")
+                .icon(Icon.sprite16(ModTextures.COMMON_ICONS, 3, 5))
+                .build()
+        );
+
+        subSettings.add(new SettingHeader(
+                "header2",
+                true,
+                "",
+                "header2"
+        ));
+
+        subSettings.add(TransporterSettingElementFactory.Builder.begin()
+                .addWidget(TransporterWidgetFactory.createWidget(
+                        SwitchWidget.class,
+                        new TransporterAction<Boolean>((b) -> this.openSignEditor = b),
+                        getDataManager(),
+                        "openSignEditor",
+                        true))
+                .id("openSignEditor")
+                .icon(Icon.sprite16(ModTextures.COMMON_ICONS, 6, 5))
+                .build()
+        );
+
+
     }
 
     boolean isSendingUpdatePacket = false;

@@ -1,13 +1,7 @@
 package ml.volder.unikapi.api.minecraft.impl;
 
-import java.net.SocketAddress;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import ml.volder.core.generated.DefaultReferenceStorage;
 import ml.volder.unikapi.SupportedClient;
 import ml.volder.unikapi.api.minecraft.MinecraftAPI;
-import ml.volder.unikapi.loader.Laby4Loader;
 import net.labymod.api.Laby;
 import net.labymod.api.client.component.TextComponent;
 import net.labymod.api.client.gui.screen.NamedScreen;
@@ -15,6 +9,10 @@ import net.labymod.api.client.scoreboard.DisplaySlot;
 import net.labymod.api.client.scoreboard.ScoreboardObjective;
 import net.labymod.api.client.scoreboard.ScoreboardScore;
 import net.labymod.api.reference.annotation.Referenceable;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 @Referenceable
 @SupportedClient(clientBrand = "labymod4", minecraftVersion = "*")

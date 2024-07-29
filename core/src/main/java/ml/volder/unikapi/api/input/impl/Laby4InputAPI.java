@@ -3,10 +3,7 @@ package ml.volder.unikapi.api.input.impl;
 import ml.volder.unikapi.SupportedClient;
 import ml.volder.unikapi.api.input.InputAPI;
 import net.labymod.api.Laby;
-import net.labymod.api.client.gui.KeyboardUser;
 import net.labymod.api.client.gui.screen.key.Key;
-import net.labymod.api.client.gui.screen.key.MouseButton;
-import net.labymod.api.client.gui.screen.key.mapper.KeyMapper;
 @SupportedClient(clientBrand = "labymod4", minecraftVersion = "*")
 public class Laby4InputAPI implements InputAPI {
 

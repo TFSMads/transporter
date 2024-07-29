@@ -1,7 +1,6 @@
 package ml.volder.unikapi.event.events.clientmessageevent.impl;
 
 import ml.volder.unikapi.SupportedClient;
-import ml.volder.unikapi.event.Event;
 import ml.volder.unikapi.event.EventImpl;
 import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.EventType;

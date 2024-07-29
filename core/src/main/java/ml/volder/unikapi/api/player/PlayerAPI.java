@@ -3,7 +3,6 @@ package ml.volder.unikapi.api.player;
 import ml.volder.unikapi.api.ApiManager;
 import ml.volder.unikapi.api.ApiProvider;
 import ml.volder.unikapi.api.ApiReferenceStorage;
-import ml.volder.unikapi.api.minecraft.MinecraftAPI;
 import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
 
 import java.util.UUID;

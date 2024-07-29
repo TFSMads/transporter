@@ -1,0 +1,30 @@
+IconButton Icon {
+  height: 16;
+  width: height;
+}
+
+IconButton {
+  hover-box-delay: 500;
+}
+
+IconButton {
+  height: 20;
+  width: fit-content;
+  padding-left: 0;
+  padding-right: 0;
+  space-between-entries: 1;
+
+  Component {
+    text-color: gray;
+    alignment-x: center;
+    z-index: 1;
+  }
+
+  &:enabled Component {
+    text-color: -1;
+  }
+
+  &:active Component {
+    text-color: gray;
+  }
+}

@@ -1,6 +1,10 @@
 package ml.volder.transporter.modules;
 
 import ml.volder.transporter.TransporterAddon;
+import ml.volder.transporter.settings.accesors.SettingRegistryAccessor;
+import ml.volder.transporter.settings.action.TransporterAction;
+import ml.volder.transporter.settings.classes.TransporterSettingElementFactory;
+import ml.volder.transporter.settings.classes.TransporterWidgetFactory;
 import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.event.EventHandler;
@@ -9,9 +13,11 @@ import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.event.events.clientmessageevent.ClientMessageEvent;
 import ml.volder.unikapi.event.events.clienttickevent.ClientTickEvent;
 import ml.volder.unikapi.event.events.serverswitchevent.ServerSwitchEvent;
-import ml.volder.unikapi.guisystem.elements.*;
+import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.logger.Logger;
-import ml.volder.unikapi.types.Material;
+import net.labymod.api.client.gui.icon.Icon;
+import net.labymod.api.client.gui.screen.widget.widgets.input.SliderWidget;
+import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -43,42 +49,42 @@ public class BalanceModule extends SimpleModule implements Listener {
     }
 
     @Override
-    public void fillSettings(Settings subSettings) {
-        HeaderElement headerElement = new HeaderElement("Vælg de servere hvor din balance skal opdateres!");
-        subSettings.add(headerElement);
-
-        BooleanElement booleanElement = new BooleanElement(
-                "Opdatere ved join",
-                getDataManager(),
-                "updateAtJoin",
-                new ControlElement.IconData(Material.DIODE),
-                true
+    public void fillSettings(SettingRegistryAccessor subSettings) {
+        subSettings.add(TransporterSettingElementFactory.Builder.begin()
+                .addWidget(TransporterWidgetFactory.createWidget(
+                        SwitchWidget.class,
+                        new TransporterAction<Boolean>((b) -> this.updateOnJoin = b),
+                        getDataManager(),
+                        "updateAtJoin",
+                        true))
+                .id("updateAtJoin")
+                .icon(Icon.sprite16(ModTextures.SETTINGS_ICONS, 0, 4))
+                .build()
         );
-        updateOnJoin = booleanElement.getCurrentValue();
-        booleanElement.addCallback(b -> updateOnJoin = b);
-        subSettings.add(booleanElement);
 
-        BooleanElement booleanElement2 = new BooleanElement(
-                "Opdatere i interval",
-                getDataManager(),
-                "updateInterval",
-                new ControlElement.IconData(Material.DIODE),
-                false
+        subSettings.add(TransporterSettingElementFactory.Builder.begin()
+                .addWidget(TransporterWidgetFactory.createWidget(
+                        SwitchWidget.class,
+                        new TransporterAction<Boolean>((b) -> this.updateInterval = b),
+                        getDataManager(),
+                        "updateInterval",
+                        true))
+                .id("updateInterval")
+                .icon(Icon.sprite16(ModTextures.SETTINGS_ICONS, 0, 7))
+                .build()
         );
-        updateInterval = booleanElement2.getCurrentValue();
-        booleanElement2.addCallback(b -> updateInterval = b);
-        subSettings.add(booleanElement2);
 
-        NumberElement numberElement = new NumberElement(
-                "Update Interval (Sekunder)", getDataManager(),
-                "intervalUpdate",
-                new ControlElement.IconData(Material.REDSTONE_TORCH),
-                60
+        subSettings.add(TransporterSettingElementFactory.Builder.begin()
+                .addWidget(TransporterWidgetFactory.createWidget(
+                        SliderWidget.class,
+                        new TransporterAction<Float>(v -> updateIntervalSeconds = v != null ? v.intValue() : updateIntervalSeconds),
+                        getDataManager(),
+                        "intervalUpdate",
+                        80F).steps(10F).range(10F, 1000F))
+                .id("intervalUpdate")
+                .icon(Icon.sprite16(ModTextures.SETTINGS_ICONS, 1, 6))
+                .build()
         );
-        numberElement.setMinValue(10);
-        updateIntervalSeconds = numberElement.getCurrentValue();
-        numberElement.addCallback(i -> updateIntervalSeconds = i);
-        subSettings.add(numberElement);
     }
 
     @Override

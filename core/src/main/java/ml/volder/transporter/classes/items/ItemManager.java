@@ -7,6 +7,7 @@ import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.datasystem.Data;
 import ml.volder.unikapi.datasystem.DataManager;
 import ml.volder.unikapi.logger.Logger;
+import ml.volder.unikapi.utils.LoadTimer;
 import net.labymod.api.Laby;
 import net.labymod.api.client.world.item.ItemStack;
 
@@ -22,8 +23,10 @@ public class ItemManager {
     private List<Item> itemList = new ArrayList<>();
 
     public void loadItems() {
+        LoadTimer.start("loadItems");
         loadItemsFromCSV();
-      updateItemSellValues();
+        updateItemSellValues();
+        UnikAPI.LOGGER.log(Logger.LOG_LEVEL.INFO, "Loaded items from CSV and updated item sell values in " + LoadTimer.finishLoadingTask("loadItems"));
     }
 
     public void updateItemSellValues() {
@@ -92,7 +95,7 @@ public class ItemManager {
                             || modernType.startsWith("potted_")
                             || modernType.endsWith("wall_head")
                     ) {
-                        UnikAPI.LOGGER.info("Item is not supported by client version: " + modernType);
+                        UnikAPI.LOGGER.finest("Item is not supported by client version: " + modernType);
                         line = br.readLine();
                         continue;
                     }

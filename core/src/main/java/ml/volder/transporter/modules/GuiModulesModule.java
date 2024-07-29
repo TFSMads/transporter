@@ -1,12 +1,13 @@
 package ml.volder.transporter.modules;
 
 import ml.volder.transporter.modules.guimodules.ModuleRegistry;
-import ml.volder.unikapi.guisystem.elements.BooleanElement;
-import ml.volder.unikapi.guisystem.elements.ControlElement;
-import ml.volder.unikapi.guisystem.elements.ListContainerElement;
-import ml.volder.unikapi.guisystem.elements.Settings;
-import ml.volder.unikapi.types.Material;
-import ml.volder.unikapi.widgets.ModuleSystem;
+import ml.volder.transporter.settings.accesors.SettingRegistryAccessor;
+import ml.volder.transporter.settings.action.TransporterAction;
+import ml.volder.transporter.settings.classes.TransporterSettingElementFactory;
+import ml.volder.transporter.settings.classes.TransporterWidgetFactory;
+import ml.volder.unikapi.guisystem.ModTextures;
+import net.labymod.api.client.gui.icon.Icon;
+import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget;
 
 public class GuiModulesModule extends SimpleModule {
     private boolean viewOnSelected = true;
@@ -32,25 +33,21 @@ public class GuiModulesModule extends SimpleModule {
     }
 
     @Override
-    public void fillSettings(Settings subSettings) {
-        ListContainerElement editorGuiButton = new ListContainerElement("Gui Editor", new ControlElement.IconData(Material.PAINTING));
-        editorGuiButton.setAdvancedButtonCallback(aBoolean -> ModuleSystem.openEditor());
-
-        subSettings.add(editorGuiButton);
-
-        BooleanElement viewOnSelected = new BooleanElement(
-                "Vis kun i lobbyer!",
-                getDataManager(),
-                "viewOnSelected",
-                new ControlElement.IconData(Material.DIODE),
-                true
+    public void fillSettings(SettingRegistryAccessor subSettings) {
+        subSettings.add(TransporterSettingElementFactory.Builder.begin()
+                .addWidget(TransporterWidgetFactory.createWidget(
+                        SwitchWidget.class,
+                        new TransporterAction<Boolean>((b) -> this.viewOnSelected = b),
+                        getDataManager(),
+                        "viewOnSelected",
+                        true))
+                .id("viewOnSelected")
+                .icon(Icon.sprite16(ModTextures.SETTINGS_ICONS_1, 4, 1))
+                .build()
         );
-        this.viewOnSelected = viewOnSelected.getCurrentValue();
-        viewOnSelected.addCallback(b -> this.viewOnSelected = b);
-        subSettings.add(viewOnSelected);
-
-
     }
+
+
 
     public boolean isFeatureActive() {
         return isFeatureActive;

@@ -3,15 +3,25 @@ package ml.volder.transporter.modules;
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.classes.items.Item;
 import ml.volder.transporter.modules.transportermenumodule.TransporterMenu;
+import ml.volder.transporter.settings.accesors.SettingRegistryAccessor;
+import ml.volder.transporter.settings.action.TransporterAction;
+import ml.volder.transporter.settings.classes.TransporterSettingElementFactory;
+import ml.volder.transporter.settings.classes.TransporterWidgetFactory;
 import ml.volder.unikapi.api.input.InputAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.event.EventHandler;
 import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.event.events.clientkeypressevent.ClientKeyPressEvent;
-import ml.volder.unikapi.guisystem.elements.*;
+import ml.volder.unikapi.guisystem.ModTextures;
+import ml.volder.unikapi.guisystem.elements.Settings;
 import ml.volder.unikapi.keysystem.Key;
-import ml.volder.unikapi.types.Material;
+import ml.volder.unikapi.keysystem.impl.Laby4KeyMapper;
+import net.labymod.api.client.gui.icon.Icon;
+import net.labymod.api.client.gui.screen.widget.widgets.input.KeybindWidget;
+import net.labymod.api.client.gui.screen.widget.widgets.input.SliderWidget;
+import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,7 +49,46 @@ public class TransporterMenuModule extends SimpleModule implements Listener {
         return this;
     }
 
-  @Override
+    @Override
+    public void fillSettings(SettingRegistryAccessor subSettings) {
+        subSettings.add(TransporterSettingElementFactory.Builder.begin()
+                .addWidget(TransporterWidgetFactory.createWidget(
+                        SwitchWidget.class,
+                        new TransporterAction<Boolean>((b) -> this.onlyActiveInLobby = b),
+                        getDataManager(),
+                        "onlyActiveInLobby",
+                        true))
+                .id("onlyActiveInLobby")
+                .icon(Icon.sprite16(ModTextures.SETTINGS_ICONS_1, 4, 1))
+                .build()
+        );
+
+        subSettings.add(TransporterSettingElementFactory.Builder.begin()
+                .addWidget(TransporterWidgetFactory.createWidget(
+                        KeybindWidget.class,
+                        new TransporterAction<net.labymod.api.client.gui.screen.key.Key>(key -> openKey = Laby4KeyMapper.convert(key)),
+                        getDataManager(),
+                        "transporterMenuKeybind",
+                        net.labymod.api.client.gui.screen.key.Key.K))
+                .id("transporterMenuKeybind")
+                .icon(Icon.sprite16(ModTextures.SETTINGS_ICONS, 1, 5))
+                .build()
+        );
+
+        subSettings.add(TransporterSettingElementFactory.Builder.begin()
+                .addWidget(TransporterWidgetFactory.createWidget(
+                        SliderWidget.class,
+                        new TransporterAction<Float>(v -> withdrawAmount = v != null ? v.intValue() : withdrawAmount),
+                        getDataManager(),
+                        "withdrawAmount",
+                        500F).range(-1, 2304))
+                .id("withdrawAmount")
+                .icon(Icon.sprite32(ModTextures.FLINT_ICONS, 2, 1))
+                .build()
+        );
+    }
+
+    @Override
   public void loadConfig() {
     super.loadConfig();
     if(getDataManager() != null){
@@ -62,30 +111,10 @@ public class TransporterMenuModule extends SimpleModule implements Listener {
     }
   }
 
-  @Override
     public void fillSettings(Settings subSettings) {
-
-        BooleanElement onlyActiveInLobbyElement  = new BooleanElement(
-                "Kun aktiv i lobbyer!",
-                getDataManager(),
-                "onlyActiveInLobby",
-                new ControlElement.IconData(Material.DIODE),
-                true
-        );
-        this.onlyActiveInLobby = onlyActiveInLobbyElement.getCurrentValue();
-        onlyActiveInLobbyElement.addCallback(b -> this.onlyActiveInLobby = b);
-        subSettings.add(onlyActiveInLobbyElement);
-
-        KeyElement keyElement = new KeyElement("Keybind", new ControlElement.IconData(Material.OAK_BUTTON), getDataManager(), "transporterMenuKeybind", false, openKey);
-        this.openKey = keyElement.getCurrentKey();
-        keyElement.addCallback(key -> this.openKey = key);
-        subSettings.add(keyElement);
-
-        NumberElement numberElement = new NumberElement("Get Antal", getDataManager(), "withdraw.amount", new ControlElement.IconData(Material.PAPER), -1);
-        numberElement.setMinValue(-1);
-        withdrawAmount = numberElement.getCurrentValue();
-        numberElement.addCallback(integer -> withdrawAmount = integer);
-        subSettings.add(numberElement);
+        //onlyActiveInLobby: Kun aktiv i lobbyer!
+        //transporterMenuKeybind: Åben menu
+        //withdrawAmount: Antal items der skal trækkes ud
     }
 
 

@@ -1,5 +1,7 @@
 package ml.volder.unikapi.types;
 
+import net.labymod.api.Laby;
+
 public class ResourceLocation {
     public static final String DEFAULT_RESOURCE_DOMAIN = "unikapi";
 
@@ -80,5 +82,9 @@ public class ResourceLocation {
 
     private boolean isEmpty(final CharSequence cs) {
         return cs == null || cs.length() == 0;
+    }
+
+    public net.labymod.api.client.resources.ResourceLocation toLaby() {
+        return Laby.references().resourceLocationFactory().create(resourceDomain, resourcePath);
     }
 }

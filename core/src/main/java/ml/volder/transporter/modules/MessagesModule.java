@@ -2,15 +2,23 @@ package ml.volder.transporter.modules;
 
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.modules.messagemodule.*;
+import ml.volder.transporter.settings.accesors.SettingRegistryAccessor;
+import ml.volder.transporter.settings.action.TransporterAction;
+import ml.volder.transporter.settings.classes.TransporterSettingElementFactory;
+import ml.volder.transporter.settings.classes.TransporterWidgetFactory;
 import ml.volder.transporter.utils.FormatingUtils;
 import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.event.EventHandler;
 import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.event.events.clientmessageevent.ClientMessageEvent;
-import ml.volder.unikapi.guisystem.elements.*;
+import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.logger.Logger;
-import ml.volder.unikapi.types.Material;
+import net.labymod.api.client.gui.icon.Icon;
+import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget;
+import net.labymod.api.client.gui.screen.widget.widgets.input.TextFieldWidget;
+import net.labymod.api.client.gui.screen.widget.widgets.input.dropdown.DropdownWidget;
+import net.labymod.api.configuration.settings.type.SettingElement;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -113,127 +121,103 @@ public class MessagesModule extends SimpleModule implements Listener {
     }
 
     @Override
-    public void fillSettings(Settings subSettings) {
-
-        BooleanElement onlyActiveInLobbyElement  = new BooleanElement(
-                "Kun aktiv i lobbyer!",
-                getDataManager(),
-                "onlyActiveInLobby",
-                new ControlElement.IconData(Material.DIODE),
-                true
+    public void fillSettings(SettingRegistryAccessor subSettings) {
+        subSettings.add(TransporterSettingElementFactory.Builder.begin()
+                .addWidget(TransporterWidgetFactory.createWidget(
+                        SwitchWidget.class,
+                        new TransporterAction<Boolean>((b) -> this.onlyActiveInLobby = b),
+                        getDataManager(),
+                        "onlyActiveInLobby",
+                        true))
+                .id("onlyActiveInLobby")
+                .icon(Icon.sprite16(ModTextures.SETTINGS_ICONS_1, 4, 1))
+                .build()
         );
-        this.onlyActiveInLobby = onlyActiveInLobbyElement.getCurrentValue();
-        onlyActiveInLobbyElement.addCallback(b -> this.onlyActiveInLobby = b);
-        subSettings.add(onlyActiveInLobbyElement);
 
-        DropDownMenu<MessageModes> dropDownMenu = new DropDownMenu<>("", 0, 0, 0, 0);
-        dropDownMenu.fill(MessageModes.values());
-        DropDownElement<MessageModes> dropDownElement = new DropDownElement<>("Hvor skal beskeder sendes?", "selectedChatMode", dropDownMenu, new ControlElement.IconData(
-            Material.PAPER), value -> {
-            if(value.equals("NO_MESSAGES")) {
-                return MessageModes.NO_MESSAGES;
-            }else if(value.equals("CHAT_MESSAGES")) {
-                return MessageModes.CHAT_MESSAGES;
-            }else if(value.equals("ACTIONBAR_MESSAGES")) {
-                return MessageModes.ACTIONBAR_MESSAGES;
-            }
-            return MessageModes.ACTIONBAR_MESSAGES;
-        }, getDataManager());
-        this.messageMode = (MessageModes) dropDownElement.getDropDownMenu().getSelected();
-        dropDownElement.setCallback(mode -> MessagesModule.this.messageMode = mode);
+        subSettings.add(TransporterSettingElementFactory.Builder.begin()
+                .addWidget(TransporterWidgetFactory.createWidget(
+                        DropdownWidget.class,
+                        new TransporterAction<MessageModes>((v) -> this.messageMode = v),
+                        getDataManager(),
+                        "selectedChatMode",
+                        MessageModes.ACTIONBAR_MESSAGES))
+                .id("selectedChatMode")
+                .icon(Icon.sprite16(ModTextures.SETTINGS_ICONS_1, 4, 4))
+                .build()
+        );
 
-        subSettings.add(dropDownElement);
-
-
-        StringElement stringElementGetSuccess = new StringElement("Besked - Get Success",
+        subSettings.add(createMessageSetting(
                 "getSuccess",
-                new ControlElement.IconData(Material.PAPER),
                 "&bTager &3%antal% %item% &bfra din transporter. &7(&3%total%&7)",
-                getDataManager());
-        stringElementGetSuccess.addCallback(value -> messagesMap.put(stringElementGetSuccess.getConfigEntryName(), value));
-        messagesMap.put(stringElementGetSuccess.getConfigEntryName(), stringElementGetSuccess.getCurrentValue());
-        subSettings.add(stringElementGetSuccess);
+                Icon.sprite8(ModTextures.WIDGET_EDITOR_ICONS, 4, 0)
+        ));
 
-        StringElement stringElementGetFailed = new StringElement("Besked - Get Failed",
+        subSettings.add(createMessageSetting(
                 "getFailed",
-                new ControlElement.IconData(Material.PAPER),
                 "&cDu har ikke noget af denne item i din transporter.",
-                getDataManager());
-        stringElementGetFailed.addCallback(value -> messagesMap.put(stringElementGetFailed.getConfigEntryName(), value));
-        messagesMap.put(stringElementGetFailed.getConfigEntryName(), stringElementGetFailed.getCurrentValue());
-        subSettings.add(stringElementGetFailed);
+                Icon.sprite8(ModTextures.WIDGET_EDITOR_ICONS, 4, 0)
+        ));
 
-        StringElement stringElementGetInventoryFull = new StringElement("Besked - Get Inventory Fyldt",
+        subSettings.add(createMessageSetting(
                 "getFull",
-                new ControlElement.IconData(Material.PAPER),
                 "&cDit inventory er fyldt!",
-                getDataManager());
-        stringElementGetInventoryFull.addCallback(value -> messagesMap.put(stringElementGetInventoryFull.getConfigEntryName(), value));
-        messagesMap.put(stringElementGetInventoryFull.getConfigEntryName(), stringElementGetInventoryFull.getCurrentValue());
-        subSettings.add(stringElementGetInventoryFull);
+                Icon.sprite8(ModTextures.WIDGET_EDITOR_ICONS, 4, 0)
+        ));
 
-        StringElement stringElementPutSuccess = new StringElement("Besked - Put Success",
+        subSettings.add(createMessageSetting(
                 "putSuccess",
-                new ControlElement.IconData(Material.PAPER),
                 "&bGemmer &3%antal% %item% &bi din transporter. &7(&3%total%&7)",
-                getDataManager());
-        stringElementPutSuccess.addCallback(value -> messagesMap.put(stringElementPutSuccess.getConfigEntryName(), value));
-        messagesMap.put(stringElementPutSuccess.getConfigEntryName(), stringElementPutSuccess.getCurrentValue());
-        subSettings.add(stringElementPutSuccess);
+                Icon.sprite8(ModTextures.WIDGET_EDITOR_ICONS, 4, 1)
+        ));
 
-        StringElement stringElementPutFailed = new StringElement("Besked - Put Failed",
+        subSettings.add(createMessageSetting(
                 "putFailed",
-                new ControlElement.IconData(Material.PAPER),
                 "&bDu har ikke noget &3%item%",
-                getDataManager());
-        stringElementPutFailed.addCallback(value -> messagesMap.put(stringElementPutFailed.getConfigEntryName(), value));
-        messagesMap.put(stringElementPutFailed.getConfigEntryName(), stringElementPutFailed.getCurrentValue());
-        subSettings.add(stringElementPutFailed);
+                Icon.sprite8(ModTextures.WIDGET_EDITOR_ICONS, 4, 1)
+        ));
 
-        StringElement stringElementSendSuccess = new StringElement("Besked - Send Success",
+        subSettings.add(createMessageSetting(
                 "sendSuccess",
-                new ControlElement.IconData(Material.PAPER),
                 "&bDu sendte &3%antal% %item% &btil %spiller%. &7(&3%total%&7)",
-                getDataManager());
-        stringElementSendSuccess.addCallback(value -> messagesMap.put(stringElementSendSuccess.getConfigEntryName(), value));
-        messagesMap.put(stringElementSendSuccess.getConfigEntryName(), stringElementSendSuccess.getCurrentValue());
-        subSettings.add(stringElementSendSuccess);
+                Icon.sprite16(ModTextures.COMMON_ICONS, 3, 0)
+        ));
 
-        StringElement stringElementModtag = new StringElement("Besked - Modtag",
+        subSettings.add(createMessageSetting(
                 "modtagSuccess",
-                new ControlElement.IconData(Material.PAPER),
                 "&bDu modtog &3%antal% %item% &bfra %spiller%. &7(&3%total%&7)",
-                getDataManager());
-        stringElementModtag.addCallback(value -> messagesMap.put(stringElementModtag.getConfigEntryName(), value));
-        messagesMap.put(stringElementModtag.getConfigEntryName(), stringElementModtag.getCurrentValue());
-        subSettings.add(stringElementModtag);
+                Icon.sprite16(ModTextures.COMMON_ICONS, 3, 1)
+        ));
 
-        StringElement stringElementOffline = new StringElement("Besked - Send Offline",
+        subSettings.add(createMessageSetting(
                 "sendOffline",
-                new ControlElement.IconData(Material.PAPER),
                 "&cDenne spiller er ikke online!",
-                getDataManager());
-        stringElementOffline.addCallback(value -> messagesMap.put(stringElementOffline.getConfigEntryName(), value));
-        messagesMap.put(stringElementOffline.getConfigEntryName(), stringElementOffline.getCurrentValue());
-        subSettings.add(stringElementOffline);
+                Icon.sprite16(ModTextures.SETTINGS_ICONS_1, 2, 1)
+        ));
 
-        StringElement stringElementSendSelf = new StringElement("Besked - Send Dig Selv",
+        subSettings.add(createMessageSetting(
                 "sendSelf",
-                new ControlElement.IconData(Material.PAPER),
-                "&cDu kanne ikke sende til dig selv!",
-                getDataManager());
-        stringElementSendSelf.addCallback(value -> messagesMap.put(stringElementSendSelf.getConfigEntryName(), value));
-        messagesMap.put(stringElementSendSelf.getConfigEntryName(), stringElementSendSelf.getCurrentValue());
-        subSettings.add(stringElementSendSelf);
+                "&cDu kan ikke sende til dig selv!",
+                Icon.sprite16(ModTextures.SETTINGS_ICONS_1, 2, 1)
+        ));
 
-        StringElement stringElementToFast = new StringElement("Besked - Wait",
+        subSettings.add(createMessageSetting(
                 "commandDelay",
-                new ControlElement.IconData(Material.PAPER),
                 "&cVent! Du skriver kommandoer for hurtigt.",
-                getDataManager());
-        stringElementToFast.addCallback(value -> messagesMap.put(stringElementToFast.getConfigEntryName(), value));
-        messagesMap.put(stringElementToFast.getConfigEntryName(), stringElementToFast.getCurrentValue());
-        subSettings.add(stringElementToFast);
+                Icon.sprite16(ModTextures.SETTINGS_ICONS, 1, 6)
+        ));
+    }
+
+    private SettingElement createMessageSetting(String id, String defaultValue, Icon icon) {
+        return TransporterSettingElementFactory.Builder.begin()
+                .addWidget(TransporterWidgetFactory.createWidget(
+                        TextFieldWidget.class,
+                        new TransporterAction<String>((v) -> messagesMap.put(id, v)),
+                        getDataManager(),
+                        id,
+                        defaultValue))
+                .id(id)
+                .icon(icon)
+                .build();
     }
 
     @EventHandler

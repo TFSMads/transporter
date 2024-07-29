@@ -1,19 +1,10 @@
 package ml.volder.unikapi.loader;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.keysystem.Key;
-import ml.volder.unikapi.keysystem.KeyMapper;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.logger.Logger;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.reflect.Method;
 
 public class Loader {
 

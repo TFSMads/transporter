@@ -2,13 +2,13 @@ package ml.volder.transporter.modules;
 
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.modules.mcmmomodule.McmmoManager;
+import ml.volder.transporter.settings.accesors.SettingRegistryAccessor;
 import ml.volder.unikapi.api.minecraft.MinecraftAPI;
 import ml.volder.unikapi.event.EventHandler;
 import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.event.events.clientmessageevent.ClientMessageEvent;
 import ml.volder.unikapi.event.events.sendmessageevent.SendMessageEvent;
-import ml.volder.unikapi.guisystem.elements.Settings;
 
 import java.util.Map;
 import java.util.Timer;
@@ -36,7 +36,7 @@ public class McmmoModule extends SimpleModule implements Listener {
     }
 
     @Override
-    public void fillSettings(Settings subSettings) {
+    public void fillSettings(SettingRegistryAccessor subSettings) {
 
     }
 

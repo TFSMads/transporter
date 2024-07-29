@@ -1,12 +1,12 @@
 package ml.volder.transporter.modules;
 
+import ml.volder.transporter.settings.accesors.SettingRegistryAccessor;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.event.EventHandler;
 import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.event.events.clientmessageevent.ClientMessageEvent;
 import ml.volder.unikapi.event.events.serverswitchevent.ServerSwitchEvent;
-import ml.volder.unikapi.guisystem.elements.Settings;
 import ml.volder.unikapi.types.Material;
 import ml.volder.unikapi.widgets.ModuleSystem;
 
@@ -33,7 +33,7 @@ public class ServerModule extends SimpleModule implements Listener {
     }
 
     @Override
-    public void fillSettings(Settings subSettings) {
+    public void fillSettings(SettingRegistryAccessor subSettings) {
 
     }
 

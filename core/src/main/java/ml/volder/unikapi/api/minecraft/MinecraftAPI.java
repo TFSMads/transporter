@@ -4,7 +4,6 @@ import ml.volder.unikapi.api.ApiManager;
 import ml.volder.unikapi.api.ApiProvider;
 import ml.volder.unikapi.api.ApiReferenceStorage;
 
-import java.net.SocketAddress;
 import java.util.Map;
 
 public interface MinecraftAPI {

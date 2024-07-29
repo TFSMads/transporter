@@ -2,12 +2,14 @@ package ml.volder.transporter.modules;
 
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.events.ItemAmountUpdatedEvent;
+import ml.volder.transporter.settings.accesors.SettingRegistryAccessor;
 import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.event.EventHandler;
 import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.guisystem.elements.Settings;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -35,6 +37,10 @@ public class TransporterStatsModule extends SimpleModule implements Listener {
   }
 
   @Override
+  public void fillSettings(SettingRegistryAccessor subSettings) {
+
+  }
+
   public void fillSettings(Settings subSettings) {
 
   }

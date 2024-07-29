@@ -1,7 +1,5 @@
 package ml.volder.unikapi.types;
 
-import net.labymod.api.Laby;
-import net.labymod.api.client.world.item.ItemStack;
 import java.util.HashMap;
 import java.util.Map;
 

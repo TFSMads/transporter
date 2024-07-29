@@ -1,6 +1,5 @@
 package ml.volder.unikapi.keysystem;
 
-import ml.volder.unikapi.UnikAPI;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
