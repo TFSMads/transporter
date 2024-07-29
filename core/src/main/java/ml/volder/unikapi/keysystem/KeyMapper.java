@@ -4,7 +4,6 @@ import ml.volder.unikapi.api.ApiManager;
 import ml.volder.unikapi.api.ApiProvider;
 import ml.volder.unikapi.api.ApiReferenceStorage;
 import ml.volder.unikapi.api.input.InputAPI;
-import ml.volder.unikapi.api.player.PlayerAPI;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

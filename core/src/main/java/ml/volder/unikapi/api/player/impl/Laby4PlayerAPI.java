@@ -1,12 +1,13 @@
 package ml.volder.unikapi.api.player.impl;
 
-import java.util.UUID;
 import ml.volder.unikapi.SupportedClient;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
 import ml.volder.unikapi.wrappers.guiscreen.impl.Laby4GuiScreenImpl;
 import net.labymod.api.Laby;
 import net.labymod.api.client.gui.screen.ScreenInstance;
+
+import java.util.UUID;
 @SupportedClient(clientBrand = "labymod4", minecraftVersion = "*")
 public class Laby4PlayerAPI implements PlayerAPI {
   private static Laby4PlayerAPI instance;

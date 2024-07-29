@@ -1,11 +1,12 @@
 package ml.volder.unikapi.widgets;
 
-import java.util.function.Function;
 import ml.volder.unikapi.types.Material;
 import net.labymod.api.Laby;
 import net.labymod.api.client.gui.hud.binding.category.HudWidgetCategory;
 import net.labymod.api.client.gui.navigation.elements.ScreenNavigationElement;
 import net.labymod.api.client.gui.screen.activity.types.TabbedActivity;
+
+import java.util.function.Function;
 
 public class Laby4ModuleManager implements ModuleManager{
 

@@ -3,7 +3,6 @@ package ml.volder.unikapi.datasystem;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import ml.volder.unikapi.UnikAPI;
-import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.logger.Logger;
 import ml.volder.unikapi.utils.IOUtils;
 
@@ -11,7 +10,6 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class DataManager<T> {
     public static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().create();
@@ -104,5 +102,10 @@ public class DataManager<T> {
         DataManager<Data> dataManager = new DataManager<>(file, Data.class);
         dataManagerMap.put(file, dataManager);
         return dataManager;
+    }
+
+    public static DataManager<Data> getOrCreateDataManager(String file) {
+        file = file.replace("%common%", UnikAPI.getCommonDataFolder().getPath());
+        return getOrCreateDataManager(new File(file));
     }
 }

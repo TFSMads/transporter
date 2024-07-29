@@ -1,6 +1,5 @@
 package ml.volder.unikapi.widgets;
 
-import java.util.function.Function;
 import ml.volder.unikapi.loader.Laby4Loader;
 import ml.volder.unikapi.types.Material;
 import net.labymod.api.client.component.Component;
@@ -12,6 +11,8 @@ import net.labymod.api.client.gui.hud.hudwidget.text.TextLine.State;
 import net.labymod.api.client.gui.icon.Icon;
 import net.labymod.api.client.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.function.Function;
 
 public class UnikHudWidget extends TextHudWidget {
 

@@ -1,17 +1,13 @@
 package ml.volder.unikapi.event.events.mainmenuopenevent.impl;
 
 import ml.volder.unikapi.SupportedClient;
-import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.event.EventImpl;
 import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.EventType;
 import ml.volder.unikapi.event.events.mainmenuopenevent.MainMenuOpenEvent;
 import ml.volder.unikapi.wrappers.guiscreen.impl.Laby4GuiScreenImpl;
 import net.labymod.api.Laby;
-import net.labymod.api.client.gui.lss.meta.LinkMeta;
-import net.labymod.api.client.gui.lss.meta.LinkReference;
 import net.labymod.api.client.gui.lss.style.StyleSheet;
-import net.labymod.api.client.gui.screen.NamedScreen;
 import net.labymod.api.client.gui.screen.ScreenInstance;
 import net.labymod.api.client.gui.screen.activity.Activity;
 import net.labymod.api.event.Subscribe;

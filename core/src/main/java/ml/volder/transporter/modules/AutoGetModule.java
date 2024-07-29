@@ -4,6 +4,10 @@ import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.classes.items.Item;
 import ml.volder.transporter.modules.autoget.AutoGetMenu;
 import ml.volder.transporter.modules.autoget.SelectItemMenu;
+import ml.volder.transporter.settings.accesors.SettingRegistryAccessor;
+import ml.volder.transporter.settings.action.TransporterAction;
+import ml.volder.transporter.settings.classes.TransporterSettingElementFactory;
+import ml.volder.transporter.settings.classes.TransporterWidgetFactory;
 import ml.volder.unikapi.api.input.InputAPI;
 import ml.volder.unikapi.api.inventory.InventoryAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
@@ -12,9 +16,15 @@ import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.event.events.clientkeypressevent.ClientKeyPressEvent;
 import ml.volder.unikapi.event.events.clienttickevent.ClientTickEvent;
+import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.guisystem.elements.*;
 import ml.volder.unikapi.keysystem.Key;
+import ml.volder.unikapi.keysystem.impl.Laby4KeyMapper;
 import ml.volder.unikapi.types.Material;
+import net.labymod.api.client.gui.icon.Icon;
+import net.labymod.api.client.gui.screen.widget.widgets.input.KeybindWidget;
+import net.labymod.api.client.gui.screen.widget.widgets.input.SliderWidget;
+import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget;
 
 public class AutoGetModule extends SimpleModule implements Listener {
 
@@ -103,31 +113,42 @@ public class AutoGetModule extends SimpleModule implements Listener {
         this.delay = delay;
     }
 
-    public void fillSettings(Settings subSettings) {
-
-        BooleanElement onlyActiveInLobbyElement  = new BooleanElement(
-                "Kun aktiv i lobbyer!",
-                getDataManager(),
-                "onlyActiveInLobby",
-                new ControlElement.IconData(Material.DIODE),
-                true
+    public void fillSettings(SettingRegistryAccessor subSettings) {
+        subSettings.add(TransporterSettingElementFactory.Builder.begin()
+                .addWidget(TransporterWidgetFactory.createWidget(
+                        SwitchWidget.class,
+                        new TransporterAction<Boolean>((b) -> this.onlyActiveInLobby = b),
+                        getDataManager(),
+                        "onlyActiveInLobby",
+                        true))
+                .id("onlyActiveInLobby")
+                .icon(Icon.sprite16(ModTextures.SETTINGS_ICONS_1, 4, 1))
+                .build()
         );
-        this.onlyActiveInLobby = onlyActiveInLobbyElement.getCurrentValue();
-        onlyActiveInLobbyElement.addCallback(b -> this.onlyActiveInLobby = b);
-        subSettings.add(onlyActiveInLobbyElement);
 
-        SliderElement sliderElement = new SliderElement("Delay (Ticks)", getDataManager(), "autoGetDelay", new ControlElement.IconData(Material.WATCH), 125);
-        sliderElement.setRange(20, 500);
-        this.delay = sliderElement.getCurrentValue();
-        sliderElement.addCallback(integer -> this.delay = integer);
+        subSettings.add(TransporterSettingElementFactory.Builder.begin()
+                .addWidget(TransporterWidgetFactory.createWidget(
+                        SliderWidget.class,
+                        new TransporterAction<Float>(v -> delay = v != null ? v.intValue() : delay),
+                        getDataManager(),
+                        "autoGetDelay",
+                        125F).range(20, 500))
+                .id("autoGetDelay")
+                .icon(Icon.sprite16(ModTextures.SETTINGS_ICONS, 1, 1))
+                .build()
+        );
 
-        subSettings.add(sliderElement);
-
-        KeyElement keyElement = new KeyElement("Keybind", new ControlElement.IconData(Material.OAK_BUTTON), getDataManager(), "autoGetKeybind", false, openKey);
-        this.openKey = keyElement.getCurrentKey();
-        keyElement.addCallback(key -> this.openKey = key);
-
-        subSettings.add(keyElement);
+        subSettings.add(TransporterSettingElementFactory.Builder.begin()
+                .addWidget(TransporterWidgetFactory.createWidget(
+                        KeybindWidget.class,
+                        new TransporterAction<net.labymod.api.client.gui.screen.key.Key>(key -> openKey = Laby4KeyMapper.convert(key)),
+                        getDataManager(),
+                        "autoGetKeybind",
+                        net.labymod.api.client.gui.screen.key.Key.N))
+                .id("autoGetKeybind")
+                .icon(Icon.sprite16(ModTextures.SETTINGS_ICONS, 1, 5))
+                .build()
+        );
     }
 
     public boolean isFeatureActive() {

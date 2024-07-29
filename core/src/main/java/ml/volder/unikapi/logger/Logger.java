@@ -74,6 +74,31 @@ public interface Logger {
         info("[DEBUG:" + debugLevel +"] " + string);
     }
 
+    default void printLoggerInfo() {
+        UnikAPI.LOGGER.info("Debug level is " + Logger.debugLevel.get());
+        UnikAPI.LOGGER.info("Log level is " + Logger.logLevel.get());
+        UnikAPI.LOGGER.info("Print stack trace is " + Logger.printStackTrace.get());
+        if(Logger.debugLevel.get() == Logger.DEBUG_LEVEL.TESTING) {
+            testLogger();
+        }
+    }
+
+    default void testLogger() {
+        UnikAPI.LOGGER.info("Testing logger:");
+        UnikAPI.LOGGER.debug("This is a debug message", Logger.DEBUG_LEVEL.TESTING);
+        UnikAPI.LOGGER.debug("This is a debug message", Logger.DEBUG_LEVEL.LOWEST);
+        UnikAPI.LOGGER.debug("This is a debug message", Logger.DEBUG_LEVEL.LOW);
+        UnikAPI.LOGGER.debug("This is a debug message", Logger.DEBUG_LEVEL.MEDIUM);
+        UnikAPI.LOGGER.debug("This is a debug message", Logger.DEBUG_LEVEL.HIGH);
+        UnikAPI.LOGGER.debug("This is a debug message", Logger.DEBUG_LEVEL.HIGHEST);
+        UnikAPI.LOGGER.finest("This is a finest message");
+        UnikAPI.LOGGER.finer("This is a finer message");
+        UnikAPI.LOGGER.fine("This is a fine message");
+        UnikAPI.LOGGER.info("This is an info message");
+        UnikAPI.LOGGER.warning("This is a warning message");
+        UnikAPI.LOGGER.severe("This is a severe message");
+    }
+
     /*
      * Debug levels:
      * TESTING: Only for testing purposes (used in development)

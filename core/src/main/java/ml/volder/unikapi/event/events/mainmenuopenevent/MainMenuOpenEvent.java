@@ -7,7 +7,6 @@ import ml.volder.unikapi.api.ApiReferenceStorage;
 import ml.volder.unikapi.event.*;
 import ml.volder.unikapi.logger.Logger;
 import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
-import ml.volder.unikapi.wrappers.tileentitysign.WrappedTileEntitySign;
 
 import java.util.ArrayList;
 import java.util.List;

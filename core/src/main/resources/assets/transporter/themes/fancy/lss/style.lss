@@ -1,0 +1,36 @@
+IconButton {
+  filter: blur(50);
+  renderer: "Button";
+  height: 22;
+  border-radius: 4;
+  width: fit-content;
+  space-between-entries: 1;
+  font-size: 0.8;
+
+  border-thickness: 0;
+
+  Component {
+    scale-to-fit: true;
+    text-color: rgba(255, 255, 255, 32);
+    font-size: 0.8;
+  }
+
+  Icon {
+    opacity: 0.12;
+  }
+}
+
+IconButton {
+  .button-text {
+    alignment-x: center;
+  }
+
+  Icon {
+    height: 50%;
+    width: height;
+  }
+}
+
+IconButton {
+  hover-box-delay: 500;
+}

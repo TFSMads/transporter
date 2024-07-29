@@ -1,13 +1,23 @@
 package ml.volder.transporter.modules;
 
+import ml.volder.transporter.settings.accesors.SettingRegistryAccessor;
+import ml.volder.transporter.settings.widgets.TransporterModuleWidget;
 import ml.volder.unikapi.UnikAPI;
-import ml.volder.unikapi.guisystem.elements.Settings;
 import ml.volder.unikapi.logger.Logger;
+import ml.volder.unikapi.utils.LoadTimer;
+import net.labymod.api.configuration.settings.Setting;
+import net.labymod.api.configuration.settings.type.AbstractSetting;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ModuleManager {
+
+    private List<TransporterModuleWidget> transporterModuleWidgetList = new ArrayList<>();
+
+    public List<TransporterModuleWidget> getTransporterModuleWidgetList() {
+        return transporterModuleWidgetList;
+    }
 
     private Map<Class<? extends SimpleModule>, ModuleInfo> registeredModules = new HashMap<>();
     private Map<Class<? extends SimpleModule>, SimpleModule> loadedModules = new HashMap<>();
@@ -68,32 +78,64 @@ public class ModuleManager {
         return true;
     }
     public void initModules() {
+        LoadTimer.start("initModules");
         getLoadOrderedModulesMap(registeredModules.values()).forEach((klass, moduleInfo) -> {
             if(isSupported(klass)) {
                 try {
+                    LoadTimer.start(moduleInfo.name + "-init");
                     loadedModules.put(klass, klass.getDeclaredConstructor(ModuleInfo.class).newInstance(moduleInfo).init());
-                    UnikAPI.LOGGER.finest("Initialized module: " + moduleInfo.displayName + " (" + moduleInfo.name + ")");
+                    UnikAPI.LOGGER.finest("Initialized module: " + moduleInfo.displayName + " (" + moduleInfo.name + ") in " + LoadTimer.finishLoadingTask(moduleInfo.name + "-init"));
                 } catch (Exception e) {
                     UnikAPI.LOGGER.printStackTrace(Logger.LOG_LEVEL.WARNING, e);
                     UnikAPI.LOGGER.warning("Kunne ikke init modulet: " + moduleInfo.displayName + " (" + moduleInfo.name + ")");
+                } finally {
+                    LoadTimer.assureFinished(moduleInfo.name + "-init");
                 }
             }
         });
+        UnikAPI.LOGGER.finest("Initialized " + loadedModules.size() + " modules successfully in " + LoadTimer.finishLoadingTask("initModules") + "!");
     }
 
     public void enableModules() {
+        LoadTimer.start("enableModules");
         loadedModules.forEach((klass, module) -> {
             try {
+                LoadTimer.start(module.getModuleName() + "-enable");
                 module.loadConfig();
                 module.enable();
-                Settings subSettings = module.addSetting();
-                module.fillSettings(subSettings);
-                UnikAPI.LOGGER.finest("Enabled module: " + module.getDisplayName() + " (" + module.getModuleName() + ")");
+                TransporterModuleWidget moduleWidget = module.getModuleWidget();
+                transporterModuleWidgetList.add(moduleWidget);
+                try {
+                    module.fillSettings(new SettingRegistryAccessor() {
+                        @Override
+                        public void add(AbstractSetting setting) {
+                            moduleWidget.addSubSetting(setting);
+                        }
+
+                        @Override
+                        public void addAll(List<Setting> settings) {
+                            moduleWidget.addSubSettings(settings);
+                        }
+
+                        @Override
+                        public boolean reset() {
+                            return moduleWidget.resetSubSettings();
+                        }
+                    });
+                } catch (Exception e) {
+                    UnikAPI.LOGGER.printStackTrace(Logger.LOG_LEVEL.WARNING, e);
+                    UnikAPI.LOGGER.warning("Kunne ikke tilføje settings til modulet: " + module.getDisplayName() + " (" + module.getModuleName() + ")");
+                }
+
+                UnikAPI.LOGGER.finest("Enabled module: " + module.getDisplayName() + " (" + module.getModuleName() + ")" + " in " + LoadTimer.finishLoadingTask(module.getModuleName() + "-enable"));
             } catch (Exception e) {
                 UnikAPI.LOGGER.printStackTrace(Logger.LOG_LEVEL.WARNING, e);
                 UnikAPI.LOGGER.warning("Kunne ikke load modulet: " + module.getDisplayName() + " (" + module.getModuleName() + ")");
+            } finally {
+                LoadTimer.assureFinished(module.getModuleName() + "-enable");
             }
         });
+        UnikAPI.LOGGER.finest("Enabled " + loadedModules.size() + " modules successfully in " + LoadTimer.finishLoadingTask("enableModules") + "!");
     }
 
     public SimpleModule getModule(String name) {
@@ -117,6 +159,7 @@ public class ModuleManager {
     }
 
     public void registerModules() {
+        LoadTimer.start("registerModules");
         ModuleInfo moduleInfo = registerModule("autoGetModule", "Auto Get", "En feature til at automatisk tage ting fra din transporter.", AutoGetModule.class);
         moduleInfo.dependsOnList.add(ServerModule.class);
         moduleInfo = registerModule("autoTransporter", "Auto Transporter", "En feature til at putte item i din transporter for dig.", AutoTransporter.class);
@@ -135,7 +178,7 @@ public class ModuleManager {
         moduleInfo = registerModule("balanceTrackerModule", "Balance", "En feature der tracker hvor mange EMs du har.", BalanceModule.class);
         moduleInfo.dependsOnList.add(ServerModule.class);
         //registerModule("transporterStatsModule", "Transporter Stats", "En feature der tracker diverse stats.", TransporterStatsModule.class);
-        UnikAPI.LOGGER.finest("Registered " + registeredModules.size() + " modules successfully!");
+        UnikAPI.LOGGER.finest("Registered " + registeredModules.size() + " modules successfully in " + LoadTimer.finishLoadingTask("registerModules") + "!");
     }
 
     public Map<Class<? extends SimpleModule>, SimpleModule> getLoadedModules() {

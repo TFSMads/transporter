@@ -1,9 +1,5 @@
 package ml.volder.unikapi.api.draw.impl;
 
-import java.awt.*;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Predicate;
 import ml.volder.unikapi.SupportedClient;
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.api.minecraft.MinecraftAPI;
@@ -29,11 +25,17 @@ import net.labymod.api.client.world.item.ItemStack;
 import net.labymod.api.util.bounds.Point;
 import net.labymod.api.util.bounds.Rectangle;
 
+import java.awt.*;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Predicate;
+
 @SupportedClient(clientBrand = "labymod4", minecraftVersion = "*")
 public class Laby4DrawAPI implements DrawAPI {
 
   private String namespace = Laby4Loader.namespace();
   public static Stack CURRENT_RENDER_STACK;
+  private static Stack PREVIOUS_RENDER_STACK;
   private static Laby4DrawAPI instance;
 
   public static Laby4DrawAPI getAPI() {
@@ -49,6 +51,16 @@ public class Laby4DrawAPI implements DrawAPI {
   public static Stack getRenderStack() {
     return CURRENT_RENDER_STACK == null ? MatrixTracker.TEXTURE_MATRIX : CURRENT_RENDER_STACK;
   }
+
+  public static void setRenderStack(Stack stack) {
+    PREVIOUS_RENDER_STACK = CURRENT_RENDER_STACK;
+    CURRENT_RENDER_STACK = stack;
+  }
+
+  public static void revertRenderStack() {
+    CURRENT_RENDER_STACK = PREVIOUS_RENDER_STACK;
+  }
+
   public static TextRenderer getTextRenderer() {
     return getVanillaTheme().textRenderer();
   }
