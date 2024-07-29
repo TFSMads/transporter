@@ -41,6 +41,10 @@ public class SignToolsModule extends SimpleModule implements Listener {
         return this;
     }
 
+    private boolean hasCopiedText() {
+        return SignGui.getBufferedText() != null && !SignGui.getBufferedText().isEmpty();
+    }
+
     @Override
     public void fillSettings(Settings subSettings) {
         HeaderElement headerElement = new HeaderElement("Her under kan du vælge hvilke knapper du vil bruge til at indsætte og kopiere skilte. Bemærk du skal holde kontrol knappen inde sammen med knappen for at handlingen udføres.");
@@ -82,7 +86,7 @@ public class SignToolsModule extends SimpleModule implements Listener {
     public void onSignOpen(OpenSignEvent event) {
         if(!TransporterAddon.isEnabled() || !this.isFeatureActive)
             return;
-        if(!openSignEditor) {
+        if(!openSignEditor && hasCopiedText()) {
             if (isSendingUpdatePacket) {
                 PlayerAPI.getAPI().displayChatMessage(ModColor.RED + "Du placere skilte for hurtigt!");
                 event.setCancelled(true);
