@@ -1,0 +1,12 @@
+TransporterModules {
+  min-height: 0;
+  max-height: 10000;
+  orientation: vertical;
+  space-between-entries: 2;
+
+  .module {
+    height: 40;
+    max-height: 40;
+    min-height: 40;
+  }
+}
