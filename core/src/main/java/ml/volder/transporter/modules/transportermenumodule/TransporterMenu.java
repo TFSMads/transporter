@@ -106,7 +106,7 @@ public class TransporterMenu extends WrappedGuiScreen {
         this.scrollbar.setPosition(startX + entriesWidth + 3, 43, startX + entriesWidth + 6, getHeight() - 42);
         this.scrollbar.update(rows + 5);
 
-        if(!(lastIndex > visibleEntriesAmount)) {
+        if(rows < inViewEntryRows){
           this.scrollbar.update(0);
         }
 

@@ -48,6 +48,8 @@ public class TransporterSettingsMenuEntry {
         drawAPI.drawItem(item.getMaterial(), item.getItemDamage(), x + 2, y + 3, "", 2);
         drawAPI.drawString(item.getDisplayName().length() >= 15 ? item.getDisplayName().substring(0, 14) : item.getDisplayName(), x + 32 + 4, y + 5, 0xFFFFFF);
 
+        drawAPI.drawString(isActive ? ModColor.GREEN + "Aktiv" : ModColor.RED + "Ikke Aktiv", x + 32 + 4, y + 14, 0x808080, 0.8);
+
         if(isMouseOver) {
             hoverText = "Klik for at  " + (isActive ? "deaktivere" : "aktivere") + " denne item i transporter menuen!";
             hoverTextX = mouseX;
