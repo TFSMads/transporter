@@ -7,10 +7,12 @@ import ml.volder.transporter.settings.accesors.SettingRegistryAccessor;
 import ml.volder.transporter.settings.action.TransporterAction;
 import ml.volder.transporter.settings.classes.TransporterSettingElementFactory;
 import ml.volder.transporter.settings.classes.TransporterWidgetFactory;
+import ml.volder.unikapi.api.input.InputAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.event.EventHandler;
 import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
+import ml.volder.unikapi.event.events.clientkeypressevent.ClientKeyPressEvent;
 import ml.volder.unikapi.event.events.opensignevent.OpenSignEvent;
 import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.keysystem.Key;
@@ -18,6 +20,7 @@ import ml.volder.unikapi.keysystem.impl.Laby4KeyMapper;
 import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.wrappers.tileentitysign.WrappedTileEntitySign;
 import net.labymod.api.client.gui.icon.Icon;
+import net.labymod.api.client.gui.screen.widget.Widget;
 import net.labymod.api.client.gui.screen.widget.widgets.input.KeybindWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget;
 import net.labymod.api.configuration.settings.type.SettingHeader;
@@ -30,9 +33,11 @@ public class SignToolsModule extends SimpleModule implements Listener {
     private static Key pasteKey = Key.V;
     private static Key copyKey = Key.C;
 
+    private Key toggleKey = Key.J;
     private int placeDelay = 1000;
 
     private boolean openSignEditor = true;
+    private SwitchWidget shouldOpenSignEditorWidget;
 
     public SignToolsModule(ModuleManager.ModuleInfo moduleInfo) {
         super(moduleInfo);
@@ -93,15 +98,29 @@ public class SignToolsModule extends SimpleModule implements Listener {
                 "header2"
         ));
 
+        shouldOpenSignEditorWidget = TransporterWidgetFactory.createWidget(
+                SwitchWidget.class,
+                new TransporterAction<Boolean>((b) -> this.openSignEditor = b),
+                getDataManager(),
+                "openSignEditor",
+                true);
+
         subSettings.add(TransporterSettingElementFactory.Builder.begin()
-                .addWidget(TransporterWidgetFactory.createWidget(
-                        SwitchWidget.class,
-                        new TransporterAction<Boolean>((b) -> this.openSignEditor = b),
-                        getDataManager(),
-                        "openSignEditor",
-                        true))
+                .addWidget(shouldOpenSignEditorWidget)
                 .id("openSignEditor")
                 .icon(Icon.sprite16(ModTextures.COMMON_ICONS, 6, 5))
+                .build()
+        );
+
+        subSettings.add(TransporterSettingElementFactory.Builder.begin()
+                .addWidget(TransporterWidgetFactory.createWidget(
+                        KeybindWidget.class,
+                        new TransporterAction<net.labymod.api.client.gui.screen.key.Key>(key -> toggleKey = Laby4KeyMapper.convert(key)),
+                        getDataManager(),
+                        "toggleOpenSignEditorKey",
+                        net.labymod.api.client.gui.screen.key.Key.J))
+                .id("toggleOpenSignEditorKey")
+                .icon(Icon.sprite16(ModTextures.SETTINGS_ICONS, 1, 5))
                 .build()
         );
 
@@ -139,6 +158,25 @@ public class SignToolsModule extends SimpleModule implements Listener {
             return;
         }
         event.setScreen(new SignGui(getDataManager(), event.getTileEntitySign()));
+    }
+
+    @EventHandler
+    public void onKeyInput(ClientKeyPressEvent event) {
+        if(!TransporterAddon.isEnabled() || !this.isFeatureActive)
+            return;
+        if(toggleKey == null)
+            return;
+        if (InputAPI.getAPI().isKeyDown(toggleKey) && !PlayerAPI.getAPI().hasOpenScreen()){
+            this.openSignEditor = !this.openSignEditor;
+            if(shouldOpenSignEditorWidget != null) {
+                shouldOpenSignEditorWidget.setValue(openSignEditor);
+            }
+        }
+
+    }
+
+    public boolean isOpenSignEditor() {
+        return openSignEditor;
     }
 
     public static Key getPasteKey() {
