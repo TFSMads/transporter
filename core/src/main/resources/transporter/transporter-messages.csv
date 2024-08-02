@@ -1,14 +1,14 @@
 message_id,regex
 item_regex,[0-9A-Za-z:_ ]+
 playername_regex,[a-zA-Z0-9_]+
-send_message,^Du sendte (?<amount>[0-9.]+) (?<item>%item_regex%) til (?<player>%playername_regex%)$
+send_message,^Du sendte (?<amount>[0-9.]+) (?<item>%item_regex%) \((?<total>[0-9.]+) tilbage\) til (?<player>%playername_regex%)\.$
 send_offline,^Denne spiller er ikke online$
 send_self,^Du kan ikke sende til dig selv$
-send_receive,^Du modtog (?<amount>[0-9.]+) (?<item>%item_regex%) fra (?<player>%playername_regex%)$
+send_receive,^Du modtog (?<amount>[0-9.]+) (?<item>%item_regex%) \((?<total>[0-9.]+) i alt\) fra (?<player>%playername_regex%)\.$
 put_missing,^Du har ikke noget (?<item>%item_regex%) at putte i\.$
-put_success,^Du har nu puttet (?<amount>[0-9.]+) (?<item>%item_regex%) i din transporter$
+put_success,^Du har nu puttet (?<amount>[0-9.]+) (?<item>%item_regex%) \((?<total>[0-9.]+) i alt\) i din transporter\.$
 get_missing,^Du har ikke nok items i din transporter!$
-get_success,^Du har taget (?<amount>[0-9.]+) (?<item>%item_regex%) fra din transporter\.$
+get_success,^Du har taget (?<amount>[0-9.]+) (?<item>%item_regex%) \((?<total>[0-9.]+) tilbage\) fra din transporter\.$
 failed_too_fast,^Du skriver kommandoer for hurtigt!$
 info_entry,^ (?<item>%item_regex%): (?<amount>[0-9.]+)$
 info_title,^Du har følgende i din transporter:$

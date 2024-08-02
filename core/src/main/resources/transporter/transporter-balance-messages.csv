@@ -12,7 +12,7 @@ message_regex;action
 ^\[Shop] You bought [0-9]+ [A-Za-z0-9_:\s#]+ from [0-9A-Za-z_]+ for (?<amountf1>[0-9.,]+)\.$;REMOVE
 ^\[Shop] (?!You\b)[0-9A-Za-z_]+ sold [0-9]+ [A-Za-z0-9_:\s#]+ for (?<amountf1>[0-9.,]+)\.$;REMOVE
 ^\[Shop] (?!You\b)[0-9A-Za-z_]+ bought [0-9]+ [A-Za-z0-9_:\s#]+ for (?<amountf1>[0-9.,]+)\.$;ADD
-^\[Shop] [0-9A-Za-z_]+ bought [0-9]+ [A-Za-z0-9_:\s#]+ for $(?<amountf1>[0-9.,]+) Emeralder from you\.$;ADD
-^\[Shop] You bought [0-9]+ [A-Za-z0-9_:\s#]+ from [0-9A-Za-z_]+ for $(?<amountf1>[0-9.,]+) Emeralder\.$;REMOVE
-^\[Shop] [0-9A-Za-z_]+ sold [0-9]+ [A-Za-z0-9_:\s#]+ for $(?<amountf1>[0-9.,]+) Emeralder to you\.$;REMOVE
-^\[Shop] You sold [0-9]+ [A-Za-z0-9_:\s#]+ to [0-9A-Za-z_]+ for $(?<amountf1>[0-9.,]+) Emeralder\.$;ADD
+^\[Shop] [0-9A-Za-z_]+ bought [0-9]+ [A-Za-z0-9_:\s#]+ for \$(?<amountf1>[0-9.,]+) Emeralder from you\.$;ADD
+^\[Shop] You bought [0-9]+ [A-Za-z0-9_:\s#]+ from [0-9A-Za-z_]+ for \$(?<amountf1>[0-9.,]+) Emeralder\.$;REMOVE
+^\[Shop] [0-9A-Za-z_]+ sold [0-9]+ [A-Za-z0-9_:\s#]+ for \$(?<amountf1>[0-9.,]+) Emeralder to you\.$;REMOVE
+^\[Shop] You sold [0-9]+ [A-Za-z0-9_:\s#]+ to [0-9A-Za-z_]+ for \$(?<amountf1>[0-9.,]+) Emeralder\.$;ADD
