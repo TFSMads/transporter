@@ -199,6 +199,7 @@ public class TransporterModuleWidget extends SimpleWidget {
      */
 
     private void setCurrentHolder() {
+
         if(currentHolderField == null)
             return;
         Parent parent = this;

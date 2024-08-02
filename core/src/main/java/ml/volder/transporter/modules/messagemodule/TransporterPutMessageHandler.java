@@ -9,6 +9,7 @@ import ml.volder.transporter.modules.ModuleManager;
 import ml.volder.transporter.utils.Parser;
 import ml.volder.unikapi.api.player.PlayerAPI;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,11 +56,12 @@ public class TransporterPutMessageHandler implements IMessageHandler {
         final Pattern pattern = Pattern.compile(module.getRegexByMessageId("put_success"));
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
-          String itemMatch = Parser.parseFormattedItemName(matcher.group("item") != null ? matcher.group("item") : "ukendt");
-          String amountMatch = matcher.group("amount") != null ? matcher.group("amount") : "ukendt";
+            String itemMatch = Parser.parseFormattedItemName(matcher.group("item") != null ? matcher.group("item") : "ukendt");
+            String amountMatch = matcher.group("amount") != null ? matcher.group("amount") : "ukendt";
+            Integer total = matcher.group("total") != null ? Parser.tryParseInt(matcher.group("total")) : null;
 
             Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByType(itemMatch);
-            item.setAmountInTransporter(item.getAmountInTransporter()+ Parser.parseInt(amountMatch));
+            item.setAmountInTransporter(Objects.requireNonNullElseGet(total, () -> item.getAmountInTransporter() + Parser.parseInt(amountMatch)));
             MessageModes mode = module.getMessageMode();
             if(mode == MessageModes.NO_MESSAGES) {
                 return true;

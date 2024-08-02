@@ -170,7 +170,7 @@ public class BalanceModule extends SimpleModule implements Listener {
             if (matcher.find()) {
                 BigDecimal amount = null;
                 if (hasGroup(matcher, "amountf1")) {
-                    amount = new BigDecimal(matcher.group("amountf1").replace(".", "").replace(",","."));
+                    amount = new BigDecimal(matcher.group("amountf1").replace(",", ""));
                 }else if (hasGroup(matcher, "amountf2")) {
                     amount = new BigDecimal(matcher.group("amountf2"));
                 }

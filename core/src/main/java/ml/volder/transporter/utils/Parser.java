@@ -1,8 +1,19 @@
 package ml.volder.transporter.utils;
 
+import org.jetbrains.annotations.Nullable;
+
 public class Parser {
 
-  public static Integer parseInt(String input) {
+  @Nullable
+  public static Integer tryParseInt(String input) {
+    try {
+      return parseInt(input);
+    } catch (NumberFormatException e) {
+      return null;
+    }
+  }
+
+  public static Integer parseInt(String input) throws NumberFormatException {
     input = input.replace(".", "");
     return Integer.parseInt(input);
   }
