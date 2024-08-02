@@ -7,7 +7,10 @@ import ml.volder.transporter.settings.widgets.IconButtonWidget;
 import ml.volder.transporter.settings.widgets.TextFieldWidget;
 import ml.volder.transporter.settings.widgets.TransporterModulesWidget;
 import ml.volder.transporter.utils.FormatingUtils;
+import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
+import ml.volder.unikapi.datasystem.Data;
+import ml.volder.unikapi.datasystem.DataManager;
 import net.labymod.api.Laby;
 import net.labymod.api.addon.AddonConfig;
 import net.labymod.api.configuration.loader.annotation.SpriteSlot;
@@ -25,6 +28,11 @@ public class TransporterAddonConfig extends AddonConfig {
     public TransporterAddonConfig() {
 
         selectedNumberFormat.addChangeListener(formattingMode -> FormatingUtils.formattingMode = (formattingMode));
+
+        DataManager<Data> dataManager =DataManager.getOrCreateDataManager(UnikAPI.getCommonDataFolder() + "/settings.json");
+        if(dataManager != null && dataManager.getSettings().getData().has("selectedNumberFormat"))
+            selectedNumberFormat.set(FormatingUtils.FORMATTING_MODE.valueOf(dataManager.getSettings().getData().get("selectedNumberFormat").getAsString()));
+
         lobbyServers.addChangeListener(servers -> {
             if(!TransporterAddon.isInitialized())
                 return;
