@@ -10,7 +10,7 @@ version = System.getenv().getOrDefault("VERSION", "1.0.0")
 labyMod {
     defaultPackageName = "ml.volder" //change this to your main package name (used by all modules)
     addonInfo {
-        namespace = "transporter"
+        namespace = "sa-transporter"
         displayName = "Transporter Addon"
         author = "Mads_Gamer_DK"
         description = "Et addon med redskaber der forbedre din spil oplevelse på SA."
