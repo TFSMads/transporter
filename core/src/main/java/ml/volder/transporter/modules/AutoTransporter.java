@@ -156,7 +156,7 @@ public class AutoTransporter extends SimpleModule implements Listener {
             itemAmount += InventoryAPI.getAPI().getAmount(item.getMaterial(), item.getItemDamage());
         if (itemAmount < 1)
             return;
-        PlayerAPI.getAPI().sendCommand("transporter put mine");
+        PlayerAPI.getAPI().sendCommand("transporter put all");
         timer = 0;
     }
 
