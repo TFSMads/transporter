@@ -1,6 +1,7 @@
 package ml.volder.transporter.modules.mcmmomodule.skills;
 
 import ml.volder.transporter.modules.mcmmomodule.McmmoSkill;
+import ml.volder.transporter.utils.FormatingUtils;
 import ml.volder.unikapi.datasystem.Data;
 import ml.volder.unikapi.datasystem.DataManager;
 import ml.volder.unikapi.types.Material;
@@ -57,7 +58,7 @@ public class SimpleSkill implements McmmoSkill {
         ModuleSystem.registerModule(skillId + "-level", skillId + " Level", false, category, icon, s -> {
             if (noLevelData)
                 return "Ingen data (Skriv /mcstats)";
-            return String.valueOf(level);
+            return String.valueOf(FormatingUtils.formatNumber(level));
         });
     }
 }
