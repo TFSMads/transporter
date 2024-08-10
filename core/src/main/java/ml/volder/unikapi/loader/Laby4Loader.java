@@ -9,6 +9,7 @@ import ml.volder.unikapi.widgets.Laby4ModuleManager;
 import ml.volder.unikapi.widgets.ModuleSystem;
 import net.labymod.api.Laby;
 import net.labymod.api.addon.LabyAddon;
+import net.labymod.api.client.chat.command.Command;
 import net.labymod.api.models.addon.annotation.AddonMain;
 import net.labymod.api.reference.ReferenceStorageAccessor;
 
@@ -39,6 +40,14 @@ public class Laby4Loader extends LabyAddon<TransporterAddonConfig> {
     Laby4MainMenuOpenEvent.checkMainMenu();
 
     this.registerSettingCategory();
+  }
+
+  public static void registerCommands(Command... command) {
+    if(instance == null)
+      return;
+    for (Command cmd : command) {
+      instance.registerCommand(cmd);
+    }
   }
 
   @Override

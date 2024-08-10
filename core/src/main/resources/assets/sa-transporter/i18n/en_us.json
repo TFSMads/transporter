@@ -115,6 +115,12 @@
         "onlyActiveInLobby.name": "Kun aktiv i lobbyer!",
         "transporterMenuKeybind.name": "Åben menu",
         "withdrawAmount.name": "Antal items der skal trækkes ud"
+      },
+      "casinoToolsModule": {
+        "name": "§fTransporter Addon §7- §fCasino Tools",
+        "appendPayback.name": "Tilføj send tilbage knap?",
+        "header.header.name": "/setmulti <multiplier> kan også bruges til at sætte en multiplier for tilbagebetalingen.",
+        "payBackMulti.name": "Tilbagebetalings Multiplier"
       }
     }
   }
