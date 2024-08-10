@@ -84,6 +84,6 @@ public class ServerModule extends SimpleModule implements Listener {
 
     private void registerModules() {
         ServerModule instance = ModuleManager.getInstance().getModule(ServerModule.class);
-        ModuleSystem.registerModule("server", "Server", false, GuiModulesModule.getModuleRegistry().getOtherCategory(), Material.PAPER, s -> instance.isFeatureActive ? instance.currentServer == null ? "Opdatere!" : instance.currentServer : "Server Tracker featuren er ikke aktiv!");
+        ModuleSystem.registerModule("server", "Server", false, GuiModulesModule.getModuleRegistry().getOtherCategory(), Material.PAPER, s -> instance.isFeatureActive ? instance.currentServer == null ? "Opdatere!" : instance.currentServer.substring(0, 1).toUpperCase() + currentServer.substring(1) : "Server Tracker featuren er ikke aktiv!");
     }
 }

@@ -8,7 +8,7 @@ import java.util.TreeMap;
 
 public class FormatingUtils {
 
-    public static FORMATTING_MODE formattingMode = FORMATTING_MODE.ENDELSE;
+    public static FORMATTING_MODE formattingMode = FORMATTING_MODE.PUNKTUM;
     private static final NavigableMap<Long, String> suffixes = new TreeMap();
 
     public FormatingUtils() {
