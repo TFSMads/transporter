@@ -109,6 +109,7 @@ public class UpdateManager {
     }
 
     private static void extractFile(Path zipFile, String fileName, Path outputFile) throws IOException {
+        outputFile.toFile().getParentFile().mkdirs();
         OutputStream out = Files.newOutputStream(outputFile);
         FileInputStream fileInputStream = new FileInputStream(zipFile.toFile());
         BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
@@ -192,7 +193,7 @@ public class UpdateManager {
 
 
     private static Path getUpdaterPath() {
-        return Paths.get(UnikAPI.getCommonDataFolder().getPath(), "TransporterUpdater.jar");
+        return Paths.get(UnikAPI.getCommonDataFolder().getPath(), "transporter/updater/TransporterUpdater.jar");
     }
 
 
