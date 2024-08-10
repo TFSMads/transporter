@@ -45,8 +45,6 @@ public class DropdownWidgetFactory<T> implements TransporterWidgetFactory<T> {
         DropdownWidget<T> widget = new DropdownWidget<>();
         widget.setChangeListener(transporterAction);
 
-        widget.setSelected(initialValue, true);
-
         Class<?> type = defaultValue.getClass();
 
 
@@ -59,6 +57,8 @@ public class DropdownWidgetFactory<T> implements TransporterWidgetFactory<T> {
 
         DefaultEntryRenderer<T> entryRenderer = (DefaultEntryRenderer<T>) widget.entryRenderer();
         entryRenderer.setTranslationKeyPrefix("dropdownwidget." + defaultValue.getClass().getSimpleName() + ".entries");
+
+        widget.setSelected(initialValue, true);
 
         return widget;
     }
