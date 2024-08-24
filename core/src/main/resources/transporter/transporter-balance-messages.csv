@@ -4,6 +4,8 @@ message_regex;action
 ^\[Money] You have sent (?<amountf3>[0-9.,]+) Emerald to [0-9A-Za-z_]+\.$;REMOVE
 ^\Du har betalt (?<amountf2>[0-9.]+) ems for at sætte [A-Za-z_\s]+$;REMOVE
 ^\Du har fået (?<amountf2>[0-9.]+) ems for at fjerne [A-Za-z_\s]+$;ADD
+^\Du har betalt (?<amountf2>[0-9.]+) emeralder for at sætte [A-Za-z_\s]+$;REMOVE
+^\Du har fået (?<amountf2>[0-9.]+) emeralder for at fjerne [A-Za-z_\s]+$;ADD
 ^\[Shop] [0-9A-Za-z_]+ bought [0-9]+ [A-Za-z0-9_:\s#]+ for (?<amountf1>[0-9.,]+) Emeralder from you\.$;ADD
 ^\[Shop] You bought [0-9]+ [A-Za-z0-9_:\s#]+ from [0-9A-Za-z_]+ for (?<amountf1>[0-9.,]+) Emeralder\.$;REMOVE
 ^\[Shop] [0-9A-Za-z_]+ sold [0-9]+ [A-Za-z0-9_:\s#]+ for (?<amountf1>[0-9.,]+) Emeralder to you\.$;REMOVE
