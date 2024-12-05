@@ -3,6 +3,7 @@ package ml.volder.unikapi.api.draw.impl;
 import ml.volder.unikapi.SupportedClient;
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.api.minecraft.MinecraftAPI;
+import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.loader.Laby4Loader;
 import ml.volder.unikapi.types.Material;
 import ml.volder.unikapi.types.ResourceLocation;
@@ -10,8 +11,9 @@ import net.labymod.api.Laby;
 import net.labymod.api.client.component.Component;
 import net.labymod.api.client.entity.player.badge.PositionType;
 import net.labymod.api.client.entity.player.badge.renderer.BadgeRenderer;
+import net.labymod.api.client.gfx.GFXBridge;
 import net.labymod.api.client.gfx.pipeline.util.MatrixTracker;
-import net.labymod.api.client.gfx.texture.GFXGetTextureParameter;
+import net.labymod.api.client.gfx.texture.TextureTarget;
 import net.labymod.api.client.gui.HorizontalAlignment;
 import net.labymod.api.client.gui.icon.Icon;
 import net.labymod.api.client.gui.screen.theme.Theme;
@@ -21,6 +23,7 @@ import net.labymod.api.client.render.font.RenderableComponent;
 import net.labymod.api.client.render.font.text.TextRenderer;
 import net.labymod.api.client.render.font.text.TextRenderer.StringStart;
 import net.labymod.api.client.render.matrix.Stack;
+import net.labymod.api.client.resources.texture.Texture;
 import net.labymod.api.client.world.item.ItemStack;
 import net.labymod.api.util.bounds.Point;
 import net.labymod.api.util.bounds.Rectangle;
@@ -31,12 +34,15 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 @SupportedClient(clientBrand = "labymod4", minecraftVersion = "*")
+@Deprecated(forRemoval = true)
 public class Laby4DrawAPI implements DrawAPI {
 
   private String namespace = Laby4Loader.namespace();
   public static Stack CURRENT_RENDER_STACK;
   private static Stack PREVIOUS_RENDER_STACK;
   private static Laby4DrawAPI instance;
+
+  private final GFXBridge gfx = Laby.references().gfxRenderPipeline().gfx();
 
   public static Laby4DrawAPI getAPI() {
     if(instance == null)
@@ -78,12 +84,12 @@ public class Laby4DrawAPI implements DrawAPI {
 
   @Override
   public int getTextureWidth() {
-    return GFXGetTextureParameter.TEXTURE_WIDTH.getHandle();
+    return gfx.getTexLevelParameterI(TextureTarget.TEXTURE_2D, 0, 4096);
   }
 
   @Override
   public int getTextureHeight() {
-    return GFXGetTextureParameter.TEXTURE_HEIGHT.getHandle();
+    return gfx.getTexLevelParameterI(TextureTarget.TEXTURE_2D, 0, 4097);
   }
 
   @Override
@@ -151,6 +157,8 @@ public class Laby4DrawAPI implements DrawAPI {
 
 
   public void drawTexture(double x, double y, double texturePosX, double texturePosY, double imageWidth, double imageHeight, double maxWidth, double maxHeight, float alpha) {
+    if(boundTexture == null)
+      return;
 
     if (alpha <= 1.0F) {
       Laby.gfx().enableBlend();
@@ -185,13 +193,17 @@ public class Laby4DrawAPI implements DrawAPI {
 
   @Override
   public void bindTexture(ResourceLocation resourceLocation) {
-    this.boundTexture = Laby.references().resourceLocationFactory().create(namespace, resourceLocation.getResourcePath());
-    Laby.references().glStateBridge().bindTexture(boundTexture);
+    bindTexture(Laby.references().resourceLocationFactory().create(namespace, resourceLocation.getResourcePath()));
   }
 
   public void bindTexture(net.labymod.api.client.resources.ResourceLocation resourceLocation) {
     this.boundTexture = resourceLocation;
-    Laby.references().glStateBridge().bindTexture(boundTexture);
+    if(resourceLocation == null)
+      return;
+    Texture texture = Laby.references().textureRepository().getTexture(resourceLocation);
+    if(texture == null)
+      return;
+    gfx.bindTexture2D(texture.getTextureId());
   }
 
   //endregion
@@ -275,7 +287,7 @@ public class Laby4DrawAPI implements DrawAPI {
   public void drawBackground(int tint, double scrolling, int brightness) {
     Rectangle bounds = Rectangle.absolute(0, 0, getScaledWidth(), getScaledHeight());
     Laby.references().resourceRenderer()
-        .texture(Laby.labyAPI().minecraft().textures().backgroundTexture())
+        .texture(ModTextures.BACKGROUND.toLaby())
         .pos(bounds)
         .sprite(bounds.getX() * 8.0F, bounds.getY() * 8.0F, bounds.getWidth() * 8.0F, bounds.getHeight() * 8.0F)
         .color(brightness / 255.0F, brightness / 255.0F, brightness / 255.0F, 1.0F)
@@ -286,7 +298,7 @@ public class Laby4DrawAPI implements DrawAPI {
     float brightness = 64;
     Rectangle bounds = Rectangle.absolute(0, startY, getScaledWidth(), endY);
     Laby.references().resourceRenderer()
-        .texture(Laby.labyAPI().minecraft().textures().backgroundTexture())
+        .texture(ModTextures.BACKGROUND.toLaby())
         .pos(bounds)
         .sprite(bounds.getX() * 8.0F, bounds.getY() * 8.0F, bounds.getWidth() * 8.0F, bounds.getHeight() * 8.0F)
         .color(brightness / 255.0F, brightness / 255.0F, brightness / 255.0F, 1.0F)
@@ -297,7 +309,7 @@ public class Laby4DrawAPI implements DrawAPI {
     float brightness = 64;
     Rectangle bounds = Rectangle.absolute(left, top, right, bottom);
     Laby.references().resourceRenderer()
-        .texture(Laby.labyAPI().minecraft().textures().backgroundTexture())
+        .texture(ModTextures.BACKGROUND.toLaby())
         .pos(bounds)
         .sprite(bounds.getX() * 8.0F, bounds.getY() * 8.0F, bounds.getWidth() * 8.0F, bounds.getHeight() * 8.0F)
         .color(brightness / 255.0F, brightness / 255.0F, brightness / 255.0F, 1.0F)
@@ -323,12 +335,22 @@ public class Laby4DrawAPI implements DrawAPI {
     //TODO fiks så blocks ikke er mørke og så chest ikke ser mærklig ud.
     if(itemStack == null)
       return;
+    Laby.references().blaze3DGlStatePipeline().enableDepthTest();
+    //Laby.references().glStateBridge().enableDepth();
+    Laby.references().blaze3DGlStatePipeline().enableDepthTest();
+
     Laby.labyAPI().minecraft().itemStackRenderer().renderItemStack(
         stack,
         itemStack,
         (int) (x / scale),
         (int) (y / scale)
     );
+
+    Laby.references().blaze3DGlStatePipeline().disableDepthTest();
+    //Laby.references().glStateBridge().disableDepth();
+    Laby.references().blaze3DGlStatePipeline().disableDepthTest();
+
+
     //Laby.references().glStateBridge().disableCull();
 
     stack.scale((float) (1.0F / scale), (float) (1.0F / scale), 0);

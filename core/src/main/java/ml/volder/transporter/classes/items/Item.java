@@ -3,7 +3,12 @@ package ml.volder.transporter.classes.items;
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.classes.api.TransporterPriceApi;
 import ml.volder.transporter.events.ItemAmountUpdatedEvent;
+import ml.volder.transporter.messaging.PluginMessageHandler;
+import ml.volder.transporter.messaging.channels.GetChannel;
+import ml.volder.transporter.messaging.channels.PutChannel;
 import ml.volder.unikapi.api.player.PlayerAPI;
+import ml.volder.unikapi.datasystem.Data;
+import ml.volder.unikapi.datasystem.DataManager;
 import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.EventType;
 import ml.volder.unikapi.types.Material;
@@ -14,6 +19,8 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class Item {
+
+    private DataManager<Data> dataManagerSettings;
 
     private Material material;
 
@@ -27,6 +34,7 @@ public class Item {
     public Item(String type, String legacy_type){
         this.material = Material.create("minecraft", type, legacy_type);
         loadData();
+        this.dataManagerSettings = DataManager.getOrCreateDataManager("%common%/settings.json");
     }
 
     public void setSellValue(Integer sellValue) {
@@ -84,6 +92,32 @@ public class Item {
 
     public Material getMaterial() {
         return material;
+    }
+
+    /**
+     * Send get payload to server
+     *
+     * @param amount amount to get from transporter
+     */
+    public void get(Integer amount) {
+        if(dataManagerSettings.getBoolean("useTransporterPackets")) {
+            PluginMessageHandler.getChannel(GetChannel.class).sendPayload(this.getModernType(), amount);
+        } else {
+            PlayerAPI.getAPI().sendCommand("transporter get " + this.getModernType() + " " + amount);
+        }
+    }
+
+    /**
+     * Send put payload to server
+     *
+     * @param amount amount to put in transporter
+     */
+    public void put(Integer amount) {
+        if(dataManagerSettings.getBoolean("useTransporterPackets")) {
+            PluginMessageHandler.getChannel(PutChannel.class).sendPayload(this.getModernType(), amount);
+        } else {
+            PlayerAPI.getAPI().sendCommand("transporter put " + this.getModernType() + " " + amount);
+        }
     }
 
     private void loadData() {

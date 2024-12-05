@@ -50,6 +50,7 @@ public class MessagesModule extends SimpleModule implements Listener {
         messageHandlers.add(new TransporterPutMessageHandler(this));
         messageHandlers.add(new TransporterInfoHandler(this));
         messageHandlers.add(new TransporterSendMessageHandler(this));
+        messageHandlers.add(new TransporterMiscellaneousMessageHandler(this));
         return this;
     }
 
@@ -186,6 +187,24 @@ public class MessagesModule extends SimpleModule implements Listener {
                 "modtagSuccess",
                 "&bDu modtog &3%antal% %item% &bfra %spiller%. &7(&3%total%&7)",
                 Icon.sprite16(ModTextures.COMMON_ICONS, 3, 1)
+        ));
+
+        subSettings.add(createMessageSetting(
+                "putAllMessage",
+                "&bGemte &3%antal% &bitems i din transporter!",
+                Icon.sprite8(ModTextures.WIDGET_EDITOR_ICONS, 4, 1)
+        ));
+
+        subSettings.add(createMessageSetting(
+                "autoTransporterOn",
+                "&aAuto-transporter er nu aktiv!",
+                Icon.sprite16(ModTextures.COMMON_ICONS, 1, 0)
+        ));
+
+        subSettings.add(createMessageSetting(
+                "autoTransporterOff",
+                "&cAuto-transporter er nu inaktiv!",
+                Icon.sprite16(ModTextures.COMMON_ICONS, 4, 6)
         ));
 
         subSettings.add(createMessageSetting(

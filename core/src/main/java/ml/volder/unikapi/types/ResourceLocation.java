@@ -85,6 +85,8 @@ public class ResourceLocation {
     }
 
     public net.labymod.api.client.resources.ResourceLocation toLaby() {
+        if(resourceDomain == null || resourcePath == null)
+            return null;
         return Laby.references().resourceLocationFactory().create(resourceDomain, resourcePath);
     }
 }

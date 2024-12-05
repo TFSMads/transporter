@@ -30,7 +30,7 @@ public class TransporterInfoHandler implements IMessageHandler {
             for(Item item : TransporterAddon.getInstance().getTransporterItemManager().getItemList()){
                 if(Parser.parseFormattedItemName(matcher.group("item")).equals(item.getModernType())){
                     item.setAmountInTransporter(Parser.parseInt(matcher.group("amount")));
-                    ModuleManager.getInstance().getModule(AutoTransporter.class).transporterInfoSet();
+                    TransporterAddon.getInstance().getTransporterItemManager().transporterInfoSet();
                     return false;
                 }
             }

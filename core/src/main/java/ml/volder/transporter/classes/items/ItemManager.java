@@ -22,6 +22,8 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ItemManager {
     private List<Item> itemList = new ArrayList<>();
 
+    private boolean hasTransporterData = false;
+
     public void loadItems() {
         LoadTimer.start("loadItems");
         loadItemsFromCSV();
@@ -157,6 +159,7 @@ public class ItemManager {
             return;
         this.dataManager = DataManager.getOrCreateDataManager(new File(UnikAPI.getPlayerDataFolder(), "itemData.json"));
         dataManagerUUID = PlayerAPI.getAPI().getUUID();
+        hasTransporterData = dataManager.getBoolean("hasTransporterData");
     }
 
     public DataManager<Data> getDataManager() {
@@ -176,4 +179,19 @@ public class ItemManager {
             initDataManagerGlobal();
         return globalDataManager;
     }
+
+    public boolean hasTransporterData() {
+        if(dataManager == null || PlayerAPI.getAPI().getUUID() == null || !dataManagerUUID.equals(PlayerAPI.getAPI().getUUID()))
+            getDataManager();
+        return hasTransporterData;
+    }
+
+    public void transporterInfoSet() {
+        if(hasTransporterData)
+            return;
+        hasTransporterData = true;
+        getDataManager().getSettings().getData().addProperty("hasTransporterData", hasTransporterData);
+        getDataManager().save();
+    }
+
 }

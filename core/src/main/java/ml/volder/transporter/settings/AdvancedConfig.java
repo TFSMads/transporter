@@ -68,4 +68,8 @@ public class AdvancedConfig extends Config {
         );
         Laby.labyAPI().minecraft().sounds().playButtonPress();
     }
+
+    @SpriteSlot(y = 7, x = 7)
+    @SwitchWidget.SwitchSetting(configEntryName = "useTransporterPackets")
+    private ConfigProperty<Boolean> useTransporterPackets = new ConfigProperty<>(false);
 }

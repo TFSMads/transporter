@@ -32,7 +32,7 @@ public class ModuleRegistry {
 
     public ModuleRegistry(GuiModulesModule guiModulesModule) {
         this.guiModulesModule = guiModulesModule;
-        NO_DATA_TRANSLATION = I18n.translate("transporter.guiModules.nodata");
+        NO_DATA_TRANSLATION = I18n.translate("sa-transporter.guiModules.nodata");
         ModuleSystem.shouldRenderPredicate = () -> guiModulesModule.isFeatureActive() && TransporterAddon.isEnabled() && isActiveOnCurrentServer();
     }
 
@@ -52,7 +52,7 @@ public class ModuleRegistry {
                     itemAmountCategory,
                     item.getMaterial(),
                     s -> {
-                        if(!ModuleManager.getInstance().getModule(AutoTransporter.class).hasTransporterData())
+                        if(!TransporterAddon.getInstance().getTransporterItemManager().hasTransporterData())
                             return NO_DATA_TRANSLATION;
                         return ModuleManager.getInstance().getModule(MessagesModule.class).isFeatureActive() ? (item.getAmountInTransporter() == null ? "0" : FormatingUtils.formatNumber(item.getAmountInTransporter())) : "Besked featuren er deaktiveret!";
                     }
@@ -67,14 +67,14 @@ public class ModuleRegistry {
                     itemValueCategory,
                     item.getMaterial(),
                     s -> {
-                        if(!ModuleManager.getInstance().getModule(AutoTransporter.class).hasTransporterData())
+                        if(!TransporterAddon.getInstance().getTransporterItemManager().hasTransporterData())
                             return NO_DATA_TRANSLATION;
                         return ModuleManager.getInstance().getModule(MessagesModule.class).isFeatureActive()
                                 ?   (item.getAmountInTransporter() == null
                                 ? "0 EMs"
                                 : FormatingUtils.formatNumber((long)((item.getAmountInTransporter().doubleValue() / 6400) * item.getSellValue().doubleValue())) + " EMs"
                         )
-                                : I18n.translate("transporter.guiModules.messageFeatureInactive");
+                                : I18n.translate("sa-transporter.guiModules.messageFeatureInactive");
                     }
             );
         }
@@ -86,7 +86,7 @@ public class ModuleRegistry {
                 otherCategory,
                 Material.DIODE,
                 s -> {
-                    if(!ModuleManager.getInstance().getModule(AutoTransporter.class).hasTransporterData())
+                    if(!TransporterAddon.getInstance().getTransporterItemManager().hasTransporterData())
                         return NO_DATA_TRANSLATION;
                     return ModuleManager.getInstance().getModule(AutoTransporter.class).isFeatureActive() && ModuleManager.getInstance().getModule(AutoTransporter.class).isEnabled() ? ModColor.GREEN + "Til" : ModColor.RED + "Fra";
                 }
@@ -99,7 +99,7 @@ public class ModuleRegistry {
                 otherCategory,
                 Material.REDSTONE_LAMP,
                 s -> {
-                    if(!ModuleManager.getInstance().getModule(AutoTransporter.class).hasTransporterData())
+                    if(!TransporterAddon.getInstance().getTransporterItemManager().hasTransporterData())
                         return NO_DATA_TRANSLATION;
                     return ModuleManager.getInstance().getModule(AutoGetModule.class).isFeatureActive() && ModuleManager.getInstance().getModule(AutoGetModule.class).isEnabled() ? ModColor.GREEN + "Til" : ModColor.RED + "Fra";
                 }
@@ -113,8 +113,8 @@ public class ModuleRegistry {
                 Material.EMERALD,
                 s -> {
                     if(!ModuleManager.getInstance().getModule(MessagesModule.class).isFeatureActive())
-                        return I18n.translate("transporter.guiModules.messageFeatureInactive");
-                    if(!ModuleManager.getInstance().getModule(AutoTransporter.class).hasTransporterData())
+                        return I18n.translate("sa-transporter.guiModules.messageFeatureInactive");
+                    if(!TransporterAddon.getInstance().getTransporterItemManager().hasTransporterData())
                         return NO_DATA_TRANSLATION;
                     double value = 0;
                     for(Item item : TransporterAddon.getInstance().getTransporterItemManager().getItemList()) {
@@ -134,7 +134,7 @@ public class ModuleRegistry {
                 Material.EMERALD,
                 s -> ModuleManager.getInstance().getModule(BalanceModule.class).isFeatureActive()
                             ? FormatingUtils.formatNumber(ModuleManager.getInstance().getModule(BalanceModule.class).getBalance().longValue()) + " EMs"
-                            : I18n.translate("transporter.guiModules.balanceFeatureInactive")
+                            : I18n.translate("sa-transporter.guiModules.balanceFeatureInactive")
         );
 
         ModuleSystem.registerModule(
@@ -145,7 +145,7 @@ public class ModuleRegistry {
                 Material.OAK_SIGN,
                 s -> ModuleManager.getInstance().getModule(SignToolsModule.class).isFeatureActive()
                         ? ModuleManager.getInstance().getModule(SignToolsModule.class).isOpenSignEditor() ? ModColor.GREEN + "Ja" : ModColor.RED + "Nej"
-                        : I18n.translate("transporter.guiModules.signtoolsFeatureInactive")
+                        : I18n.translate("sa-transporter.guiModules.signtoolsFeatureInactive")
         );
     }
 

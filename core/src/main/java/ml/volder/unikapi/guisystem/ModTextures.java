@@ -35,6 +35,7 @@ public class ModTextures {
     public static final ResourceLocation BUTTON_HOVER_DEFAULT = new ResourceLocation(RESOURCE_DOMAIN, TEXTURE_FOLDER + "buttons/hover_default.png");
     public static final ResourceLocation BUTTON_PASTE = new ResourceLocation(RESOURCE_DOMAIN, TEXTURE_FOLDER + "buttons/paste.png");
     public static final ResourceLocation BUTTON_COPY = new ResourceLocation(RESOURCE_DOMAIN, TEXTURE_FOLDER + "buttons/copy.png");
+    public static final ResourceLocation BACKGROUND = new ResourceLocation(RESOURCE_DOMAIN, TEXTURE_FOLDER + "gui/options_background.png");
 
     public static net.labymod.api.client.resources.ResourceLocation SETTINGS_ICONS = Laby.labyAPI().themeService().currentTheme().resource("labymod", "textures/settings/main/laby.png");
     public static net.labymod.api.client.resources.ResourceLocation SETTINGS_ICONS_1 = Laby.labyAPI().themeService().currentTheme().resource("labymod", "textures/settings/main/laby_1.png");

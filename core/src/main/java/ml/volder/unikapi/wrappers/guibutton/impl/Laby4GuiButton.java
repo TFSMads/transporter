@@ -3,6 +3,7 @@ package ml.volder.unikapi.wrappers.guibutton.impl;
 import ml.volder.unikapi.SupportedClient;
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.api.draw.impl.Laby4DrawAPI;
+import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.wrappers.guibutton.IGuiButtonImpl;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
 import net.labymod.api.Laby;
@@ -19,7 +20,7 @@ public class Laby4GuiButton implements IGuiButtonImpl {
 
   private WrappedGuiButton guiButton;
 
-  protected static final ResourceLocation buttonTextures = Laby.labyAPI().minecraft().textures().widgetsTexture();
+  protected static final ResourceLocation buttonTextures = ModTextures.WIDGETS.toLaby();
   /** Button width in pixels */
   public int width;
   /** Button height in pixels */

@@ -13,7 +13,9 @@ import ml.volder.unikapi.event.EventHandler;
 import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.event.events.clientkeypressevent.ClientKeyPressEvent;
+import ml.volder.unikapi.event.events.clientmessageevent.ClientMessageEvent;
 import ml.volder.unikapi.event.events.clienttickevent.ClientTickEvent;
+import ml.volder.unikapi.event.events.serverswitchevent.ServerSwitchEvent;
 import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.impl.Laby4KeyMapper;
@@ -27,16 +29,15 @@ import java.util.Map;
 
 public class AutoTransporter extends SimpleModule implements Listener {
 
-    private boolean onlyActiveInLobby = true;
-    private boolean hasTransporterData;
+    //private boolean onlyActiveInLobby = true;
     private boolean isEnabled;
     private TransporterAddon addon;
-    private int delay = 50;
-    private Key toggleKey = Key.P; // Default key = P
+    //private int delay = 50;
+    private Key toggleKey = Key.O; // Default key = P
 
-    private boolean useTransporterPutMine = true;
+    //private boolean useTransporterPutMine = true;
 
-    private int timer = 0;
+    //private int timer = 0;
 
     public AutoTransporter(ModuleManager.ModuleInfo moduleInfo) {
         super(moduleInfo);
@@ -56,7 +57,7 @@ public class AutoTransporter extends SimpleModule implements Listener {
 
     @Override
     public void fillSettings(SettingRegistryAccessor subSettings) {
-        subSettings.add(TransporterSettingElementFactory.Builder.begin()
+        /*subSettings.add(TransporterSettingElementFactory.Builder.begin()
                 .addWidget(TransporterWidgetFactory.createWidget(
                         SwitchWidget.class,
                         new TransporterAction<Boolean>((b) -> this.onlyActiveInLobby = b),
@@ -66,9 +67,9 @@ public class AutoTransporter extends SimpleModule implements Listener {
                 .id("onlyActiveInLobby")
                 .icon(Icon.sprite16(ModTextures.SETTINGS_ICONS_1, 4, 1))
                 .build()
-        );
+        );*/
 
-        subSettings.add(TransporterSettingElementFactory.Builder.begin()
+        /*subSettings.add(TransporterSettingElementFactory.Builder.begin()
                 .addWidget(TransporterWidgetFactory.createWidget(
                         SliderWidget.class,
                         new TransporterAction<Float>(v -> delay = v != null ? v.intValue() : delay),
@@ -78,7 +79,7 @@ public class AutoTransporter extends SimpleModule implements Listener {
                 .id("autoTransporterDelay")
                 .icon(Icon.sprite16(ModTextures.SETTINGS_ICONS, 1, 1))
                 .build()
-        );
+        );*/
 
         subSettings.add(TransporterSettingElementFactory.Builder.begin()
                 .addWidget(TransporterWidgetFactory.createWidget(
@@ -86,13 +87,14 @@ public class AutoTransporter extends SimpleModule implements Listener {
                         new TransporterAction<net.labymod.api.client.gui.screen.key.Key>(key -> toggleKey = Laby4KeyMapper.convert(key)),
                         getDataManager(),
                         "autoTransporterKeybind",
-                        net.labymod.api.client.gui.screen.key.Key.P))
+                        net.labymod.api.client.gui.screen.key.Key.O))
                 .id("autoTransporterKeybind")
                 .icon(Icon.sprite16(ModTextures.SETTINGS_ICONS, 1, 5))
                 .build()
         );
 
-        subSettings.add(TransporterSettingElementFactory.Builder.begin()
+        /*subSettings.add(TransporterSettingElementFactory.Builder.begin()
+
                 .addWidget(TransporterWidgetFactory.createWidget(
                         SwitchWidget.class,
                         new TransporterAction<Boolean>((b) -> this.useTransporterPutMine = b),
@@ -102,16 +104,16 @@ public class AutoTransporter extends SimpleModule implements Listener {
                 .id("useTransporterPutMine")
                 .icon(Icon.sprite16(ModTextures.SETTINGS_ICONS, 5, 1))
                 .build()
-        );
+        );*/
     }
 
     @Override
     public void loadConfig() {
         super.loadConfig();
-        hasTransporterData = hasConfigEntry("hasTransporterData") ? getConfigEntry("hasTransporterData", Boolean.class) : false;
+        //hasTransporterData = hasConfigEntry("hasTransporterData") ? getConfigEntry("hasTransporterData", Boolean.class) : false;
     }
 
-    @EventHandler
+    /*@EventHandler
     public void onTick(ClientTickEvent tickEvent) {
        if(!TransporterAddon.isEnabled() || !this.isEnabled || !this.isFeatureActive)
             return;
@@ -126,8 +128,9 @@ public class AutoTransporter extends SimpleModule implements Listener {
             executeAutoTransporterPutMineMethod();
         else
             executeAutoTransporterPutItemMethod();
-    }
+    }*/
 
+    @Deprecated(forRemoval = true)
     private void executeAutoTransporterPutItemMethod() {
         Map<String, Integer> itemAmountMap = new HashMap<>();
 
@@ -145,10 +148,11 @@ public class AutoTransporter extends SimpleModule implements Listener {
 
         if(maxAmount > 0 && itemWithMost.length() > 0){
             PlayerAPI.getAPI().sendCommand("transporter put " + itemWithMost);
-            timer = 0;
+            //timer = 0;
         }
     }
 
+    @Deprecated(forRemoval = true)
     private void executeAutoTransporterPutMineMethod() {
         int itemAmount = 0;
 
@@ -157,14 +161,14 @@ public class AutoTransporter extends SimpleModule implements Listener {
         if (itemAmount < 1)
             return;
         PlayerAPI.getAPI().sendCommand("transporter put all");
-        timer = 0;
+        //timer = 0;
     }
 
     @EventHandler
     public void onKeyInput(ClientKeyPressEvent event) {
         if(!TransporterAddon.isEnabled() || !this.isFeatureActive)
             return;
-        if(onlyActiveInLobby && !TransporterAddon.getInstance().getServerList().contains(ModuleManager.getInstance().getModule(ServerModule.class).getCurrentServer()))
+        if(!TransporterAddon.getInstance().getServerList().contains(ModuleManager.getInstance().getModule(ServerModule.class).getCurrentServer()))
             return;
         if(toggleKey == null)
             return;
@@ -172,29 +176,29 @@ public class AutoTransporter extends SimpleModule implements Listener {
             this.toggle();
     }
 
-    public void setDelay(int delay){
-        this.delay = delay;
+    @EventHandler
+    public void onMessage(ClientMessageEvent event) {
+        if(event.getCleanMessage().equals("Slår auto-transporter til! (all)") || event.getCleanMessage().equals("Slår auto-transporter til! (mine)")) {
+            isEnabled = true;
+        } else if (event.getCleanMessage().equals("Slår auto-transporter fra!")) {
+            isEnabled = false;
+        }
+    }
+
+    @EventHandler
+    public void onServerSwitch(ServerSwitchEvent event) {
+        isEnabled = false;
     }
 
     public void toggle(){
         isEnabled = !isEnabled;
+        PlayerAPI.getAPI().sendCommand("autotransporter");
     }
 
     public boolean isFeatureActive() {
         return isFeatureActive;
     }
 
-    public boolean hasTransporterData() {
-        return hasTransporterData;
-    }
-
-    public void transporterInfoSet() {
-        if(hasTransporterData)
-            return;
-        hasTransporterData = true;
-        getDataManager().getSettings().getData().addProperty("hasTransporterData", hasTransporterData);
-        getDataManager().save();
-    }
 
     public boolean isEnabled() {
         return isEnabled;

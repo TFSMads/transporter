@@ -1,12 +1,17 @@
 package ml.volder.transporter.modules;
 
 import ml.volder.transporter.TransporterAddon;
+import ml.volder.transporter.events.TransporterChannelRegisteredEvent;
+import ml.volder.transporter.messaging.PluginMessageHandler;
+import ml.volder.transporter.messaging.channels.BalanceChannel;
 import ml.volder.transporter.settings.accesors.SettingRegistryAccessor;
 import ml.volder.transporter.settings.action.TransporterAction;
 import ml.volder.transporter.settings.classes.TransporterSettingElementFactory;
 import ml.volder.transporter.settings.classes.TransporterWidgetFactory;
 import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
+import ml.volder.unikapi.datasystem.Data;
+import ml.volder.unikapi.datasystem.DataManager;
 import ml.volder.unikapi.event.EventHandler;
 import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
@@ -30,11 +35,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BalanceModule extends SimpleModule implements Listener {
+    private DataManager<Data> dataManagerSettings;
     private TransporterAddon addon;
 
     public BalanceModule(ModuleManager.ModuleInfo moduleInfo) {
         super(moduleInfo);
         this.addon = TransporterAddon.getInstance();
+        this.dataManagerSettings = DataManager.getOrCreateDataManager("%common%/settings.json");
     }
 
     @Override
@@ -213,30 +220,11 @@ public class BalanceModule extends SimpleModule implements Listener {
         return false;
     }
 
-
     @EventHandler
-    public void onServerSwitch(ServerSwitchEvent event) {
+    public void onTransporterChannelRegister(TransporterChannelRegisteredEvent event) {
         if (!isFeatureActive() || !updateOnJoin || !TransporterAddon.isEnabled())
             return;
-        if(event.getSwitchType() == ServerSwitchEvent.SWITCH_TYPE.LEAVE)
-            return;
-        new Timer("updateBalance").schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if(ModuleManager.getInstance().getModule(ServerModule.class).getCurrentServer() == null)
-                    return;
-                if(TransporterAddon.getInstance().getServerList().contains(ModuleManager.getInstance().getModule(ServerModule.class).getCurrentServer())) {
-                    cancelNextBalanceCommand = true;
-                    PlayerAPI.getAPI().sendCommand("bal");
-                }
-            }
-        }, 1000L);
-        new Timer("updateCancelVar").schedule(new TimerTask() {
-            @Override
-            public void run() {
-                cancelNextBalanceCommand = false;
-            }
-        }, 1500L);
+        PluginMessageHandler.getChannel(BalanceChannel.class).sendPayload();
     }
 
     private int timer = 0;
@@ -246,15 +234,20 @@ public class BalanceModule extends SimpleModule implements Listener {
             return;
         timer+=1;
         if(timer/20 >= updateIntervalSeconds) {
-            if(TransporterAddon.getInstance().getServerList().contains(ModuleManager.getInstance().getModule(ServerModule.class).getCurrentServer())){
-                cancelNextBalanceCommand = true;
-                PlayerAPI.getAPI().sendCommand("bal");
+            if(dataManagerSettings.getBoolean("useTransporterPackets")) {
+                PluginMessageHandler.getChannel(BalanceChannel.class).sendPayload();
+            } else {
+                if(TransporterAddon.getInstance().getServerList().contains(ModuleManager.getInstance().getModule(ServerModule.class).getCurrentServer())){
+                    cancelNextBalanceCommand = true;
+                    PlayerAPI.getAPI().sendCommand("bal");
+                }
             }
             timer = 0;
+
         }
     }
 
-    private void updateBalance(BigDecimal newBalance) {
+    public void updateBalance(BigDecimal newBalance) {
         this.balance = newBalance;
         getDataManager().getSettings().getData().addProperty("currentBalance", balance);
         getDataManager().save();

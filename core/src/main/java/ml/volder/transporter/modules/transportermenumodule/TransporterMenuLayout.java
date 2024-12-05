@@ -1,33 +1,28 @@
-package ml.volder.transporter.gui.pricegui;
+package ml.volder.transporter.modules.transportermenumodule;
 
-import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.classes.items.Item;
 import ml.volder.transporter.gui.elements.ScrollableGrid;
+import ml.volder.transporter.modules.ModuleManager;
+import ml.volder.transporter.modules.TransporterMenuModule;
 import ml.volder.unikapi.api.draw.DrawAPI;
-import ml.volder.unikapi.guisystem.elements.Scrollbar;
+import ml.volder.unikapi.api.player.PlayerAPI;
+import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
 import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
-import net.labymod.api.Laby;
-import net.labymod.api.client.gui.screen.ScreenWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PriceMenu extends WrappedGuiScreen {
+public class TransporterMenuLayout extends WrappedGuiScreen {
 
-    private ScreenWrapper lastScreen;
-    private boolean isInBackground = false;
     private int entryWidth = 120;
     private int entryHeight = 37;
-    private List<PriceMenuEntry> itemEntries = new ArrayList<>();
+    private List<ScrollableGrid.Entry> itemEntries = new ArrayList<>();
     private ScrollableGrid scrollableGrid = new ScrollableGrid(0, 0, 0, 0, entryWidth, entryHeight, 2, 2);
-
-    public PriceMenu(ScreenWrapper lastScreen) {
-        this.lastScreen = lastScreen;
-    }
+    private boolean flagChanged = false;
 
     @Override
     public void updateScreen() {
@@ -36,21 +31,24 @@ public class PriceMenu extends WrappedGuiScreen {
 
     @Override
     public void initGui() {
-        isInBackground = false;
         itemEntries.clear();
-        for(Item item : TransporterAddon.getInstance().getTransporterItemManager().getItemList()) {
-            itemEntries.add(new PriceMenuEntry(this, item, entryWidth, entryHeight));
+        for(Item item : ModuleManager.getInstance().getModule(TransporterMenuModule.class).getActiveItems()) {
+          itemEntries.add(new TransporterMenuLayoutEntry(item, entryWidth, entryHeight, this));
         }
-        this.addButton(new WrappedGuiButton(1, 5, 10, 22, 20, "<"));
-        this.addButton(new WrappedGuiButton(2, 5, getHeight() - 31, 120, 20, "Opdatere alle priser"));
 
         scrollableGrid.initGui();
         scrollableGrid.updateGridSize(getWidth(), getHeight() - 90, 0, 45);
         scrollableGrid.updateEntries(itemEntries);
+
+        addButton(new WrappedGuiButton(1, 20, 20, 22, 20, "<"));
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        if(flagChanged) {
+            initGui();
+            flagChanged = false;
+        }
         DrawAPI drawAPI = DrawAPI.getAPI();
         drawAPI.drawAutoDimmedBackground(0);
 
@@ -60,7 +58,7 @@ public class PriceMenu extends WrappedGuiScreen {
         drawAPI.drawGradientShadowTop(41.0, 0.0, this.getWidth());
         drawAPI.drawOverlayBackground(this.getHeight() - 40, this.getHeight());
         drawAPI.drawGradientShadowBottom(this.getHeight() - 40, 0.0, this.getWidth());
-        drawAPI.drawCenteredString(ModColor.cl("a")+ModColor.cl("l")+"Værdi indstillinger", (double)(this.getWidth() / 2), 10.0D, 2.0D);
+        drawAPI.drawCenteredString(ModColor.cl("a")+ModColor.cl("l")+"Transporter Menu", (double)(this.getWidth() / 2), 20.0D, 2.0D);
 
         scrollableGrid.renderHoverText();
     }
@@ -68,17 +66,12 @@ public class PriceMenu extends WrappedGuiScreen {
     @Override
     public void actionPerformed(WrappedGuiButton button) {
         if(button.getId() == 1) {
-            Laby.labyAPI().minecraft().minecraftWindow().displayScreen(lastScreen);
-        }
-        else if(button.getId() == 2) {
-            itemEntries.forEach(PriceMenuEntry::updateSellValueFromPriceServer);
+            PlayerAPI.getAPI().openGuiScreen(new TransporterMenu());
         }
     }
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, MouseButton mouseButton) {
-        if(mouseY > 41 && mouseY < getHeight() - 40)
-            itemEntries.forEach(priceMenuEntry -> priceMenuEntry.mouseClicked(mouseX, mouseY, mouseButton));
         this.scrollableGrid.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
@@ -107,11 +100,7 @@ public class PriceMenu extends WrappedGuiScreen {
 
     }
 
-    public void setInBackground(boolean inBackground) {
-        isInBackground = inBackground;
-    }
-
-    public boolean isInBackground() {
-        return isInBackground;
+    public void flagChanged() {
+        flagChanged = true;
     }
 }

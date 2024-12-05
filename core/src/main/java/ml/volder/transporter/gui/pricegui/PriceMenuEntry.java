@@ -1,6 +1,7 @@
 package ml.volder.transporter.gui.pricegui;
 
 import ml.volder.transporter.classes.items.Item;
+import ml.volder.transporter.gui.elements.ScrollableGrid;
 import ml.volder.transporter.utils.FormatingUtils;
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
@@ -14,7 +15,7 @@ import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
 
 import java.util.Collections;
 
-public class PriceMenuEntry {
+public class PriceMenuEntry extends ScrollableGrid.Entry {
     private int width = 120;
     private int height = 37;
 
@@ -36,7 +37,7 @@ public class PriceMenuEntry {
         this.height = height;
     }
 
-    public void draw(int x, int y, int mouseX, int mouseY) {
+    public void render(int x, int y, int mouseX, int mouseY) {
         hoverText = null;
         hoverTextX = -1000;
         hoverTextY = -1000;
@@ -82,7 +83,7 @@ public class PriceMenuEntry {
     private int hoverTextX = -1000;
     private int hoverTextY = -1000;
 
-    public void drawHoverText() {
+    public void renderHoverText() {
         if(hoverText == null || hoverTextX == -1000 || hoverTextY == -1000)
             return;
         DrawAPI.getAPI().drawHoverText(Collections.singletonList(hoverText), hoverTextX, hoverTextY);

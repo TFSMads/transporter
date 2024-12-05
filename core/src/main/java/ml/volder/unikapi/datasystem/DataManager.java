@@ -2,6 +2,7 @@ package ml.volder.unikapi.datasystem;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.logger.Logger;
 import ml.volder.unikapi.utils.IOUtils;
@@ -93,6 +94,22 @@ public class DataManager<T> {
 
     public File getFile() {
         return this.file;
+    }
+
+    /**
+     * Get boolean from key if T is class Data
+     *
+     * @param key the boolean to get from file
+     *
+     * @return boolean at key (false if not present or T is not class Data)
+     */
+    public boolean getBoolean(String key) {
+        if(!(this.getSettings() instanceof Data))
+            return false;
+        JsonObject jsonObject = ((Data)this.getSettings()).getData();
+        if(!jsonObject.has(key))
+            return false;
+        return jsonObject.get(key).getAsBoolean();
     }
 
     private static Map<File, DataManager<Data>> dataManagerMap = new HashMap<>();

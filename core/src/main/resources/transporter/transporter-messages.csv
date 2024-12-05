@@ -12,5 +12,7 @@ get_success,^Du har taget (?<amount>[0-9.]+) (?<item>%item_regex%) \((?<total>[0
 failed_too_fast,^Du skriver kommandoer for hurtigt!$
 info_entry,^ (?<item>%item_regex%): (?<amount>[0-9.]+)$
 info_title,^Du har følgende i din transporter:$
-put_mine_entry,^ (?<item>%item_regex%): (?<amount>[0-9.]+)$
-put_mine_title,^Du har nu puttet følgende i din transporter:$
+put_mine_entry,^ (?<item>[0-9A-Za-z:_ ]+): (?<amount>[0-9.]+) \((?<total>[0-9.]+) i alt\)$
+autotransporter_on,^Slår auto-transporter til! \([mineall]+\)$
+autotransporter_off,^Slår auto-transporter fra!$
+put_all,Du har nu puttet følgende i din transporter:

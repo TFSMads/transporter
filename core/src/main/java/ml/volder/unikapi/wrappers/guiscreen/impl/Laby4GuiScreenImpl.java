@@ -13,6 +13,7 @@ import net.labymod.api.Laby;
 import net.labymod.api.client.gui.mouse.MutableMouse;
 import net.labymod.api.client.gui.screen.LabyScreen;
 import net.labymod.api.client.gui.screen.Parent;
+import net.labymod.api.client.gui.screen.ScreenContext;
 import net.labymod.api.client.gui.screen.ScreenInstance;
 import net.labymod.api.client.gui.screen.key.InputType;
 import net.labymod.api.client.gui.screen.key.Key;
@@ -90,7 +91,16 @@ public class Laby4GuiScreenImpl extends LabyScreen implements IGuiScreenImpl {
   }
 
   @Override
+  public void render(ScreenContext context) {
+    internalRender(context.stack(), context.mouse(), context.getTickDelta());
+  }
+
+  @Override
   public void render(Stack stack, MutableMouse mouse, float partialTicks) {
+    //internalRender(stack, mouse, partialTicks);
+  }
+
+  private void internalRender(Stack stack, MutableMouse mouse, float partialTicks) {
     Stack currentStack = Laby4DrawAPI.CURRENT_RENDER_STACK;
     Laby4DrawAPI.CURRENT_RENDER_STACK = stack;
     screen.drawScreen(mouse.getX(), mouse.getY(), partialTicks);
@@ -102,17 +112,17 @@ public class Laby4GuiScreenImpl extends LabyScreen implements IGuiScreenImpl {
   }
 
   @Override
-  public boolean renderBackground(Stack stack, int mouseX, int mouseY, float tickDelta) {
+  public boolean renderBackground(ScreenContext context) {
     return true;
   }
 
   @Override
-  public void renderOverlay(Stack stack, MutableMouse mouse, float partialTicks) {
+  public void renderOverlay(ScreenContext context) {
 
   }
 
   @Override
-  public void renderHoverComponent(Stack stack, MutableMouse mouse, float partialTicks) {
+  public void renderHoverComponent(ScreenContext context) {
 
   }
 

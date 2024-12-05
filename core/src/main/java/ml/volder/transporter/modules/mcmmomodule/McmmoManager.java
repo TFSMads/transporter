@@ -22,8 +22,8 @@ public class McmmoManager {
     }
 
     public void init() {
-        mcmmoSkills.add(new AbilitySkill("Excavation", "**GIGA DRILL BREAKER ACTIVATED**", dataManager).setIcon(Material.DIAMOND_SHOVEL));
-        mcmmoSkills.add(new AbilitySkill("Woodcutting", "**TREE FELLER ACTIVATED**",dataManager).setIcon(Material.DIAMOND_AXE));
+        mcmmoSkills.add(new AbilitySkill("Excavation", "§a**GIGA DRILL BREAKER ACTIVATED**", dataManager).setIcon(Material.DIAMOND_SHOVEL));
+        mcmmoSkills.add(new AbilitySkill("Woodcutting", "§a**TREE FELLER ACTIVATED**",dataManager).setIcon(Material.DIAMOND_AXE));
         mcmmoSkills.add(new SimpleSkill("Repair", dataManager).setIcon(Material.ANVIL));
         mcmmoSkills.add(new SimpleSkill("Acrobatics", dataManager).setIcon(Material.LEATHER_BOOTS));
         mcmmoSkills.add(new SimpleSkill("Alchemy", dataManager).setIcon(Material.BREWING_STAND));
@@ -31,7 +31,7 @@ public class McmmoManager {
         mcmmoSkills.add(new SimpleSkill("Axes", dataManager).setIcon(Material.DIAMOND_AXE));
         mcmmoSkills.add(new SimpleSkill("Fishing", dataManager).setIcon(Material.FISHING_ROD));
         mcmmoSkills.add(new SimpleSkill("Herbalism", dataManager).setIcon(Material.SPIDER_EYE));
-        mcmmoSkills.add(new AbilitySkill("Mining", "**SUPER BREAKER ACTIVATED**",dataManager).setIcon(Material.DIAMOND_PICKAXE));
+        mcmmoSkills.add(new AbilitySkill("Mining", "§a**SUPER BREAKER ACTIVATED**",dataManager).setIcon(Material.DIAMOND_PICKAXE));
         mcmmoSkills.add(new SimpleSkill("Swords", dataManager).setIcon(Material.DIAMOND_SWORD));
         mcmmoSkills.add(new SimpleSkill("Taming", dataManager).setIcon(Material.SADDLE));
         mcmmoSkills.add(new SimpleSkill("Unarmed", dataManager).setIcon(Material.STICK));
@@ -45,9 +45,9 @@ public class McmmoManager {
         return null;
     }
 
-    public void onMessageReceive(ClientMessageEvent event) {
-        final Pattern pattern = Pattern.compile("([a-zA-Z]+) skill increased by 1\\. Total \\(([^)]*)\\)");
-        final Matcher matcher = pattern.matcher(event.getCleanMessage());
+    public void onMessageReceive(String clean) {
+        final Pattern pattern = Pattern.compile("§l([a-zA-Z]+) increased to §r§a§l([^)]*)§r§f");
+        final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
             String numString = matcher.group(2).replace(",", "");
             int num = Integer.parseInt(numString);
@@ -57,7 +57,7 @@ public class McmmoManager {
         }
 
         for (McmmoSkill mcmmoSkill : mcmmoSkills)
-            mcmmoSkill.onChatMessageReceive(event);
+            mcmmoSkill.onChatMessageReceive(clean);
     }
 
     public void registerModules() {

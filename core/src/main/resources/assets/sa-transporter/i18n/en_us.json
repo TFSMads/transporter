@@ -56,7 +56,8 @@
         "updateMessages.name": "Opdatere beskeder automatisk",
         "openMessagesEditor.name": "Åben beskeder editor",
         "updateBalanceMessages.name": "Opdatere balance beskeder automatisk",
-        "openBalanceMessagesEditor.name": "Åben balance beskeder editor"
+        "openBalanceMessagesEditor.name": "Åben balance beskeder editor",
+        "useTransporterPackets.name": "Brug Transporter Packets"
       },
       "autoGetModule": {
         "name": "§fTransporter Addon §7- §fAuto Get",
@@ -92,6 +93,9 @@
         "putFailed.name": "Besked - Put Failed",
         "sendSuccess.name": "Besked - Send Success",
         "modtagSuccess.name": "Besked - Modtag",
+        "putAllMessage.name": "Besked - Put All",
+        "autoTransporterOn.name": "Besked - Auto Transporter On",
+        "autoTransporterOff.name": "Besked - Auto Transporter Off",
         "sendOffline.name": "Besked - Send Offline",
         "sendSelf.name": "Besked - Send Dig Selv",
         "commandDelay.name": "Besked - Vent"

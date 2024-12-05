@@ -2,9 +2,11 @@ package ml.volder.transporter;
 
 import ml.volder.transporter.classes.exceptions.LoadingFailedException;
 import ml.volder.transporter.classes.items.ItemManager;
+import ml.volder.transporter.dev.command.DevCommand;
 import ml.volder.transporter.gui.TransporterModulesMenu;
 import ml.volder.transporter.listeners.KeyboardListener;
 import ml.volder.transporter.listeners.MainMenuOpenListener;
+import ml.volder.transporter.messaging.PluginMessageHandler;
 import ml.volder.transporter.modules.ModuleManager;
 import ml.volder.transporter.updater.UpdateManager;
 import ml.volder.unikapi.AddonMain;
@@ -14,6 +16,7 @@ import ml.volder.unikapi.datasystem.Data;
 import ml.volder.unikapi.datasystem.DataManager;
 import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.keysystem.Key;
+import ml.volder.unikapi.loader.Laby4Loader;
 import ml.volder.unikapi.logger.Logger;
 import ml.volder.unikapi.utils.LoadTimer;
 import net.labymod.api.Laby;
@@ -86,6 +89,9 @@ public class TransporterAddon extends AddonMain {
             transporterItemManager = new ItemManager();
             transporterItemManager.loadItems();
 
+            //Payload Handler
+            PluginMessageHandler.getInstance().init();
+
             //Modules
             ModuleManager.getInstance().registerModules();
             ModuleManager.getInstance().initModules();
@@ -94,6 +100,9 @@ public class TransporterAddon extends AddonMain {
             //Events
             EventManager.registerEvents(new KeyboardListener());
             EventManager.registerEvents(new MainMenuOpenListener());
+
+            //Developer tools
+            //Laby4Loader.registerCommands(new DevCommand());
         }catch (Exception e) {
             UnikAPI.getCommonDataFolder().delete();
             UnikAPI.LOGGER.printStackTrace(Logger.LOG_LEVEL.SEVERE, e);

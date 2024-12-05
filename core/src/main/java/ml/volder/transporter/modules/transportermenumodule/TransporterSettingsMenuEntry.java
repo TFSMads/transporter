@@ -1,6 +1,7 @@
 package ml.volder.transporter.modules.transportermenumodule;
 
 import ml.volder.transporter.classes.items.Item;
+import ml.volder.transporter.gui.elements.ScrollableGrid;
 import ml.volder.transporter.modules.ModuleManager;
 import ml.volder.transporter.modules.TransporterMenuModule;
 import ml.volder.unikapi.api.draw.DrawAPI;
@@ -9,7 +10,7 @@ import ml.volder.unikapi.types.ModColor;
 
 import java.util.Collections;
 
-public class TransporterSettingsMenuEntry {
+public class TransporterSettingsMenuEntry extends ScrollableGrid.Entry {
     private int width = 120;
     private int height = 37;
 
@@ -27,7 +28,7 @@ public class TransporterSettingsMenuEntry {
         this.isActive = ModuleManager.getInstance().getModule(TransporterMenuModule.class).isActiveItem(item);
     }
 
-    public void draw(int x, int y, int mouseX, int mouseY) {
+    public void render(int x, int y, int mouseX, int mouseY) {
         hoverText = null;
         hoverTextX = -1000;
         hoverTextY = -1000;
@@ -61,7 +62,7 @@ public class TransporterSettingsMenuEntry {
     private int hoverTextX = -1000;
     private int hoverTextY = -1000;
 
-    public void drawHoverText() {
+    public void renderHoverText() {
         if(hoverText == null || hoverTextX == -1000 || hoverTextY == -1000)
             return;
         DrawAPI.getAPI().drawHoverText(Collections.singletonList(hoverText), hoverTextX, hoverTextY);
