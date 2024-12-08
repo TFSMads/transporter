@@ -32,7 +32,7 @@ public class Laby4InventoryAPI implements InventoryAPI {
           || !itemStack.getAsItem().getIdentifier().equals(ResourceLocation.create(material.getNamespace(), material.getPath(MinecraftAPI.getAPI()
           .isLegacy(), false)))
           || (MinecraftAPI.getAPI().isLegacy() && itemStack.getCurrentDamageValue() != itemDamage)
-          || itemStack.hasDataComponentContainer()
+          || !itemStack.getDisplayName().toString().startsWith("translation")
       )
         continue;
       amount += itemStack.getSize();

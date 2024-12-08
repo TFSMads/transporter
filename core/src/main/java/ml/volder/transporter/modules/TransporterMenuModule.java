@@ -98,12 +98,17 @@ public class TransporterMenuModule extends SimpleModule implements Listener {
 
             for(Item item : TransporterAddon.getInstance().getTransporterItemManager().getItemList()){
                 if(getDataManager().getSettings().getData().has(item.getModernType())){
-                    if(getDataManager().getSettings().getData().get(item.getModernType()).getAsBoolean()){
-                        getDataManager().getSettings().getData().addProperty(item.getModernType(), slot);
-                        slot++;
-                    } else if (!(getDataManager().getSettings().getData().get(item.getModernType()).getAsInt() >= 0)) {
+                    try {
+                        if(getDataManager().getSettings().getData().get(item.getModernType()).getAsBoolean()){
+                            getDataManager().getSettings().getData().addProperty(item.getModernType(), slot);
+                            slot++;
+                        } else if (!(getDataManager().getSettings().getData().get(item.getModernType()).getAsInt() >= 0)) {
+                            getDataManager().getSettings().getData().remove(item.getModernType());
+                        }
+                    } catch (Exception ignored) {
                         getDataManager().getSettings().getData().remove(item.getModernType());
                     }
+
                 }
             }
             getDataManager().getSettings().getData().addProperty("configVersion", 1);

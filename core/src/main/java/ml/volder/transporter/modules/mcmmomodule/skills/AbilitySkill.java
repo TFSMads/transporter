@@ -32,7 +32,7 @@ public class AbilitySkill extends SimpleSkill {
     @Override
     public void onChatMessageReceive(String clean) {
         if(clean.equals(activatedMessage)) {
-            powerUpDuration = (Math.floor((double) level / 50)) + 2;
+            powerUpDuration = (Math.floor((double) level / 50)) + 42;
             activatePowerUp();
         }
     }

@@ -70,7 +70,9 @@
         "onlyActiveInLobby.name": "Kun aktiv i lobbyer!",
         "autoTransporterDelay.name": "Delay (Ticks)",
         "autoTransporterKeybind.name": "Keybind",
-        "useTransporterPutMine.name": "Brug '/transporter put all'"
+        "useTransporterPutMine.name": "Brug '/transporter put all'",
+        "useAutoTransporterCommand.name": "Brug '/autotransporter'",
+        "header.header.name": "Settings for Auto Transporter (Kun hvis /autotransporter er slået fra)"
       },
       "balanceTrackerModule": {
         "name": "§fTransporter Addon §7- §fBalance",
