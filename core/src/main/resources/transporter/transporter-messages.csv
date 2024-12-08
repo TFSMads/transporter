@@ -15,4 +15,4 @@ info_title,^Du har følgende i din transporter:$
 put_mine_entry,^ (?<item>[0-9A-Za-z:_ ]+): (?<amount>[0-9.]+) \((?<total>[0-9.]+) i alt\)$
 autotransporter_on,^Slår auto-transporter til! \([mineall]+\)$
 autotransporter_off,^Slår auto-transporter fra!$
-put_all,Du har nu puttet følgende i din transporter:
+put_all,^Du har nu puttet følgende i din transporter:$
