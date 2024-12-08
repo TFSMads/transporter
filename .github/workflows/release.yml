@@ -40,15 +40,13 @@ jobs:
             Klik under for at hente dette release
           draft: true
           prerelease: false
-      - name: Copy Artifact 
-        run: mv build/libs/TransporterAddon-release.jar release/transporter-laby4.jar
       - name: Upload Transporter Build To Release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: release/transporter-laby4.jar
+          asset_path: build/libs/TransporterAddon-release.jar
           asset_name: transporter-laby4.jar
           asset_content_type: application/jar
       - name:  Upload updateInfo.json To Release
