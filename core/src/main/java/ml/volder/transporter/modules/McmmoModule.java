@@ -5,16 +5,16 @@ import ml.volder.transporter.modules.mcmmomodule.McmmoManager;
 import ml.volder.transporter.settings.accesors.SettingRegistryAccessor;
 import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.api.minecraft.MinecraftAPI;
-import ml.volder.unikapi.event.EventHandler;
 import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
-import ml.volder.unikapi.event.events.clientmessageevent.ClientMessageEvent;
-import ml.volder.unikapi.event.events.sendmessageevent.SendMessageEvent;
 import ml.volder.unikapi.logger.Logger;
 import net.labymod.api.Laby;
 import net.labymod.api.event.Phase;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ActionBarReceiveEvent;
+import net.labymod.api.event.client.chat.ChatMessageSendEvent;
+import net.labymod.api.event.client.chat.ChatReceiveEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Timer;
@@ -37,7 +37,6 @@ public class McmmoModule extends SimpleModule implements Listener {
     @Override
     public SimpleModule enable() {
         mcmmoManager.registerModules();
-        EventManager.registerEvents(this);
         Laby.labyAPI().eventBus().registerListener(this);
         return this;
     }
@@ -47,11 +46,11 @@ public class McmmoModule extends SimpleModule implements Listener {
 
     }
 
-    @EventHandler
-    public void onChatMessage(ClientMessageEvent event) {
+    @Subscribe
+    public void onChatMessage(ChatReceiveEvent event) {
         if(!TransporterAddon.isEnabled() || !this.isFeatureActive)
             return;
-        mcmmoManager.onMessageReceive(event.getCleanMessage());
+        mcmmoManager.onMessageReceive(event.chatMessage().getPlainText());
     }
 
     @Subscribe
@@ -64,8 +63,8 @@ public class McmmoModule extends SimpleModule implements Listener {
         mcmmoManager.onMessageReceive(message);
     }
 
-    @EventHandler
-    public void onSendMessage(SendMessageEvent event) {
+    @Subscribe
+    public void onMessage(@NotNull ChatMessageSendEvent event){
         if(!TransporterAddon.isEnabled() || !this.isFeatureActive)
             return;
         if(!event.getMessage().equals("/mcstats"))
@@ -81,8 +80,6 @@ public class McmmoModule extends SimpleModule implements Listener {
                 }
             }
         }, 1000L);
-
-
     }
 
     public boolean isFeatureActive() {

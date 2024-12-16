@@ -11,20 +11,23 @@ import ml.volder.transporter.settings.classes.TransporterWidgetFactory;
 import ml.volder.unikapi.api.input.InputAPI;
 import ml.volder.unikapi.api.inventory.InventoryAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
-import ml.volder.unikapi.event.EventHandler;
 import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
-import ml.volder.unikapi.event.events.clientkeypressevent.ClientKeyPressEvent;
-import ml.volder.unikapi.event.events.clienttickevent.ClientTickEvent;
 import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.guisystem.elements.*;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.impl.Laby4KeyMapper;
 import ml.volder.unikapi.types.Material;
+import net.labymod.api.Laby;
 import net.labymod.api.client.gui.icon.Icon;
 import net.labymod.api.client.gui.screen.widget.widgets.input.KeybindWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SliderWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget;
+import net.labymod.api.event.Phase;
+import net.labymod.api.event.Subscribe;
+import net.labymod.api.event.client.input.KeyEvent;
+import net.labymod.api.event.client.lifecycle.GameTickEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class AutoGetModule extends SimpleModule implements Listener {
 
@@ -71,7 +74,7 @@ public class AutoGetModule extends SimpleModule implements Listener {
         selectItemElement.getSubSettings().add(new HeaderElement(""));
         selectItemElement.setOpenSubSettings(false);
         AutoGetMenu.addSetting(selectItemElement);
-        EventManager.registerEvents(this);
+        Laby.labyAPI().eventBus().registerListener(this);
         return this;
     }
 
@@ -82,8 +85,10 @@ public class AutoGetModule extends SimpleModule implements Listener {
         selectedItem = addon.getTransporterItemManager().getItemByType(getDataManager().getSettings().getData().has("selectedItem") ? getDataManager().getSettings().getData().get("selectedItem").getAsString() : "dirt");
     }
 
-    @EventHandler
-    public void onTick(ClientTickEvent tickEvent) {
+    @Subscribe
+    public void onTick(@NotNull GameTickEvent event){
+        if(event.phase() == Phase.POST)
+            return;
         if(!TransporterAddon.isEnabled() || !this.isEnabled || !this.isFeatureActive)
             return;
         if(onlyActiveInLobby && !TransporterAddon.getInstance().getServerList().contains(ModuleManager.getInstance().getModule(ServerModule.class).getCurrentServer()))
@@ -99,8 +104,8 @@ public class AutoGetModule extends SimpleModule implements Listener {
         }
     }
 
-    @EventHandler
-    public void onKeyInput(ClientKeyPressEvent event) {
+    @Subscribe
+    public void onKeyPress(KeyEvent event){
         if(!TransporterAddon.isEnabled() || !this.isFeatureActive)
             return;
         if(openKey == null || openKey.equals(Key.NONE))

@@ -11,14 +11,8 @@ import ml.volder.unikapi.api.minecraft.impl.Laby4MinecraftAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.api.player.impl.Laby4PlayerAPI;
 import ml.volder.unikapi.event.EventImpl;
-import ml.volder.unikapi.event.events.clientkeypressevent.impl.Laby4KeyPressEvent;
-import ml.volder.unikapi.event.events.clientmessageevent.impl.Laby4MessageEvent;
-import ml.volder.unikapi.event.events.clienttickevent.impl.Laby4TickEvent;
-import ml.volder.unikapi.event.events.drawscreenevent.impl.Laby4DrawScreenEvent;
 import ml.volder.unikapi.event.events.mainmenuopenevent.impl.Laby4MainMenuOpenEvent;
 import ml.volder.unikapi.event.events.opensignevent.impl.Laby4OpenSignEvent;
-import ml.volder.unikapi.event.events.sendmessageevent.impl.Laby4SendMessageEvent;
-import ml.volder.unikapi.event.events.serverswitchevent.Laby4ServerSwitchEvent;
 import ml.volder.unikapi.keysystem.KeyMapper;
 import ml.volder.unikapi.keysystem.impl.Laby4KeyMapper;
 import ml.volder.unikapi.wrappers.guibutton.IGuiButtonImpl;
@@ -62,26 +56,6 @@ public class ApiReferenceStorageLaby4 implements ApiReferenceStorage{
     }
 
     @Override
-    public Class<? extends EventImpl> getVersionedClientKeyPressEvent() {
-        return Laby4KeyPressEvent.class;
-    }
-
-    @Override
-    public Class<? extends EventImpl> getVersionedClientMessageEvent() {
-        return Laby4MessageEvent.class;
-    }
-
-    @Override
-    public Class<? extends EventImpl> getVersionedClientTickEvent() {
-        return Laby4TickEvent.class;
-    }
-
-    @Override
-    public Class<? extends EventImpl> getVersionedDrawScreenEvent() {
-        return Laby4DrawScreenEvent.class;
-    }
-
-    @Override
     public Class<? extends EventImpl> getVersionedOpenSignEvent() {
         return Laby4OpenSignEvent.class;
     }
@@ -89,16 +63,6 @@ public class ApiReferenceStorageLaby4 implements ApiReferenceStorage{
   @Override
   public Class<? extends EventImpl> getVersionedMainMenuOpenEvent() {
     return Laby4MainMenuOpenEvent.class;
-  }
-
-  @Override
-  public Class<? extends EventImpl> getVersionedSendMessageEvent() {
-    return Laby4SendMessageEvent.class;
-  }
-
-  @Override
-  public Class<? extends EventImpl> getVersionedServerSwitchEvent() {
-    return Laby4ServerSwitchEvent.class;
   }
 
   @Override

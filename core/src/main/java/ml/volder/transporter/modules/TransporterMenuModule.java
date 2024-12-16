@@ -9,18 +9,18 @@ import ml.volder.transporter.settings.classes.TransporterSettingElementFactory;
 import ml.volder.transporter.settings.classes.TransporterWidgetFactory;
 import ml.volder.unikapi.api.input.InputAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
-import ml.volder.unikapi.event.EventHandler;
 import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
-import ml.volder.unikapi.event.events.clientkeypressevent.ClientKeyPressEvent;
 import ml.volder.unikapi.guisystem.ModTextures;
-import ml.volder.unikapi.guisystem.elements.Settings;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.impl.Laby4KeyMapper;
+import net.labymod.api.Laby;
 import net.labymod.api.client.gui.icon.Icon;
 import net.labymod.api.client.gui.screen.widget.widgets.input.KeybindWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SliderWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget;
+import net.labymod.api.event.Subscribe;
+import net.labymod.api.event.client.input.KeyEvent;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -44,7 +44,7 @@ public class TransporterMenuModule extends SimpleModule implements Listener {
 
     @Override
     public SimpleModule enable() {
-        EventManager.registerEvents(this);
+        Laby.labyAPI().eventBus().registerListener(this);
         return this;
     }
 
@@ -138,8 +138,8 @@ public class TransporterMenuModule extends SimpleModule implements Listener {
   }
 
 
-    @EventHandler
-    public void onKeyInput(ClientKeyPressEvent event) {
+    @Subscribe
+    public void onKeyPress(KeyEvent event){
         if(!TransporterAddon.isEnabled() || !this.isFeatureActive)
             return;
         if(onlyActiveInLobby && !TransporterAddon.getInstance().getServerList().contains(ModuleManager.getInstance().getModule(ServerModule.class).getCurrentServer()))

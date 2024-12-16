@@ -1,7 +1,5 @@
 package ml.volder.transporter.modules.mcmmomodule;
 
-import ml.volder.unikapi.event.events.clientmessageevent.ClientMessageEvent;
-
 public interface McmmoSkill {
     void updateLevel(int level);
     int getLevel();

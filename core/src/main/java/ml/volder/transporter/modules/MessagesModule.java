@@ -8,17 +8,18 @@ import ml.volder.transporter.settings.classes.TransporterSettingElementFactory;
 import ml.volder.transporter.settings.classes.TransporterWidgetFactory;
 import ml.volder.transporter.utils.FormatingUtils;
 import ml.volder.unikapi.UnikAPI;
-import ml.volder.unikapi.event.EventHandler;
 import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
-import ml.volder.unikapi.event.events.clientmessageevent.ClientMessageEvent;
 import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.logger.Logger;
+import net.labymod.api.Laby;
 import net.labymod.api.client.gui.icon.Icon;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.input.TextFieldWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.input.dropdown.DropdownWidget;
 import net.labymod.api.configuration.settings.type.SettingElement;
+import net.labymod.api.event.Subscribe;
+import net.labymod.api.event.client.chat.ChatReceiveEvent;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -117,7 +118,7 @@ public class MessagesModule extends SimpleModule implements Listener {
 
     @Override
     public SimpleModule enable() {
-        EventManager.registerEvents(this);
+        Laby.labyAPI().eventBus().registerListener(this);
         return this;
     }
 
@@ -239,15 +240,15 @@ public class MessagesModule extends SimpleModule implements Listener {
                 .build();
     }
 
-    @EventHandler
-    public void onChatMessage(ClientMessageEvent event) {
+    @Subscribe
+    public void onChatMessage(ChatReceiveEvent event) {
         if(!TransporterAddon.isEnabled() || !this.isFeatureActive)
             return;
         if(onlyActiveInLobby && !TransporterAddon.getInstance().getServerList().contains(ModuleManager.getInstance().getModule(ServerModule.class).getCurrentServer()))
             return;
         AtomicBoolean isCancelled = new AtomicBoolean(false);
         messageHandlers.forEach(iMessageHandler -> {
-            boolean result = iMessageHandler.messageReceived(event.getMessage(), event.getCleanMessage());
+            boolean result = iMessageHandler.messageReceived(event.chatMessage().getFormattedText(), event.chatMessage().getPlainText());
             isCancelled.set(result || isCancelled.get());
         });
         if(isCancelled.get())
