@@ -4,14 +4,14 @@ import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.gui.TransporterModulesMenu;
 import ml.volder.unikapi.api.input.InputAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
-import ml.volder.unikapi.event.EventHandler;
 import ml.volder.unikapi.event.Listener;
-import ml.volder.unikapi.event.events.clientkeypressevent.ClientKeyPressEvent;
 import ml.volder.unikapi.keysystem.Key;
+import net.labymod.api.event.Subscribe;
+import net.labymod.api.event.client.input.KeyEvent;
 
 public class KeyboardListener implements Listener {
-    @EventHandler
-    public void onKeyInput(ClientKeyPressEvent event) {
+    @Subscribe
+    public void onKeyPress(KeyEvent event){
         if(!TransporterAddon.isEnabled())
             return;
         if(TransporterAddon.getInstance().getSettingsKeybind() == null || TransporterAddon.getInstance().getSettingsKeybind().equals(Key.NONE))

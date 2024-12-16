@@ -15,22 +15,23 @@ import ml.volder.unikapi.datasystem.DataManager;
 import ml.volder.unikapi.event.EventHandler;
 import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
-import ml.volder.unikapi.event.events.clientmessageevent.ClientMessageEvent;
-import ml.volder.unikapi.event.events.clienttickevent.ClientTickEvent;
-import ml.volder.unikapi.event.events.serverswitchevent.ServerSwitchEvent;
 import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.logger.Logger;
+import net.labymod.api.Laby;
 import net.labymod.api.client.gui.icon.Icon;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SliderWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget;
+import net.labymod.api.event.Phase;
+import net.labymod.api.event.Subscribe;
+import net.labymod.api.event.client.chat.ChatReceiveEvent;
+import net.labymod.api.event.client.lifecycle.GameTickEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,6 +53,7 @@ public class BalanceModule extends SimpleModule implements Listener {
     @Override
     public SimpleModule enable() {
         EventManager.registerEvents(this);
+        Laby.labyAPI().eventBus().registerListener(this);
         return this;
     }
 
@@ -159,13 +161,13 @@ public class BalanceModule extends SimpleModule implements Listener {
 
     private BigDecimal balance = BigDecimal.valueOf(0);
 
-    @EventHandler
-    public void onMessage(ClientMessageEvent event) {
+    @Subscribe
+    public void onMessage(ChatReceiveEvent event) {
         if (!isFeatureActive() || !TransporterAddon.isEnabled())
             return;
-        if(matchBalCommandMessage(event.getCleanMessage()))
+        if(matchBalCommandMessage(event.chatMessage().getPlainText()))
             event.setCancelled(true);
-        matchMessage(event.getCleanMessage());
+        matchMessage(event.chatMessage().getPlainText());
     }
 
     private void matchMessage(String clean) {
@@ -228,8 +230,10 @@ public class BalanceModule extends SimpleModule implements Listener {
     }
 
     private int timer = 0;
-    @EventHandler
-    public void onTick(ClientTickEvent event) {
+    @Subscribe
+    public void onTick(@NotNull GameTickEvent event){
+        if(event.phase() == Phase.POST)
+            return;
         if (!isFeatureActive() || !updateInterval)
             return;
         timer+=1;

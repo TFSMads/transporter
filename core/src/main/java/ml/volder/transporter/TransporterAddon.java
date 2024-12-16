@@ -98,7 +98,6 @@ public class TransporterAddon extends AddonMain {
             ModuleManager.getInstance().enableModules();
 
             //Events
-            EventManager.registerEvents(new KeyboardListener());
             EventManager.registerEvents(new MainMenuOpenListener());
 
             //Developer tools

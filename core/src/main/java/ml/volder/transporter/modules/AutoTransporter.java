@@ -9,13 +9,8 @@ import ml.volder.transporter.settings.classes.TransporterWidgetFactory;
 import ml.volder.unikapi.api.input.InputAPI;
 import ml.volder.unikapi.api.inventory.InventoryAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
-import ml.volder.unikapi.event.EventHandler;
 import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
-import ml.volder.unikapi.event.events.clientkeypressevent.ClientKeyPressEvent;
-import ml.volder.unikapi.event.events.clientmessageevent.ClientMessageEvent;
-import ml.volder.unikapi.event.events.clienttickevent.ClientTickEvent;
-import ml.volder.unikapi.event.events.serverswitchevent.ServerSwitchEvent;
 import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.impl.Laby4KeyMapper;
@@ -25,6 +20,15 @@ import net.labymod.api.client.gui.screen.widget.widgets.input.KeybindWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SliderWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget;
 import net.labymod.api.configuration.settings.type.SettingHeader;
+import net.labymod.api.event.Phase;
+import net.labymod.api.event.Subscribe;
+import net.labymod.api.event.client.chat.ChatReceiveEvent;
+import net.labymod.api.event.client.input.KeyEvent;
+import net.labymod.api.event.client.lifecycle.GameTickEvent;
+import net.labymod.api.event.client.network.server.ServerDisconnectEvent;
+import net.labymod.api.event.client.network.server.ServerJoinEvent;
+import net.labymod.api.event.client.network.server.SubServerSwitchEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,7 +58,7 @@ public class AutoTransporter extends SimpleModule implements Listener {
 
     @Override
     public SimpleModule enable() {
-        EventManager.registerEvents(this);
+        Laby.labyAPI().eventBus().registerListener(this);
         return this;
     }
 
@@ -111,8 +115,10 @@ public class AutoTransporter extends SimpleModule implements Listener {
         //hasTransporterData = hasConfigEntry("hasTransporterData") ? getConfigEntry("hasTransporterData", Boolean.class) : false;
     }
 
-    @EventHandler
-    public void onTick(ClientTickEvent tickEvent) {
+    @Subscribe
+    public void onTick(@NotNull GameTickEvent event){
+        if(event.phase() == Phase.POST)
+            return;
        if(!TransporterAddon.isEnabled() || !this.isEnabled || !this.isFeatureActive)
             return;
         if(!TransporterAddon.getInstance().getServerList().contains(ModuleManager.getInstance().getModule(ServerModule.class).getCurrentServer()))
@@ -164,8 +170,8 @@ public class AutoTransporter extends SimpleModule implements Listener {
         timer = 0;
     }
 
-    @EventHandler
-    public void onKeyInput(ClientKeyPressEvent event) {
+    @Subscribe
+    public void onKeyPress(KeyEvent event){
         if(!TransporterAddon.isEnabled() || !this.isFeatureActive)
             return;
         if(!TransporterAddon.getInstance().getServerList().contains(ModuleManager.getInstance().getModule(ServerModule.class).getCurrentServer()))
@@ -176,18 +182,32 @@ public class AutoTransporter extends SimpleModule implements Listener {
             this.toggle();
     }
 
-    @EventHandler
-    public void onMessage(ClientMessageEvent event) {
-        if(event.getCleanMessage().equals("Slår auto-transporter til! (all)") || event.getCleanMessage().equals("Slår auto-transporter til! (mine)")) {
+    @Subscribe
+    public void onMessage(ChatReceiveEvent event){
+        if(event.chatMessage().getPlainText().equals("Slår auto-transporter til! (all)") || event.chatMessage().getPlainText().equals("Slår auto-transporter til! (mine)")) {
             isEnabled = true;
-        } else if (event.getCleanMessage().equals("Slår auto-transporter fra!")) {
+        } else if (event.chatMessage().getPlainText().equals("Slår auto-transporter fra!")) {
             isEnabled = false;
         }
     }
 
-    @EventHandler
-    public void onServerSwitch(ServerSwitchEvent event) {
+    public void onServerSwitch() {
         isEnabled = false;
+    }
+
+    @Subscribe
+    public void onSubServerSwitch(@NotNull SubServerSwitchEvent event){
+        onServerSwitch();
+    }
+
+    @Subscribe
+    public void onDisconnect(@NotNull ServerDisconnectEvent event){
+        onServerSwitch();
+    }
+
+    @Subscribe
+    public void onJoin(@NotNull ServerJoinEvent event){
+        onServerSwitch();
     }
 
     public void toggle(){

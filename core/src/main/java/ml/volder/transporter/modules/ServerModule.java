@@ -2,13 +2,17 @@ package ml.volder.transporter.modules;
 
 import ml.volder.transporter.settings.accesors.SettingRegistryAccessor;
 import ml.volder.unikapi.api.player.PlayerAPI;
-import ml.volder.unikapi.event.EventHandler;
 import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
-import ml.volder.unikapi.event.events.clientmessageevent.ClientMessageEvent;
-import ml.volder.unikapi.event.events.serverswitchevent.ServerSwitchEvent;
 import ml.volder.unikapi.types.Material;
 import ml.volder.unikapi.widgets.ModuleSystem;
+import net.labymod.api.Laby;
+import net.labymod.api.event.Subscribe;
+import net.labymod.api.event.client.chat.ChatReceiveEvent;
+import net.labymod.api.event.client.network.server.ServerDisconnectEvent;
+import net.labymod.api.event.client.network.server.ServerJoinEvent;
+import net.labymod.api.event.client.network.server.SubServerSwitchEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -28,7 +32,7 @@ public class ServerModule extends SimpleModule implements Listener {
     @Override
     public SimpleModule enable() {
         registerModules();
-        EventManager.registerEvents(this);
+        Laby.labyAPI().eventBus().registerListener(this);
         return this;
     }
 
@@ -48,12 +52,12 @@ public class ServerModule extends SimpleModule implements Listener {
     private String currentServer;
     private boolean cancelNextServerCommand = false;
 
-    @EventHandler
-    public void onMessage(ClientMessageEvent event) {
+    @Subscribe
+    public void onMessage(ChatReceiveEvent event) {
         if (!isFeatureActive())
             return;
         final Pattern pattern = Pattern.compile("^Du er lige nu forbundet til ([A-Za-z]+), brug /server <navn> for at joine en anden server.$");
-        final Matcher matcher = pattern.matcher(event.getCleanMessage());
+        final Matcher matcher = pattern.matcher(event.chatMessage().getPlainText());
         if (matcher.find()) {
             currentServer = matcher.group(1);
             if (cancelNextServerCommand) {
@@ -64,14 +68,9 @@ public class ServerModule extends SimpleModule implements Listener {
 
     }
 
-    @EventHandler
-    public void onServerSwitch(ServerSwitchEvent event) {
+    public void onServerSwitch() {
         if (!isFeatureActive())
             return;
-        if(event.getSwitchType() == ServerSwitchEvent.SWITCH_TYPE.LEAVE){
-            currentServer = null;
-            return;
-        }
         currentServer = null;
         new Timer("updateServerStatus").schedule(new TimerTask() {
             @Override
@@ -80,6 +79,23 @@ public class ServerModule extends SimpleModule implements Listener {
                 PlayerAPI.getAPI().sendCommand("server");
             }
         }, 100L);
+    }
+
+    @Subscribe
+    public void onDisconnect(@NotNull ServerDisconnectEvent event){
+        if (!isFeatureActive())
+            return;
+        currentServer = null;
+    }
+
+    @Subscribe
+    public void onSubServerSwitch(@NotNull SubServerSwitchEvent event){
+        onServerSwitch();
+    }
+
+    @Subscribe
+    public void onJoin(@NotNull ServerJoinEvent event){
+        onServerSwitch();
     }
 
     private void registerModules() {
