@@ -34,6 +34,15 @@ public class ModuleSystem {
         return registerCategory(displayName, Material.PAPER, "");
     }
 
+    /***
+     * Register a module through the labymod api
+     * @param key the key of the module
+     * @param defaultPrefix the default prefix of the module
+     * @param defaultIsEnabled the default state of the module
+     * @param category the category of the module
+     * @param icon the icon of the module
+     * @param getDisplayValue the function that returns the display value of the module
+     */
     public static void registerModule(String key, String defaultPrefix, boolean defaultIsEnabled, Object category, Material icon, Function<String, String> getDisplayValue) {
         getModuleManager().registerModule(key, defaultPrefix, defaultIsEnabled, category, icon, getDisplayValue);
     }
