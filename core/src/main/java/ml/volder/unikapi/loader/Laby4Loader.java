@@ -5,8 +5,6 @@ import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.api.ApiReferenceStorageLaby4;
 import ml.volder.unikapi.event.events.mainmenuopenevent.impl.Laby4MainMenuOpenEvent;
 import ml.volder.unikapi.logger.Laby4Logger;
-import ml.volder.unikapi.widgets.Laby4ModuleManager;
-import ml.volder.unikapi.widgets.ModuleSystem;
 import net.labymod.api.Laby;
 import net.labymod.api.addon.LabyAddon;
 import net.labymod.api.client.chat.command.Command;
@@ -34,7 +32,6 @@ public class Laby4Loader extends LabyAddon<TransporterAddonConfig> {
     UnikAPI.LOGGER = new Laby4Logger("UnikAPI");
     UnikAPI.initAPI("labymod4", null, "*");
     UnikAPI.registerReferenceStorage(ApiReferenceStorageLaby4.getInstance());
-    ModuleSystem.setModuleManager(new Laby4ModuleManager());
     Loader.onEnable();
     Laby.labyAPI().eventBus().registerListener(this);
     Laby4MainMenuOpenEvent.checkMainMenu();
