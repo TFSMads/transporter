@@ -27,6 +27,9 @@ labyMod {
                     // When the property is set to true, you can log in with a Minecraft account
                     // devLogin = true
                 }
+
+                val file = file("./game-runner/src/$sourceSetName/resources/sa-transporter-$versionId.accesswidener");
+                accessWidener.set(file)
             }
         }
     }

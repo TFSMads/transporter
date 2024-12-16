@@ -3,7 +3,9 @@ package ml.volder.transporter.gui.pricegui;
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.classes.items.Item;
 import ml.volder.transporter.gui.elements.ScrollableGrid;
+import ml.volder.transporter.modules.transportermenumodule.TransporterSettingsMenuEntry;
 import ml.volder.unikapi.api.draw.DrawAPI;
+import ml.volder.unikapi.guisystem.elements.ModTextField;
 import ml.volder.unikapi.guisystem.elements.Scrollbar;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
@@ -24,6 +26,9 @@ public class PriceMenu extends WrappedGuiScreen {
     private int entryHeight = 37;
     private List<PriceMenuEntry> itemEntries = new ArrayList<>();
     private ScrollableGrid scrollableGrid = new ScrollableGrid(0, 0, 0, 0, entryWidth, entryHeight, 2, 2);
+
+    private ModTextField searchField;
+    private String searchText = "";
 
     public PriceMenu(ScreenWrapper lastScreen) {
         this.lastScreen = lastScreen;
@@ -47,10 +52,24 @@ public class PriceMenu extends WrappedGuiScreen {
         scrollableGrid.initGui();
         scrollableGrid.updateGridSize(getWidth(), getHeight() - 90, 0, 45);
         scrollableGrid.updateEntries(itemEntries);
+
+        this.searchField = new ModTextField(1000, getWidth()/2 - 100, this.getHeight() - 20 - 10, 200, 20);
+        searchField.setPlaceHolder("Søg efter item...");
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        if(searchField != null && !searchField.getText().toLowerCase().equals(searchText)) {
+            searchText = searchField.getText().toLowerCase();
+            itemEntries.clear();
+            for(Item item : TransporterAddon.getInstance().getTransporterItemManager().getItemList()) {
+                if(item.getDisplayName().toLowerCase().contains(searchText) || item.getModernType().toLowerCase().contains(searchText))
+                    itemEntries.add(new PriceMenuEntry(this, item, entryWidth, entryHeight));
+            }
+            this.scrollableGrid.resetScroll();
+            this.scrollableGrid.updateEntries(itemEntries);
+        }
+
         DrawAPI drawAPI = DrawAPI.getAPI();
         drawAPI.drawAutoDimmedBackground(0);
 
@@ -61,6 +80,9 @@ public class PriceMenu extends WrappedGuiScreen {
         drawAPI.drawOverlayBackground(this.getHeight() - 40, this.getHeight());
         drawAPI.drawGradientShadowBottom(this.getHeight() - 40, 0.0, this.getWidth());
         drawAPI.drawCenteredString(ModColor.cl("a")+ModColor.cl("l")+"Værdi indstillinger", (double)(this.getWidth() / 2), 10.0D, 2.0D);
+
+        if(searchField != null)
+            searchField.drawTextBox();
 
         scrollableGrid.renderHoverText();
     }
@@ -77,8 +99,8 @@ public class PriceMenu extends WrappedGuiScreen {
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, MouseButton mouseButton) {
-        if(mouseY > 41 && mouseY < getHeight() - 40)
-            itemEntries.forEach(priceMenuEntry -> priceMenuEntry.mouseClicked(mouseX, mouseY, mouseButton));
+        if(searchField != null)
+            this.searchField.mouseClicked(mouseX, mouseY, mouseButton);
         this.scrollableGrid.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
@@ -99,7 +121,8 @@ public class PriceMenu extends WrappedGuiScreen {
 
     @Override
     public void keyTyped(char typedChar, Key key) {
-
+        if(searchField != null)
+            searchField.textboxKeyTyped(typedChar, key);
     }
 
     @Override

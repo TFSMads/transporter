@@ -1,6 +1,7 @@
 package ml.volder.transporter.modules.autoget;
 
 import ml.volder.transporter.classes.items.Item;
+import ml.volder.transporter.gui.elements.ScrollableGrid;
 import ml.volder.transporter.modules.MessagesModule;
 import ml.volder.transporter.modules.ModuleManager;
 import ml.volder.transporter.utils.FormatingUtils;
@@ -10,7 +11,7 @@ import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
 
-public class SelectItemMenuEntry {
+public class SelectItemMenuEntry extends ScrollableGrid.Entry {
     private int width = 120;
     private int height = 37;
 
@@ -27,7 +28,7 @@ public class SelectItemMenuEntry {
         this.lastScreen = lastScreen;
     }
 
-    public void draw(int x, int y, int mouseX, int mouseY) {
+    public void render(int x, int y, int mouseX, int mouseY) {
         if(item == null)
             return;
         isMouseOver = mouseX > x && mouseX < x + width && mouseY > y && mouseY < y + height;
@@ -45,13 +46,18 @@ public class SelectItemMenuEntry {
         drawAPI.drawRect(x + width - outlineWidth, y, x + width, y + height, ModColor.toRGB(128,128, 128, 255));
 
         drawAPI.drawItem(item.getMaterial(), item.getItemDamage(), x + 2, y + 3, "", 2);
-        drawAPI.drawString(item.getDisplayName(), x + 32 + 4, y + 5, 0xFFFFFF);
+        drawAPI.drawString(item.getDisplayName().length() >= 15 ? item.getDisplayName().substring(0, 14) : item.getDisplayName(), x + 32 + 4, y + 5, 0xFFFFFF);
         if(ModuleManager.getInstance().getModule(MessagesModule.class).isFeatureActive())
             drawAPI.drawString("Du har " + getAmountString(), x + 32 + 4, y + 14, 0x808080, 0.8);
     }
 
     private String getAmountString() {
         return item.getAmountInTransporter() == null ? "0" : FormatingUtils.formatNumber(item.getAmountInTransporter());
+    }
+
+    @Override
+    public void renderHoverText() {
+
     }
 
     public void mouseClicked(int mouseX, int mouseY, MouseButton mouseButton) {
