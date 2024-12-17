@@ -1,20 +1,12 @@
-package ml.volder.unikapi.version.v1_19_3.laby4;
+package ml.volder.v1_20_5;
+
+import ml.volder.unikapi.event.events.opensignevent.impl.Laby4EventOpenSign;
+import ml.volder.unikapi.wrappers.tileentitysign.WrappedTileEntitySign;
+import net.labymod.api.models.Implements;
+import net.minecraft.client.gui.screens.inventory.SignEditScreen;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import ml.volder.unikapi.event.EventManager;
-import ml.volder.unikapi.event.EventType;
-import ml.volder.unikapi.event.events.opensignevent.OpenSignEvent;
-import ml.volder.unikapi.event.events.opensignevent.impl.Laby4EventOpenSign;
-import ml.volder.unikapi.utils.ReflectionUtils;
-import ml.volder.unikapi.wrappers.tileentitysign.WrappedTileEntitySign;
-import net.labymod.api.client.gui.screen.ScreenInstance;
-import net.labymod.api.event.client.gui.screen.ScreenDisplayEvent;
-import net.labymod.api.models.Implements;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.AbstractSignEditScreen;
-import net.minecraft.client.gui.screens.inventory.SignEditScreen;
-import net.minecraft.world.level.block.entity.SignBlockEntity;
 
 @Singleton
 @Implements(Laby4EventOpenSign.class)

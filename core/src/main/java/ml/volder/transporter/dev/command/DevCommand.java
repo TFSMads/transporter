@@ -1,5 +1,6 @@
 package ml.volder.transporter.dev.command;
 
+import ml.volder.transporter.dev.command.subcommands.EventSubCommand;
 import ml.volder.transporter.dev.command.subcommands.PacketSubCommand;
 import ml.volder.transporter.dev.command.subcommands.TestGuiSubCommand;
 import net.labymod.api.client.chat.command.Command;
@@ -15,6 +16,7 @@ public class DevCommand extends Command {
 
       this.withSubCommand(new PacketSubCommand("packet", "p"));
       this.withSubCommand(new TestGuiSubCommand("gui", "g"));
+      this.withSubCommand(new EventSubCommand("event", "e"));
   }
 
   @Override
