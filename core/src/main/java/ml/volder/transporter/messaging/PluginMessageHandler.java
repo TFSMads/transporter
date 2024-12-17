@@ -3,8 +3,6 @@ package ml.volder.transporter.messaging;
 import ml.volder.transporter.events.TransporterChannelRegisteredEvent;
 import ml.volder.transporter.messaging.channels.*;
 import ml.volder.unikapi.UnikAPI;
-import ml.volder.unikapi.event.EventManager;
-import ml.volder.unikapi.event.EventType;
 import ml.volder.unikapi.logger.Logger;
 import net.labymod.api.Laby;
 import net.labymod.api.client.resources.ResourceLocation;
@@ -110,7 +108,7 @@ public class PluginMessageHandler {
                 for(String registeredChannel : registeredChannels) {
                     if (registeredChannel.equals(CHANNEL.toString())) {
                         isRegistered = true;
-                        EventManager.callEvent(new TransporterChannelRegisteredEvent(EventType.POST));
+                        Laby.fireEvent(new TransporterChannelRegisteredEvent());
                     }
                 }
             }

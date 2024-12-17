@@ -1,24 +1,11 @@
 package ml.volder.transporter.listeners;
 
-import ml.volder.transporter.TransporterAddon;
-import ml.volder.transporter.gui.TransporterModulesMenu;
-import ml.volder.unikapi.api.input.InputAPI;
-import ml.volder.unikapi.api.player.PlayerAPI;
-import ml.volder.unikapi.event.Listener;
-import ml.volder.unikapi.keysystem.Key;
-import net.labymod.api.Laby;
-import net.labymod.api.client.gui.screen.ScreenInstance;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.input.KeyEvent;
 
-public class KeyboardListener implements Listener {
+public class KeyboardListener {
     @Subscribe
     public void onKeyPress(KeyEvent event){
-        if(!TransporterAddon.isEnabled())
-            return;
-        if(TransporterAddon.getInstance().getSettingsKeybind() == null || TransporterAddon.getInstance().getSettingsKeybind().equals(Key.NONE))
-            return;
-        if (InputAPI.getAPI().isKeyDown(TransporterAddon.getInstance().getSettingsKeybind()) && !Laby.labyAPI().minecraft().minecraftWindow().isScreenOpened())
-            Laby.labyAPI().minecraft().minecraftWindow().displayScreen(new TransporterModulesMenu(null));
+        //Unused
     }
 }

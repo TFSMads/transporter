@@ -3,17 +3,16 @@ package ml.volder.transporter;
 import ml.volder.transporter.classes.exceptions.LoadingFailedException;
 import ml.volder.transporter.classes.items.ItemManager;
 import ml.volder.transporter.dev.command.DevCommand;
-import ml.volder.transporter.gui.TransporterModulesMenu;
+import ml.volder.transporter.events.listeners.MainMenuOpenEventListener;
+import ml.volder.transporter.events.listeners.OpenSignEventListener;
 import ml.volder.transporter.listeners.MainMenuOpenListener;
 import ml.volder.transporter.messaging.PluginMessageHandler;
 import ml.volder.transporter.modules.ModuleManager;
 import ml.volder.transporter.updater.UpdateManager;
 import ml.volder.unikapi.AddonMain;
 import ml.volder.unikapi.UnikAPI;
-import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.datasystem.Data;
 import ml.volder.unikapi.datasystem.DataManager;
-import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.loader.Laby4Loader;
 import ml.volder.unikapi.logger.Logger;
@@ -97,7 +96,12 @@ public class TransporterAddon extends AddonMain {
             ModuleManager.getInstance().enableModules();
 
             //Events
-            EventManager.registerEvents(new MainMenuOpenListener());
+            Laby.labyAPI().eventBus().registerListener(new MainMenuOpenListener());
+
+            //Event listeners
+            Laby.labyAPI().eventBus().registerListener(new OpenSignEventListener());
+            Laby.labyAPI().eventBus().registerListener(MainMenuOpenEventListener.getInstance());
+
 
             //Developer tools
             Laby4Loader.registerCommands(new DevCommand());

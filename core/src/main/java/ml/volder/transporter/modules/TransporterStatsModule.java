@@ -5,10 +5,8 @@ import ml.volder.transporter.events.ItemAmountUpdatedEvent;
 import ml.volder.transporter.settings.accesors.SettingRegistryAccessor;
 import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
-import ml.volder.unikapi.event.EventHandler;
-import ml.volder.unikapi.event.EventManager;
-import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.guisystem.elements.Settings;
+import net.labymod.api.event.Subscribe;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +15,7 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.ZoneId;
 
-public class TransporterStatsModule extends SimpleModule implements Listener {
+public class TransporterStatsModule extends SimpleModule {
   //TODO not implemented yet
 
   public TransporterStatsModule(ModuleManager.ModuleInfo moduleInfo) {
@@ -32,7 +30,6 @@ public class TransporterStatsModule extends SimpleModule implements Listener {
 
   @Override
   public SimpleModule enable() {
-    EventManager.registerEvents(this);
     return this;
   }
 
@@ -45,7 +42,7 @@ public class TransporterStatsModule extends SimpleModule implements Listener {
 
   }
 
-  @EventHandler
+  @Subscribe
   public void onItemAmountUpdate(ItemAmountUpdatedEvent event) {
     if(PlayerAPI.getAPI().getUUID() == null)
         return;

@@ -10,15 +10,12 @@ import ml.volder.unikapi.api.minecraft.MinecraftAPI;
 import ml.volder.unikapi.api.minecraft.impl.Laby4MinecraftAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.api.player.impl.Laby4PlayerAPI;
-import ml.volder.unikapi.event.EventImpl;
-import ml.volder.unikapi.event.events.mainmenuopenevent.impl.Laby4MainMenuOpenEvent;
-import ml.volder.unikapi.event.events.opensignevent.impl.Laby4OpenSignEvent;
 import ml.volder.unikapi.keysystem.KeyMapper;
 import ml.volder.unikapi.keysystem.impl.Laby4KeyMapper;
 import ml.volder.unikapi.wrappers.guibutton.IGuiButtonImpl;
 import ml.volder.unikapi.wrappers.guibutton.impl.Laby4GuiButton;
 
-public class ApiReferenceStorageLaby4 implements ApiReferenceStorage{
+public class ApiReferenceStorageLaby4 implements ApiReferenceStorage {
 
     private static ApiReferenceStorage instance;
 
@@ -52,16 +49,6 @@ public class ApiReferenceStorageLaby4 implements ApiReferenceStorage{
     public PlayerAPI getPlayerAPI() {
         return Laby4PlayerAPI.getAPI();
     }
-
-    @Override
-    public Class<? extends EventImpl> getVersionedOpenSignEvent() {
-        return Laby4OpenSignEvent.class;
-    }
-
-  @Override
-  public Class<? extends EventImpl> getVersionedMainMenuOpenEvent() {
-    return Laby4MainMenuOpenEvent.class;
-  }
 
   @Override
     public KeyMapper getVersionedKeyMapper() {

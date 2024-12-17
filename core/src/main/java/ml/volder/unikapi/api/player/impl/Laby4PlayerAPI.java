@@ -3,7 +3,6 @@ package ml.volder.unikapi.api.player.impl;
 import ml.volder.unikapi.SupportedClient;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import net.labymod.api.Laby;
-import net.labymod.api.client.gui.screen.ScreenInstance;
 
 import java.util.UUID;
 @SupportedClient(clientBrand = "labymod4", minecraftVersion = "*")

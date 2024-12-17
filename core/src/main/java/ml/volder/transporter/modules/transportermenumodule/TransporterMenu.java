@@ -6,7 +6,6 @@ import ml.volder.transporter.gui.elements.ScrollableGrid;
 import ml.volder.transporter.modules.ModuleManager;
 import ml.volder.transporter.modules.TransporterMenuModule;
 import ml.volder.unikapi.api.draw.DrawAPI;
-import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;

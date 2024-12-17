@@ -1,6 +1,7 @@
 package ml.volder.transporter.modules;
 
 import ml.volder.transporter.TransporterAddon;
+import ml.volder.transporter.events.OpenSignEvent;
 import ml.volder.transporter.modules.signtoolsmodule.SignBuffer;
 import ml.volder.transporter.modules.signtoolsmodule.SignGui;
 import ml.volder.transporter.settings.accesors.SettingRegistryAccessor;
@@ -9,10 +10,6 @@ import ml.volder.transporter.settings.classes.TransporterSettingElementFactory;
 import ml.volder.transporter.settings.classes.TransporterWidgetFactory;
 import ml.volder.unikapi.api.input.InputAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
-import ml.volder.unikapi.event.EventHandler;
-import ml.volder.unikapi.event.EventManager;
-import ml.volder.unikapi.event.Listener;
-import ml.volder.unikapi.event.events.opensignevent.OpenSignEvent;
 import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.impl.Laby4KeyMapper;
@@ -30,7 +27,7 @@ import net.labymod.api.event.client.input.KeyEvent;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class SignToolsModule extends SimpleModule implements Listener {
+public class SignToolsModule extends SimpleModule {
 
     private static Key pasteKey = Key.V;
     private static Key copyKey = Key.C;
@@ -52,7 +49,6 @@ public class SignToolsModule extends SimpleModule implements Listener {
 
     @Override
     public SimpleModule enable() {
-        EventManager.registerEvents(this);
         Laby.labyAPI().eventBus().registerListener(this);
         return this;
     }
@@ -142,7 +138,7 @@ public class SignToolsModule extends SimpleModule implements Listener {
 
     boolean isSendingUpdatePacket = false;
 
-    @EventHandler
+    @Subscribe
     public void onSignOpen(OpenSignEvent event) {
         if(!TransporterAddon.isEnabled() || !this.isFeatureActive)
             return;

@@ -1,9 +1,9 @@
 package ml.volder.unikapi.loader;
 
+import ml.volder.transporter.events.listeners.MainMenuOpenEventListener;
 import ml.volder.transporter.settings.TransporterAddonConfig;
 import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.api.ApiReferenceStorageLaby4;
-import ml.volder.unikapi.event.events.mainmenuopenevent.impl.Laby4MainMenuOpenEvent;
 import ml.volder.unikapi.logger.Laby4Logger;
 import net.labymod.api.Laby;
 import net.labymod.api.addon.LabyAddon;
@@ -34,7 +34,7 @@ public class Laby4Loader extends LabyAddon<TransporterAddonConfig> {
     UnikAPI.registerReferenceStorage(ApiReferenceStorageLaby4.getInstance());
     Loader.onEnable();
     Laby.labyAPI().eventBus().registerListener(this);
-    Laby4MainMenuOpenEvent.checkMainMenu();
+    MainMenuOpenEventListener.checkMainMenu();
 
     this.registerSettingCategory();
   }

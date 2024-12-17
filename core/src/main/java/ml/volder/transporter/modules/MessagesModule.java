@@ -8,7 +8,6 @@ import ml.volder.transporter.settings.classes.TransporterSettingElementFactory;
 import ml.volder.transporter.settings.classes.TransporterWidgetFactory;
 import ml.volder.transporter.utils.FormatingUtils;
 import ml.volder.unikapi.UnikAPI;
-import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.logger.Logger;
 import net.labymod.api.Laby;
@@ -28,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class MessagesModule extends SimpleModule implements Listener {
+public class MessagesModule extends SimpleModule {
 
     private Map<String, String> messagesMap = new HashMap<>();
     private Map<String, String> messageRegexMap = new HashMap<>();
