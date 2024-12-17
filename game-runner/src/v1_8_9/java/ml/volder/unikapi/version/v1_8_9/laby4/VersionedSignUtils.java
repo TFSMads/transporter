@@ -1,7 +1,6 @@
 package ml.volder.unikapi.version.v1_8_9.laby4;
 
 import ml.volder.transporter.utils.SignUtils;
-import ml.volder.unikapi.event.events.opensignevent.impl.Laby4EventOpenSign;
 import ml.volder.unikapi.wrappers.tileentitysign.WrappedTileEntitySign;
 import net.labymod.api.models.Implements;
 import net.minecraft.client.gui.inventory.GuiEditSign;

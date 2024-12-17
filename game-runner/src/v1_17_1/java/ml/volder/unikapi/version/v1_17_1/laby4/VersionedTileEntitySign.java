@@ -3,7 +3,6 @@ package ml.volder.unikapi.version.v1_17_1.laby4;
 import ml.volder.unikapi.wrappers.tileentitysign.impl.Laby4WrappedTileEntitySign;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 
