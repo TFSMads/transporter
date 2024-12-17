@@ -9,7 +9,6 @@ import ml.volder.transporter.settings.classes.TransporterWidgetFactory;
 import ml.volder.unikapi.api.input.InputAPI;
 import ml.volder.unikapi.api.inventory.InventoryAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
-import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.keysystem.Key;
@@ -178,7 +177,7 @@ public class AutoTransporter extends SimpleModule implements Listener {
             return;
         if(toggleKey == null)
             return;
-        if (InputAPI.getAPI().isKeyDown(toggleKey) && !PlayerAPI.getAPI().hasOpenScreen())
+        if (InputAPI.getAPI().isKeyDown(toggleKey) && !Laby.labyAPI().minecraft().minecraftWindow().isScreenOpened())
             this.toggle();
     }
 

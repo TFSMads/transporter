@@ -1,6 +1,7 @@
 package ml.volder.unikapi.guisystem.elements;
 
 
+import ml.volder.transporter.gui.TransporterActivity;
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.datasystem.Data;
@@ -10,7 +11,9 @@ import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
-import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
+import net.labymod.api.Laby;
+import net.labymod.api.client.gui.screen.ScreenWrapper;
+import net.labymod.api.client.gui.screen.activity.AutoActivity;
 
 import java.util.function.Consumer;
 
@@ -71,7 +74,7 @@ public class StringElement extends ControlElement{
         super.unfocus(mouseX, mouseY, mouseButton);
         if (this.hoverExpandButton) {
             this.hoverExpandButton = false;
-            PlayerAPI.getAPI().openGuiScreen(new ExpandedStringElementGui(this.textField, PlayerAPI.getAPI().getCurrentScreen(), modTextField -> {
+            Laby.labyAPI().minecraft().minecraftWindow().displayScreen(new ExpandedStringElementGui(this.textField, Laby.labyAPI().minecraft().minecraftWindow().currentScreen(), modTextField -> {
                 StringElement.this.textField.setText(modTextField.getText());
                 StringElement.this.textField.setFocused(true);
                 StringElement.this.textField.setCursorPosition(modTextField.getCursorPosition());
@@ -117,21 +120,26 @@ public class StringElement extends ControlElement{
         return currentValue;
     }
 
-    public class ExpandedStringElementGui extends WrappedGuiScreen {
-        private WrappedGuiScreen backgroundScreen;
+    @AutoActivity
+    public class ExpandedStringElementGui extends TransporterActivity {
+        private TransporterActivity backgroundScreen;
         private Consumer<ModTextField> callback;
         private ModTextField preField;
         private ModTextField expandedField;
 
-        public ExpandedStringElementGui(ModTextField preField, WrappedGuiScreen backgroundScreen, Consumer<ModTextField> callback) {
-            this.backgroundScreen = backgroundScreen;
+        public ExpandedStringElementGui(ModTextField preField, ScreenWrapper backgroundScreen, Consumer<ModTextField> callback) {
+            if(backgroundScreen instanceof TransporterActivity)
+                this.backgroundScreen = (TransporterActivity) backgroundScreen;
             this.callback = callback;
             this.preField = preField;
         }
 
         public void initGui() {
-            this.backgroundScreen.setWidth(this.getWidth());
-            this.backgroundScreen.setHeight(this.getHeight());
+            if(backgroundScreen != null) {
+                this.backgroundScreen.setWidth(this.getWidth());
+                this.backgroundScreen.setHeight(this.getHeight());
+            }
+
             this.expandedField = new ModTextField(0, this.getWidth() / 2 - 150, this.getHeight() / 4 + 45, 300, 20);
             this.expandedField.setMaxStringLength(this.preField.getMaxStringLength());
             this.expandedField.setFocused(true);
@@ -142,7 +150,9 @@ public class StringElement extends ControlElement{
         }
 
         public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-            this.backgroundScreen.drawScreen(mouseX, mouseY, partialTicks);
+            if(backgroundScreen != null) {
+                this.backgroundScreen.drawScreen(mouseX, mouseY, partialTicks);
+            }
             DrawAPI drawAPI = DrawAPI.getAPI();
             drawAPI.drawRect(0, 0, this.getWidth(), this.getHeight(), -2147483648);
             drawAPI.drawRect(this.getWidth() / 2 - 165, this.getHeight() / 4 + 35, this.getWidth() / 2 + 165, this.getHeight() / 4 + 120, -2147483648);
@@ -171,7 +181,7 @@ public class StringElement extends ControlElement{
 
         public void keyTyped(char typedChar, Key key) {
             if (key.equals(Key.ESCAPE)) {
-                PlayerAPI.getAPI().openGuiScreen(this.backgroundScreen);
+                Laby.labyAPI().minecraft().minecraftWindow().displayScreen(this.backgroundScreen);
             }
 
             if (this.expandedField.textboxKeyTyped(typedChar, key)) {
@@ -192,12 +202,12 @@ public class StringElement extends ControlElement{
 
         public void actionPerformed(WrappedGuiButton button) {
             if (button.getId() == 1) {
-                PlayerAPI.getAPI().openGuiScreen(this.backgroundScreen);
+                Laby.labyAPI().minecraft().minecraftWindow().displayScreen(this.backgroundScreen);
             }
 
         }
 
-        public WrappedGuiScreen getBackgroundScreen() {
+        public TransporterActivity getBackgroundScreen() {
             return this.backgroundScreen;
         }
     }

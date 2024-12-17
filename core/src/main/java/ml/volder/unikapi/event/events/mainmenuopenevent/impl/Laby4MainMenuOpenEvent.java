@@ -5,7 +5,6 @@ import ml.volder.unikapi.event.EventImpl;
 import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.EventType;
 import ml.volder.unikapi.event.events.mainmenuopenevent.MainMenuOpenEvent;
-import ml.volder.unikapi.wrappers.guiscreen.impl.Laby4GuiScreenImpl;
 import net.labymod.api.Laby;
 import net.labymod.api.client.gui.lss.style.StyleSheet;
 import net.labymod.api.client.gui.screen.ScreenInstance;
@@ -36,7 +35,7 @@ public class Laby4MainMenuOpenEvent implements EventImpl {
       MainMenuOpenEvent openEvent = new MainMenuOpenEvent(EventType.PRE, getName());
       EventManager.callEvent(openEvent);
       if(openEvent.getNewScreen() != null)
-        event.setScreen(openEvent.getNewScreen().getHandle(Laby4GuiScreenImpl.class));
+        event.setScreen(openEvent.getNewScreen());
       if(openEvent.isCancelled())
         event.setScreen(null);
     }
@@ -62,7 +61,7 @@ public class Laby4MainMenuOpenEvent implements EventImpl {
       MainMenuOpenEvent openEvent = new MainMenuOpenEvent(EventType.PRE, instance.getName());
       EventManager.callEvent(openEvent);
       if(openEvent.getNewScreen() != null)
-        Laby.labyAPI().minecraft().minecraftWindow().displayScreen(openEvent.getNewScreen().getHandle(Laby4GuiScreenImpl.class));
+        Laby.labyAPI().minecraft().minecraftWindow().displayScreen(openEvent.getNewScreen());
     }
   }
 

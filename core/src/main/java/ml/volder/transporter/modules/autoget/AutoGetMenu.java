@@ -1,6 +1,7 @@
 package ml.volder.transporter.modules.autoget;
 
 import ml.volder.transporter.classes.items.Item;
+import ml.volder.transporter.gui.TransporterActivity;
 import ml.volder.transporter.modules.AutoGetModule;
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
@@ -8,14 +9,16 @@ import ml.volder.unikapi.guisystem.elements.*;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
-import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
+import net.labymod.api.Laby;
+import net.labymod.api.client.gui.screen.ScreenInstance;
+import net.labymod.api.client.gui.screen.activity.AutoActivity;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-
-public class AutoGetMenu extends WrappedGuiScreen {
+@AutoActivity
+public class AutoGetMenu extends TransporterActivity {
 
     private static SettingsCategory settingsCategory = new SettingsCategory("Auto Get - Indstillinger");
 
@@ -24,7 +27,7 @@ public class AutoGetMenu extends WrappedGuiScreen {
     }
 
     private Scrollbar scrollbar = new Scrollbar(1);
-    private WrappedGuiScreen lastScreen;
+    private ScreenInstance lastScreen;
     private WrappedGuiButton buttonBack;
     private SettingsElement mouseOverElement;
     private List<CategorySettingsElement> buttonCategoryElements = new ArrayList();
@@ -37,7 +40,7 @@ public class AutoGetMenu extends WrappedGuiScreen {
     private final double startY = 50D;
     private AutoGetModule autoGetModule;
 
-    public AutoGetMenu(AutoGetModule autoGetModule, WrappedGuiScreen lastScreen) {
+    public AutoGetMenu(AutoGetModule autoGetModule, ScreenInstance lastScreen) {
         this.autoGetModule = autoGetModule;
         this.lastScreen = lastScreen;
     }
@@ -246,9 +249,9 @@ public class AutoGetMenu extends WrappedGuiScreen {
                 this.scrollbar.setScrollY(0);
             }else {
                 if(lastScreen != null){
-                    PlayerAPI.getAPI().openGuiScreen(lastScreen);
+                    Laby.labyAPI().minecraft().minecraftWindow().displayScreen(lastScreen);
                 }else{
-                    PlayerAPI.getAPI().openGuiScreen(null);
+                    Laby.labyAPI().minecraft().minecraftWindow().displayScreen((ScreenInstance) null);
                 }
             }
         }

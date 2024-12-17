@@ -11,7 +11,6 @@ import ml.volder.transporter.settings.classes.TransporterWidgetFactory;
 import ml.volder.unikapi.api.input.InputAPI;
 import ml.volder.unikapi.api.inventory.InventoryAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
-import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.guisystem.elements.*;
@@ -70,7 +69,7 @@ public class AutoGetModule extends SimpleModule implements Listener {
         ControlElement.IconData iconData = new ControlElement.IconData(selectedItem.getMaterial());
         iconData.setItemDamage(selectedItem.getItemDamage());
         selectItemElement = new ListContainerElement("Valgte item", iconData);
-        selectItemElement.setAdvancedButtonCallback(aBoolean -> PlayerAPI.getAPI().openGuiScreen(new SelectItemMenu(PlayerAPI.getAPI().getCurrentScreen())));
+        selectItemElement.setAdvancedButtonCallback(aBoolean -> Laby.labyAPI().minecraft().minecraftWindow().displayScreen(new SelectItemMenu(Laby.labyAPI().minecraft().minecraftWindow().currentScreen())));
         selectItemElement.getSubSettings().add(new HeaderElement(""));
         selectItemElement.setOpenSubSettings(false);
         AutoGetMenu.addSetting(selectItemElement);
@@ -110,8 +109,8 @@ public class AutoGetModule extends SimpleModule implements Listener {
             return;
         if(openKey == null || openKey.equals(Key.NONE))
             return;
-        if (InputAPI.getAPI().isKeyDown(openKey) && !PlayerAPI.getAPI().hasOpenScreen())
-            PlayerAPI.getAPI().openGuiScreen(new AutoGetMenu(this, null));
+        if (InputAPI.getAPI().isKeyDown(openKey) && !Laby.labyAPI().minecraft().minecraftWindow().isScreenOpened())
+            Laby.labyAPI().minecraft().minecraftWindow().displayScreen(new AutoGetMenu(this, null));
     }
 
     public void setDelay(int delay){

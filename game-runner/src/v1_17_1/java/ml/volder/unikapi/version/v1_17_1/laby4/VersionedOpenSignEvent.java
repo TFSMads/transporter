@@ -7,7 +7,6 @@ import ml.volder.unikapi.event.EventType;
 import ml.volder.unikapi.event.events.opensignevent.OpenSignEvent;
 import ml.volder.unikapi.event.events.opensignevent.impl.Laby4EventOpenSign;
 import ml.volder.unikapi.utils.ReflectionUtils;
-import ml.volder.unikapi.wrappers.guiscreen.impl.Laby4GuiScreenImpl;
 import net.labymod.api.client.gui.screen.ScreenInstance;
 import net.labymod.api.event.client.gui.screen.ScreenDisplayEvent;
 import net.labymod.api.models.Implements;

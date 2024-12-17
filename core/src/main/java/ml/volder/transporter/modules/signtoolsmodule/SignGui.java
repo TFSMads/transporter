@@ -1,5 +1,6 @@
 package ml.volder.transporter.modules.signtoolsmodule;
 
+import ml.volder.transporter.gui.TransporterActivity;
 import ml.volder.transporter.modules.SignToolsModule;
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.api.input.InputAPI;
@@ -15,13 +16,16 @@ import ml.volder.unikapi.types.Material;
 import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.types.ResourceLocation;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
-import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
 import ml.volder.unikapi.wrappers.tileentitysign.WrappedTileEntitySign;
+import net.labymod.api.Laby;
+import net.labymod.api.client.gui.screen.ScreenInstance;
+import net.labymod.api.client.gui.screen.activity.AutoActivity;
 
 import java.awt.*;
 import java.time.Instant;
 
-public class SignGui extends WrappedGuiScreen {
+@AutoActivity
+public class SignGui extends TransporterActivity {
 
     private WrappedGuiButton doneBtn;
     private ResourceLocation signTexture;
@@ -71,7 +75,7 @@ public class SignGui extends WrappedGuiScreen {
             return;
         if(button.getId() == 0){
             tileEntitySign.markDirty();
-            PlayerAPI.getAPI().openGuiScreen(null);
+            Laby.labyAPI().minecraft().minecraftWindow().displayScreen((ScreenInstance) null);
         }
     }
 
@@ -156,10 +160,10 @@ public class SignGui extends WrappedGuiScreen {
             signText.copy(bufferText);
         }else if(hoverSaveButton) {
             sendPlacePacket = false;
-            PlayerAPI.getAPI().openGuiScreen(new SaveSignGui(this, dataManager, bufferText));
+            Laby.labyAPI().minecraft().minecraftWindow().displayScreen(new SaveSignGui(this, dataManager, bufferText));
         }else if(hoverLoadButton) {
             sendPlacePacket = false;
-            PlayerAPI.getAPI().openGuiScreen(new LoadSignGui(dataManager, this, bufferText));
+            Laby.labyAPI().minecraft().minecraftWindow().displayScreen(new LoadSignGui(dataManager, this, bufferText));
         }
 
     }

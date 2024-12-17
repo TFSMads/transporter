@@ -17,8 +17,6 @@ import ml.volder.unikapi.keysystem.KeyMapper;
 import ml.volder.unikapi.keysystem.impl.Laby4KeyMapper;
 import ml.volder.unikapi.wrappers.guibutton.IGuiButtonImpl;
 import ml.volder.unikapi.wrappers.guibutton.impl.Laby4GuiButton;
-import ml.volder.unikapi.wrappers.guiscreen.IGuiScreenImpl;
-import ml.volder.unikapi.wrappers.guiscreen.impl.Laby4GuiScreenImpl;
 
 public class ApiReferenceStorageLaby4 implements ApiReferenceStorage{
 
@@ -73,10 +71,5 @@ public class ApiReferenceStorageLaby4 implements ApiReferenceStorage{
     @Override
     public Class<? extends IGuiButtonImpl> getVersionedGuiButton() {
         return Laby4GuiButton.class;
-    }
-
-    @Override
-    public Class<? extends IGuiScreenImpl> getVersionedGuiScreen() {
-        return Laby4GuiScreenImpl.class;
     }
 }

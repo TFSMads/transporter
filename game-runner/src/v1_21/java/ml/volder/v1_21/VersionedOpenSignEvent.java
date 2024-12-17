@@ -4,7 +4,6 @@ import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.EventType;
 import ml.volder.unikapi.event.events.opensignevent.OpenSignEvent;
 import ml.volder.unikapi.event.events.opensignevent.impl.Laby4EventOpenSign;
-import ml.volder.unikapi.wrappers.guiscreen.impl.Laby4GuiScreenImpl;
 import net.labymod.api.client.gui.screen.ScreenInstance;
 import net.labymod.api.event.client.gui.screen.ScreenDisplayEvent;
 import net.labymod.api.models.Implements;
@@ -33,8 +32,8 @@ public class VersionedOpenSignEvent extends Laby4EventOpenSign {
       SignBlockEntity sign = ((SignEditScreen) guiScreen).sign;
       OpenSignEvent openSignEvent = new OpenSignEvent(EventType.PRE, eventName, new VersionedTileEntitySign(sign));
       EventManager.callEvent(openSignEvent);
-      if(openSignEvent.getNewScreen() != null && openSignEvent.getNewScreen().getHandle(Laby4GuiScreenImpl.class) != null){
-        ScreenInstance screenInstance = openSignEvent.getNewScreen().getHandle(Laby4GuiScreenImpl.class);
+      if(openSignEvent.getNewScreen() != null){
+        ScreenInstance screenInstance = openSignEvent.getNewScreen();
         event.setScreen(screenInstance);
       }
       if(openSignEvent.isCancelled()) {

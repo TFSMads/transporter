@@ -1,7 +1,5 @@
 package ml.volder.transporter.messaging.channels;
 
-import ml.volder.transporter.TransporterAddon;
-import ml.volder.transporter.classes.items.Item;
 import ml.volder.transporter.messaging.TAByteBuf;
 import ml.volder.transporter.modules.BalanceModule;
 import ml.volder.transporter.modules.ModuleManager;
@@ -10,8 +8,6 @@ import ml.volder.unikapi.logger.Logger;
 
 import javax.inject.Singleton;
 import java.math.BigDecimal;
-import java.util.Deque;
-import java.util.LinkedList;
 
 @Singleton
 public class BalanceChannel extends Channel {

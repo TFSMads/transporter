@@ -34,7 +34,7 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 @SupportedClient(clientBrand = "labymod4", minecraftVersion = "*")
-@Deprecated(forRemoval = true)
+@Deprecated()
 public class Laby4DrawAPI implements DrawAPI {
 
   private String namespace = Laby4Loader.namespace();

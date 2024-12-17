@@ -2,23 +2,23 @@ package ml.volder.transporter.gui.pricegui;
 
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.classes.items.Item;
+import ml.volder.transporter.gui.TransporterActivity;
 import ml.volder.transporter.gui.elements.ScrollableGrid;
-import ml.volder.transporter.modules.transportermenumodule.TransporterSettingsMenuEntry;
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.guisystem.elements.ModTextField;
-import ml.volder.unikapi.guisystem.elements.Scrollbar;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
-import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
 import net.labymod.api.Laby;
 import net.labymod.api.client.gui.screen.ScreenWrapper;
+import net.labymod.api.client.gui.screen.activity.AutoActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PriceMenu extends WrappedGuiScreen {
+@AutoActivity
+public class PriceMenu extends TransporterActivity {
 
     private ScreenWrapper lastScreen;
     private boolean isInBackground = false;

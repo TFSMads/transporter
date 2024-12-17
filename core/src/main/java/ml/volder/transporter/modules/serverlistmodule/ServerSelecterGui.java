@@ -4,6 +4,7 @@ package ml.volder.transporter.modules.serverlistmodule;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import ml.volder.transporter.gui.TransporterActivity;
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.datasystem.Data;
@@ -13,9 +14,11 @@ import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
-import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
+import net.labymod.api.Laby;
+import net.labymod.api.client.gui.screen.activity.AutoActivity;
 
-public class ServerSelecterGui extends WrappedGuiScreen {
+@AutoActivity
+public class ServerSelecterGui extends TransporterActivity {
     private Scrollbar scrollbar;
     private String hoverServer;
     private DataManager<Data> dataManager;
@@ -43,13 +46,13 @@ public class ServerSelecterGui extends WrappedGuiScreen {
     public void actionPerformed(WrappedGuiButton button) {
         switch (button.getId()) {
             case 30005:
-                PlayerAPI.getAPI().openGuiScreen(new AddServerGui(this, true, dataManager));
+                Laby.labyAPI().minecraft().minecraftWindow().displayScreen(new AddServerGui(this, true, dataManager));
                 break;
             case 30006:
-                PlayerAPI.getAPI().openGuiScreen(new AddServerGui(this, false, dataManager));
+                Laby.labyAPI().minecraft().minecraftWindow().displayScreen(new AddServerGui(this, false, dataManager));
                 break;
             case 30007:
-                PlayerAPI.getAPI().openGuiScreen(new RemoveServerGui(this, dataManager));
+                Laby.labyAPI().minecraft().minecraftWindow().displayScreen(new RemoveServerGui(this, dataManager));
 
         }
     }

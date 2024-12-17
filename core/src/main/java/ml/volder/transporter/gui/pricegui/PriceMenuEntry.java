@@ -1,17 +1,18 @@
 package ml.volder.transporter.gui.pricegui;
 
 import ml.volder.transporter.classes.items.Item;
+import ml.volder.transporter.gui.TransporterActivity;
 import ml.volder.transporter.gui.elements.ScrollableGrid;
 import ml.volder.transporter.utils.FormatingUtils;
 import ml.volder.unikapi.api.draw.DrawAPI;
-import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.guisystem.elements.ModTextField;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.types.ResourceLocation;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
-import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
+import net.labymod.api.Laby;
+import net.labymod.api.client.gui.screen.activity.AutoActivity;
 
 import java.util.Collections;
 
@@ -117,7 +118,7 @@ public class PriceMenuEntry extends ScrollableGrid.Entry {
         }else if(hoverAutoButton) {
             item.setAutoUpdateSellValue(!item.getAutoUpdateSellValue());
         }else if (hoverSetButton) {
-            PlayerAPI.getAPI().openGuiScreen(new SetSellValueGui(item, backgroundScreen));
+            Laby.labyAPI().minecraft().minecraftWindow().displayScreen(new SetSellValueGui(item, backgroundScreen));
         }
     }
 
@@ -127,7 +128,8 @@ public class PriceMenuEntry extends ScrollableGrid.Entry {
         item.setAutoUpdateSellValue(true);
     }
 
-    public class SetSellValueGui extends WrappedGuiScreen {
+    @AutoActivity
+    public class SetSellValueGui extends TransporterActivity {
         private PriceMenu backgroundScreen;
         private ModTextField expandedField;
 
@@ -177,7 +179,7 @@ public class PriceMenuEntry extends ScrollableGrid.Entry {
 
         public void keyTyped(char typedChar, Key key) {
             if (key.equals(Key.ESCAPE)) {
-                PlayerAPI.getAPI().openGuiScreen(this.backgroundScreen);
+                Laby.labyAPI().minecraft().minecraftWindow().displayScreen(this.backgroundScreen);
             }
 
             //Return if key is not a number
@@ -204,11 +206,11 @@ public class PriceMenuEntry extends ScrollableGrid.Entry {
 
         public void actionPerformed(WrappedGuiButton button) {
             if (button.getId() == 1) {
-                PlayerAPI.getAPI().openGuiScreen(this.backgroundScreen);
+                Laby.labyAPI().minecraft().minecraftWindow().displayScreen(this.backgroundScreen);
             }
         }
 
-        public WrappedGuiScreen getBackgroundScreen() {
+        public TransporterActivity getBackgroundScreen() {
             return this.backgroundScreen;
         }
     }

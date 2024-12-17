@@ -2,23 +2,24 @@ package ml.volder.transporter.modules.autoget;
 
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.classes.items.Item;
+import ml.volder.transporter.gui.TransporterActivity;
 import ml.volder.transporter.gui.elements.ScrollableGrid;
-import ml.volder.transporter.gui.pricegui.PriceMenuEntry;
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.guisystem.elements.ModTextField;
-import ml.volder.unikapi.guisystem.elements.Scrollbar;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
-import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
+import net.labymod.api.client.gui.screen.ScreenInstance;
+import net.labymod.api.client.gui.screen.activity.AutoActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SelectItemMenu extends WrappedGuiScreen {
+@AutoActivity
+public class SelectItemMenu extends TransporterActivity {
 
-    private WrappedGuiScreen lastScreen;
+    private ScreenInstance lastScreen;
     private int entryWidth = 120;
     private int entryHeight = 37;
     private ScrollableGrid scrollableGrid = new ScrollableGrid(0, 0, 0, 0, entryWidth, entryHeight, 2, 2);
@@ -26,7 +27,7 @@ public class SelectItemMenu extends WrappedGuiScreen {
     private String searchText = "";
     private List<SelectItemMenuEntry> itemEntries = new ArrayList<>();
 
-    public SelectItemMenu(WrappedGuiScreen lastScreen) {
+    public SelectItemMenu(ScreenInstance lastScreen) {
         this.lastScreen = lastScreen;
     }
 

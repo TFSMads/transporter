@@ -4,7 +4,6 @@ import ml.volder.transporter.classes.exceptions.LoadingFailedException;
 import ml.volder.transporter.classes.items.ItemManager;
 import ml.volder.transporter.dev.command.DevCommand;
 import ml.volder.transporter.gui.TransporterModulesMenu;
-import ml.volder.transporter.listeners.KeyboardListener;
 import ml.volder.transporter.listeners.MainMenuOpenListener;
 import ml.volder.transporter.messaging.PluginMessageHandler;
 import ml.volder.transporter.modules.ModuleManager;
@@ -101,7 +100,7 @@ public class TransporterAddon extends AddonMain {
             EventManager.registerEvents(new MainMenuOpenListener());
 
             //Developer tools
-            //Laby4Loader.registerCommands(new DevCommand());
+            Laby4Loader.registerCommands(new DevCommand());
         }catch (Exception e) {
             UnikAPI.getCommonDataFolder().delete();
             UnikAPI.LOGGER.printStackTrace(Logger.LOG_LEVEL.SEVERE, e);
@@ -165,8 +164,6 @@ public class TransporterAddon extends AddonMain {
 
     //@Override
     public void openSettings(Object o) {
-        if (PlayerAPI.getAPI().getCurrentScreen() instanceof TransporterModulesMenu)
-            return;
-        PlayerAPI.getAPI().openGuiScreen(new TransporterModulesMenu(null));
+        // Do nothing
     }
 }

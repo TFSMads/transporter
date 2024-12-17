@@ -6,10 +6,10 @@ import ml.volder.transporter.modules.MessagesModule;
 import ml.volder.transporter.modules.ModuleManager;
 import ml.volder.transporter.utils.FormatingUtils;
 import ml.volder.unikapi.api.draw.DrawAPI;
-import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.types.ModColor;
-import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
+import net.labymod.api.Laby;
+import net.labymod.api.client.gui.screen.ScreenInstance;
 
 public class SelectItemMenuEntry extends ScrollableGrid.Entry {
     private int width = 120;
@@ -19,9 +19,9 @@ public class SelectItemMenuEntry extends ScrollableGrid.Entry {
     private boolean isMouseOver = false;
 
     private Item item;
-    private WrappedGuiScreen lastScreen;
+    private ScreenInstance lastScreen;
 
-    public SelectItemMenuEntry(Item item, int width, int height, WrappedGuiScreen lastScreen) {
+    public SelectItemMenuEntry(Item item, int width, int height, ScreenInstance lastScreen) {
         this.item = item;
         this.width = width;
         this.height = height;
@@ -66,6 +66,6 @@ public class SelectItemMenuEntry extends ScrollableGrid.Entry {
         if(lastScreen instanceof AutoGetMenu) {
             ((AutoGetMenu)lastScreen).selectItem(item);
         }
-        PlayerAPI.getAPI().openGuiScreen(lastScreen);
+        Laby.labyAPI().minecraft().minecraftWindow().displayScreen(lastScreen);
     }
 }

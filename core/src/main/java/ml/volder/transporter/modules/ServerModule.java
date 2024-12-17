@@ -2,7 +2,6 @@ package ml.volder.transporter.modules;
 
 import ml.volder.transporter.settings.accesors.SettingRegistryAccessor;
 import ml.volder.unikapi.api.player.PlayerAPI;
-import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.types.Material;
 import ml.volder.unikapi.widgets.ModuleSystem;

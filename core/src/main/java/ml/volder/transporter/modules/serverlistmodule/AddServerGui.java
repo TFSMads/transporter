@@ -2,6 +2,7 @@ package ml.volder.transporter.modules.serverlistmodule;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import ml.volder.transporter.gui.TransporterActivity;
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.api.input.InputAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
@@ -11,16 +12,19 @@ import ml.volder.unikapi.guisystem.elements.ModTextField;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
-import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
+import net.labymod.api.Laby;
+import net.labymod.api.client.gui.screen.ScreenInstance;
+import net.labymod.api.client.gui.screen.activity.AutoActivity;
 
-public class AddServerGui extends WrappedGuiScreen {
-    private WrappedGuiScreen lastScreen;
+@AutoActivity
+public class AddServerGui extends TransporterActivity {
+    private ScreenInstance lastScreen;
     private ModTextField fieldServer;
     private WrappedGuiButton buttonAdd;
     private boolean saveServer;
     private DataManager<Data> dataManager;
 
-    public AddServerGui(WrappedGuiScreen lastScreen, boolean saveServer, DataManager<Data> dataManagers) {
+    public AddServerGui(ScreenInstance lastScreen, boolean saveServer, DataManager<Data> dataManagers) {
         this.lastScreen = lastScreen;
         this.saveServer = saveServer;
         this.dataManager = dataManagers;
@@ -56,12 +60,16 @@ public class AddServerGui extends WrappedGuiScreen {
     public void actionPerformed(WrappedGuiButton button) {
         switch (button.getId()) {
             case 1: {
-                PlayerAPI.getAPI().openGuiScreen(this.lastScreen);
+                Laby.labyAPI().minecraft().minecraftWindow().displayScreen(this.lastScreen);
                 break;
             }
             case 2: {
                 this.addServer();
-                if(!saveServer){PlayerAPI.getAPI().openGuiScreen(null); }else{PlayerAPI.getAPI().openGuiScreen(this.lastScreen);}
+                if(!saveServer){
+                    Laby.labyAPI().minecraft().minecraftWindow().displayScreen((ScreenInstance) null);
+                } else {
+                    Laby.labyAPI().minecraft().minecraftWindow().displayScreen(this.lastScreen);
+                }
             }
         }
 
@@ -114,7 +122,7 @@ public class AddServerGui extends WrappedGuiScreen {
     @Override
     public void keyTyped(char typedChar, Key key) {
         if (key.equals(Key.ESCAPE)) {
-            PlayerAPI.getAPI().openGuiScreen(lastScreen);
+            Laby.labyAPI().minecraft().minecraftWindow().displayScreen(lastScreen);
             return;
         }
         if (key.equals(Key.ENTER) && this.buttonAdd.isEnabled()) {
