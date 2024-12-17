@@ -7,8 +7,6 @@ import ml.volder.transporter.settings.action.TransporterAction;
 import ml.volder.transporter.settings.classes.TransporterSettingElementFactory;
 import ml.volder.transporter.settings.classes.TransporterWidgetFactory;
 import ml.volder.unikapi.api.input.InputAPI;
-import ml.volder.unikapi.api.player.PlayerAPI;
-import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.impl.Laby4KeyMapper;
@@ -18,7 +16,7 @@ import net.labymod.api.client.gui.screen.widget.widgets.input.KeybindWidget;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.input.KeyEvent;
 
-public class ServerListModule extends SimpleModule implements Listener {
+public class ServerListModule extends SimpleModule {
     private Key openKey = Key.L; // Default key = L
 
     public ServerListModule(ModuleManager.ModuleInfo moduleInfo) {

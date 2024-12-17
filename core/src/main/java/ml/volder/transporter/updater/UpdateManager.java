@@ -6,7 +6,6 @@ import com.google.gson.JsonParser;
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.gui.UpdateFailedScreen;
 import ml.volder.unikapi.UnikAPI;
-import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.datasystem.Data;
 import ml.volder.unikapi.datasystem.DataManager;
 import net.labymod.api.Laby;

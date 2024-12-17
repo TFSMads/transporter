@@ -1,16 +1,15 @@
 package ml.volder.transporter.listeners;
 
+import ml.volder.transporter.events.MainMenuOpenEvent;
 import ml.volder.transporter.gui.UpdateScreen;
 import ml.volder.transporter.updater.UpdateManager;
-import ml.volder.unikapi.event.EventHandler;
-import ml.volder.unikapi.event.Listener;
-import ml.volder.unikapi.event.events.mainmenuopenevent.MainMenuOpenEvent;
+import net.labymod.api.event.Subscribe;
 
-public class MainMenuOpenListener implements Listener {
+public class MainMenuOpenListener {
 
     private boolean hasCheckedForUpdate = false;
 
-    @EventHandler
+    @Subscribe
     public void onMainMenuOpen(MainMenuOpenEvent event) {
         if(!hasCheckedForUpdate && !UpdateManager.isUpToDate()) {
             event.setScreen(new UpdateScreen());

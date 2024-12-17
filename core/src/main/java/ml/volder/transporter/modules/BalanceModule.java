@@ -12,9 +12,6 @@ import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.datasystem.Data;
 import ml.volder.unikapi.datasystem.DataManager;
-import ml.volder.unikapi.event.EventHandler;
-import ml.volder.unikapi.event.EventManager;
-import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.logger.Logger;
 import net.labymod.api.Laby;
@@ -35,7 +32,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BalanceModule extends SimpleModule implements Listener {
+public class BalanceModule extends SimpleModule{
     private DataManager<Data> dataManagerSettings;
     private TransporterAddon addon;
 
@@ -52,7 +49,6 @@ public class BalanceModule extends SimpleModule implements Listener {
 
     @Override
     public SimpleModule enable() {
-        EventManager.registerEvents(this);
         Laby.labyAPI().eventBus().registerListener(this);
         return this;
     }
@@ -222,7 +218,7 @@ public class BalanceModule extends SimpleModule implements Listener {
         return false;
     }
 
-    @EventHandler
+    @Subscribe
     public void onTransporterChannelRegister(TransporterChannelRegisteredEvent event) {
         if (!isFeatureActive() || !updateOnJoin || !TransporterAddon.isEnabled())
             return;

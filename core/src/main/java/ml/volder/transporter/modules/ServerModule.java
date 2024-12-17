@@ -2,7 +2,6 @@ package ml.volder.transporter.modules;
 
 import ml.volder.transporter.settings.accesors.SettingRegistryAccessor;
 import ml.volder.unikapi.api.player.PlayerAPI;
-import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.types.Material;
 import ml.volder.unikapi.widgets.ModuleSystem;
 import net.labymod.api.Laby;
@@ -18,7 +17,7 @@ import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ServerModule extends SimpleModule implements Listener {
+public class ServerModule extends SimpleModule {
     public ServerModule(ModuleManager.ModuleInfo moduleInfo) {
         super(moduleInfo);
     }

@@ -5,7 +5,6 @@ import ml.volder.transporter.modules.mcmmomodule.McmmoManager;
 import ml.volder.transporter.settings.accesors.SettingRegistryAccessor;
 import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.api.minecraft.MinecraftAPI;
-import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.logger.Logger;
 import net.labymod.api.Laby;
 import net.labymod.api.event.Phase;
@@ -19,7 +18,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class McmmoModule extends SimpleModule implements Listener {
+public class McmmoModule extends SimpleModule {
     private McmmoManager mcmmoManager;
 
     public McmmoModule(ModuleManager.ModuleInfo moduleInfo) {

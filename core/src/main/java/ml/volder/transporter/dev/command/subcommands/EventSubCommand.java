@@ -1,8 +1,6 @@
 package ml.volder.transporter.dev.command.subcommands;
 
-import ml.volder.transporter.dev.test.TestActivity;
 import ml.volder.transporter.dev.test.TestListener;
-import ml.volder.transporter.events.TestEvent;
 import net.labymod.api.Laby;
 import net.labymod.api.client.chat.command.SubCommand;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +24,7 @@ public class EventSubCommand extends SubCommand {
                 displayMessage("TestListener registered");
             }
             if(arguments[0].equalsIgnoreCase("fire") || arguments[0].equalsIgnoreCase("f")) {
-                Laby.fireEvent(new TestEvent());
+                //Laby.fireEvent(new TestEvent());
                 displayMessage("TestEvent fired");
             }
         } else {

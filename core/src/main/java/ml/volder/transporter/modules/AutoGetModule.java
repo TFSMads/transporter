@@ -11,7 +11,6 @@ import ml.volder.transporter.settings.classes.TransporterWidgetFactory;
 import ml.volder.unikapi.api.input.InputAPI;
 import ml.volder.unikapi.api.inventory.InventoryAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
-import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.guisystem.elements.*;
 import ml.volder.unikapi.keysystem.Key;
@@ -28,7 +27,7 @@ import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class AutoGetModule extends SimpleModule implements Listener {
+public class AutoGetModule extends SimpleModule {
 
     private boolean onlyActiveInLobby = true;
     private boolean isEnabled;

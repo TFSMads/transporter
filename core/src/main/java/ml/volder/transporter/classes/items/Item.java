@@ -9,9 +9,8 @@ import ml.volder.transporter.messaging.channels.PutChannel;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.datasystem.Data;
 import ml.volder.unikapi.datasystem.DataManager;
-import ml.volder.unikapi.event.EventManager;
-import ml.volder.unikapi.event.EventType;
 import ml.volder.unikapi.types.Material;
+import net.labymod.api.Laby;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -51,7 +50,7 @@ public class Item {
             TransporterAddon.getInstance().getTransporterItemManager().getDataManager().getSettings().getData().addProperty("amount." + this.getModernType(), this.amountInTransporter);
             TransporterAddon.getInstance().getTransporterItemManager().getDataManager().save();
         }
-      EventManager.callEvent(new ItemAmountUpdatedEvent(EventType.POST));
+      Laby.fireEvent(new ItemAmountUpdatedEvent());
     }
 
     public Integer getAmountInTransporter() {

@@ -1,5 +1,6 @@
 package ml.volder.v1_20_5;
 
+import ml.volder.transporter.utils.SignUtils;
 import ml.volder.unikapi.event.events.opensignevent.impl.Laby4EventOpenSign;
 import ml.volder.unikapi.wrappers.tileentitysign.WrappedTileEntitySign;
 import net.labymod.api.models.Implements;
@@ -9,11 +10,11 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-@Implements(Laby4EventOpenSign.class)
-public class VersionedOpenSignEvent extends Laby4EventOpenSign {
+@Implements(SignUtils.class)
+public class VersionedSignUtils extends SignUtils {
 
   @Inject
-  public VersionedOpenSignEvent() {
+  public VersionedSignUtils() {
 
   }
 

@@ -8,8 +8,6 @@ import ml.volder.transporter.settings.action.TransporterAction;
 import ml.volder.transporter.settings.classes.TransporterSettingElementFactory;
 import ml.volder.transporter.settings.classes.TransporterWidgetFactory;
 import ml.volder.unikapi.api.input.InputAPI;
-import ml.volder.unikapi.api.player.PlayerAPI;
-import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.impl.Laby4KeyMapper;
@@ -24,7 +22,7 @@ import net.labymod.api.event.client.input.KeyEvent;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class TransporterMenuModule extends SimpleModule implements Listener {
+public class TransporterMenuModule extends SimpleModule {
 
     private Map<Item, Integer> activeItems = new HashMap<>();
     private boolean onlyActiveInLobby = true;
