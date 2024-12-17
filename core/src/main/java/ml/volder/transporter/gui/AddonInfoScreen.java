@@ -8,9 +8,13 @@ import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
+import ml.volder.unikapi.loader.Laby4Loader;
 import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
-import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
+import net.labymod.api.Laby;
+import net.labymod.api.LabyAPI;
+import net.labymod.api.client.gui.screen.ScreenInstance;
+import net.labymod.api.client.gui.screen.activity.AutoActivity;
 
 import java.math.BigInteger;
 import java.nio.file.Files;
@@ -18,12 +22,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 
-public class AddonInfoScreen extends WrappedGuiScreen {
+@AutoActivity
+public class AddonInfoScreen extends TransporterActivity {
     private static String jarChecksum = null;
-    private WrappedGuiScreen lastScreen;
+    private ScreenInstance lastScreen;
     private WrappedGuiButton buttonBack;
 
-    public AddonInfoScreen(WrappedGuiScreen lastScreen) {
+    public AddonInfoScreen(ScreenInstance lastScreen) {
         this.lastScreen = lastScreen;
     }
 
@@ -52,11 +57,22 @@ public class AddonInfoScreen extends WrappedGuiScreen {
     public void actionPerformed(WrappedGuiButton wrappedGuiButton) {
         if(wrappedGuiButton.getId() == 1) {
             if(lastScreen != null){
-                PlayerAPI.getAPI().openGuiScreen(lastScreen);
+                Laby.labyAPI().minecraft().minecraftWindow().displayScreen(lastScreen);
             }else{
-                PlayerAPI.getAPI().openGuiScreen(null);
+                Laby.labyAPI().minecraft().minecraftWindow().displayScreen((ScreenInstance) null);
             }
         }
+    }
+
+    int drawY;
+    private void drawDebugLine(String line, int x) {
+        DrawAPI drawAPI = DrawAPI.getAPI();
+        drawAPI.drawString(line, x, drawY);
+        drawY += drawAPI.getFontHeight()+2;
+    }
+
+    private void drawDebugLine(String line) {
+        drawDebugLine(line, 10);
     }
 
     @Override
@@ -69,21 +85,26 @@ public class AddonInfoScreen extends WrappedGuiScreen {
         drawAPI.drawGradientShadowBottom((double)(this.getHeight() - 30), 0.0D, (double)this.getWidth());
         drawAPI.drawString("Transporter Addon - Addon Info", (double)(this.getWidth() / 2 - 100 + 30), 25.0D);
 
-        int drawY = 50;
-        drawAPI.drawString("Addon version: " + UpdateManager.currentVersion + " (" + jarChecksum + ")", 10, drawY);
-        drawY += drawAPI.getFontHeight()+2;
-        drawAPI.drawString("Understøttet Minecraft versioner: " + UnikAPI.getMinecraftVersion(), 10, drawY);
-        drawY += drawAPI.getFontHeight()+2;
-        drawAPI.drawString("Client brand: " + UnikAPI.getClientBrand() + (UnikAPI.getOtherVersion() != null ? " v:" + UnikAPI.getOtherVersion() : ""), 10, drawY);
-        drawY += drawAPI.getFontHeight()+2;
-        drawAPI.drawString("Addon lokation: " + UpdateManager.getJarLocation(), 10, drawY);
-        drawY += drawAPI.getFontHeight()+2;
-        drawAPI.drawString("System Info: " + System.getProperty("os.name") + " - " + System.getProperty("os.version") + " - " +  System.getProperty("os.arch"), 10, drawY);
-        drawY += drawAPI.getFontHeight()+2;
-        drawAPI.drawString("Features:", 10, drawY);
+        LabyAPI labyAPI = Laby.labyAPI();
+
+        drawY = 50;
+        drawDebugLine("Addon version: " + UpdateManager.currentVersion + " (" + jarChecksum + ")");
+
+        drawDebugLine("Addon namespace: " + Laby4Loader.namespace());
+
+        drawDebugLine("Understøttet Minecraft versioner: " + UnikAPI.getMinecraftVersion());
+
+        drawDebugLine("Minecraft version: " + labyAPI.minecraft().getVersion());
+
+        drawDebugLine("Labymod version: " + labyAPI.getVersion() + " (" + labyAPI.getBranchName() + ")");
+
+        drawDebugLine("Addon lokation: " + UpdateManager.getJarLocation());
+
+        drawDebugLine("System Info: " + System.getProperty("os.name") + " - " + System.getProperty("os.version") + " - " +  System.getProperty("os.arch"));
+
+        drawDebugLine("Features:");
         for (SimpleModule module : ModuleManager.getInstance().getLoadedModules().values()) {
-            drawY += drawAPI.getFontHeight()+2;
-            drawAPI.drawString(module.getDisplayName() + ": " + (module.isFeatureActive() ? ModColor.GREEN + "Aktiv" : ModColor.RED + "Deaktiveret"), 20, drawY);
+            drawDebugLine(module.getDisplayName() + ": " + (module.isFeatureActive() ? ModColor.GREEN + "Aktiv" : ModColor.RED + "Deaktiveret"), 20);
         }
 
     }

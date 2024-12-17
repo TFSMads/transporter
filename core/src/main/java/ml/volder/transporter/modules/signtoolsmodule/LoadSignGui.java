@@ -4,6 +4,7 @@ package ml.volder.transporter.modules.signtoolsmodule;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import ml.volder.transporter.gui.TransporterActivity;
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.datasystem.Data;
@@ -13,16 +14,19 @@ import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
-import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
+import net.labymod.api.Laby;
+import net.labymod.api.client.gui.screen.ScreenInstance;
+import net.labymod.api.client.gui.screen.activity.AutoActivity;
 
-public class LoadSignGui extends WrappedGuiScreen {
+@AutoActivity
+public class LoadSignGui extends TransporterActivity {
     private Scrollbar scrollbar;
     private DataManager<Data> dataManager;
     private String hoverEntry;
-    private WrappedGuiScreen lastScreen;
+    private ScreenInstance lastScreen;
     private SignBuffer signBuffer;
 
-    public LoadSignGui(DataManager<Data> dataManager, WrappedGuiScreen lastScreen, SignBuffer signBuffer) {
+    public LoadSignGui(DataManager<Data> dataManager, ScreenInstance lastScreen, SignBuffer signBuffer) {
         this.dataManager = dataManager;
         this.lastScreen = lastScreen;
         this.signBuffer = signBuffer;
@@ -53,10 +57,10 @@ public class LoadSignGui extends WrappedGuiScreen {
                 this.hoverEntry = "";
                 break;
             case 30006:
-                PlayerAPI.getAPI().openGuiScreen(lastScreen);
+                Laby.labyAPI().minecraft().minecraftWindow().displayScreen(lastScreen);
                 break;
             case 30007:
-                PlayerAPI.getAPI().openGuiScreen(new RemoveSavedSignGui(this, dataManager));
+                Laby.labyAPI().minecraft().minecraftWindow().displayScreen(new RemoveSavedSignGui(this, dataManager));
         }
     }
 
@@ -131,7 +135,7 @@ public class LoadSignGui extends WrappedGuiScreen {
             signBuffer.setLine(3, obj.has("2") ? obj.get("2").getAsString() : "");
             signBuffer.setLine(4, obj.has("3") ? obj.get("3").getAsString() : "");
 
-            PlayerAPI.getAPI().openGuiScreen(lastScreen);
+            Laby.labyAPI().minecraft().minecraftWindow().displayScreen(lastScreen);
         }
     }
 

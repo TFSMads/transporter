@@ -7,14 +7,17 @@ import ml.volder.unikapi.guisystem.elements.*;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
-import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
+import net.labymod.api.Laby;
+import net.labymod.api.client.gui.screen.ScreenInstance;
+import net.labymod.api.client.gui.screen.activity.AutoActivity;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 
-public class TransporterModulesMenu extends WrappedGuiScreen {
+@AutoActivity
+public class TransporterModulesMenu extends TransporterActivity {
 
     private static SettingsCategory settingsCategory = new SettingsCategory("Transporter Addon - Indstillinger");
 
@@ -23,7 +26,7 @@ public class TransporterModulesMenu extends WrappedGuiScreen {
     }
 
     private Scrollbar scrollbar = new Scrollbar(1);
-    private WrappedGuiScreen lastScreen;
+    private ScreenInstance lastScreen;
     private WrappedGuiButton buttonBack;
     private SettingsElement mouseOverElement;
     private List<CategorySettingsElement> buttonCategoryElements = new ArrayList();
@@ -53,7 +56,7 @@ public class TransporterModulesMenu extends WrappedGuiScreen {
         }
     }
 
-    public TransporterModulesMenu(WrappedGuiScreen lastScreen) {
+    public TransporterModulesMenu(ScreenInstance lastScreen) {
         this.lastScreen = lastScreen;
     }
 
@@ -264,9 +267,9 @@ public class TransporterModulesMenu extends WrappedGuiScreen {
                 this.scrollbar.setScrollY(0);
             }else {
                 if(lastScreen != null){
-                    PlayerAPI.getAPI().openGuiScreen(lastScreen);
+                    Laby.labyAPI().minecraft().minecraftWindow().displayScreen(lastScreen);
                 }else{
-                    PlayerAPI.getAPI().openGuiScreen(null);
+                    Laby.labyAPI().minecraft().minecraftWindow().displayScreen((ScreenInstance) null);
                 }
             }
         }
@@ -320,7 +323,7 @@ public class TransporterModulesMenu extends WrappedGuiScreen {
         }
 
         if(buttonAddonInfo.isEnabled() && buttonAddonInfo.isMouseOver()) {
-            PlayerAPI.getAPI().openGuiScreen(new AddonInfoScreen(this));
+            Laby.labyAPI().minecraft().minecraftWindow().displayScreen(new AddonInfoScreen(this));
         }
     }
 

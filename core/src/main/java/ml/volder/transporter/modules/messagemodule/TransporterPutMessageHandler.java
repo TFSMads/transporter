@@ -2,10 +2,7 @@ package ml.volder.transporter.modules.messagemodule;
 
 import ml.volder.transporter.TransporterAddon;
 import ml.volder.transporter.classes.items.Item;
-import ml.volder.transporter.modules.AutoTransporter;
 import ml.volder.transporter.modules.MessagesModule;
-import ml.volder.transporter.modules.MessagesModule.LatestTitle;
-import ml.volder.transporter.modules.ModuleManager;
 import ml.volder.transporter.utils.FormatingUtils;
 import ml.volder.transporter.utils.Parser;
 import ml.volder.unikapi.api.player.PlayerAPI;

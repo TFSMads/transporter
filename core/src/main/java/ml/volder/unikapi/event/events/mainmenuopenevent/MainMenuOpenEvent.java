@@ -6,13 +6,13 @@ import ml.volder.unikapi.api.ApiProvider;
 import ml.volder.unikapi.api.ApiReferenceStorage;
 import ml.volder.unikapi.event.*;
 import ml.volder.unikapi.logger.Logger;
-import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
+import net.labymod.api.client.gui.screen.ScreenInstance;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainMenuOpenEvent extends Event implements Cancellable {
-    WrappedGuiScreen newScreen;
+    ScreenInstance newScreen;
 
     private static List<Handler> handlerList = new ArrayList<>();
 
@@ -55,11 +55,11 @@ public class MainMenuOpenEvent extends Event implements Cancellable {
             }
         }
     }
-    public void setScreen(WrappedGuiScreen guiScreen) {
+    public void setScreen(ScreenInstance guiScreen) {
         this.newScreen = guiScreen;
     }
 
-    public WrappedGuiScreen getNewScreen() {
+    public ScreenInstance getNewScreen() {
         return newScreen;
     }
 

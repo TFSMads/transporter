@@ -7,7 +7,7 @@ import ml.volder.unikapi.event.EventType;
 import ml.volder.unikapi.event.events.opensignevent.OpenSignEvent;
 import ml.volder.unikapi.event.events.opensignevent.impl.Laby4EventOpenSign;
 import ml.volder.unikapi.utils.ReflectionUtils;
-import ml.volder.unikapi.wrappers.guiscreen.impl.Laby4GuiScreenImpl;
+import ml.volder.unikapi.wrappers.tileentitysign.WrappedTileEntitySign;
 import net.labymod.api.client.gui.screen.ScreenInstance;
 import net.labymod.api.event.client.gui.screen.ScreenDisplayEvent;
 import net.labymod.api.models.Implements;
@@ -24,22 +24,16 @@ public class VersionedOpenSignEvent extends Laby4EventOpenSign {
 
   }
 
+
   @Override
-  public void onScreenOpen(ScreenDisplayEvent event, String eventName) {
-    if(event.getScreen() == null || event.getScreen().wrap() == null || event.getScreen().wrap().getVersionedScreen() == null)
-      return;
-    GuiScreen guiScreen = (GuiScreen) event.getScreen().wrap().getVersionedScreen();
-    if(guiScreen instanceof GuiEditSign){
-      TileEntitySign sign = (TileEntitySign) ReflectionUtils.getPrivateFieldValueByType(guiScreen, GuiEditSign.class, TileEntitySign.class);
-      OpenSignEvent openSignEvent = new OpenSignEvent(EventType.PRE, eventName, new VersionedTileEntitySign(sign));
-      EventManager.callEvent(openSignEvent);
-      if(openSignEvent.getNewScreen() != null && openSignEvent.getNewScreen().getHandle(Laby4GuiScreenImpl.class) != null){
-        ScreenInstance screenInstance = openSignEvent.getNewScreen().getHandle(Laby4GuiScreenImpl.class);
-        event.setScreen(screenInstance);
-      }
-      if(openSignEvent.isCancelled()) {
-        event.setScreen(null);
-      }
-    }
+  public boolean isSignScreen(Object guiScreen) {
+    return guiScreen instanceof GuiEditSign;
+  }
+
+  @Override
+  public WrappedTileEntitySign getSign(Object guiScreen) {
+    assert guiScreen instanceof GuiEditSign; // isSignScreen() should always be called before this method to ensure the type
+    GuiEditSign sign = (GuiEditSign) guiScreen;
+    return new VersionedTileEntitySign(sign.tileSign);
   }
 }

@@ -1,23 +1,25 @@
 package ml.volder.transporter.modules.transportermenumodule;
 
 import ml.volder.transporter.classes.items.Item;
+import ml.volder.transporter.gui.TransporterActivity;
 import ml.volder.transporter.gui.elements.ScrollableGrid;
 import ml.volder.transporter.modules.ModuleManager;
 import ml.volder.transporter.modules.TransporterMenuModule;
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.guisystem.ModTextures;
-import ml.volder.unikapi.guisystem.elements.Scrollbar;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
-import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
+import net.labymod.api.Laby;
+import net.labymod.api.client.gui.screen.activity.AutoActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TransporterMenu extends WrappedGuiScreen {
+@AutoActivity
+public class TransporterMenu extends TransporterActivity {
 
     private int entryWidth = 120;
     private int entryHeight = 37;
@@ -83,7 +85,7 @@ public class TransporterMenu extends WrappedGuiScreen {
     @Override
     public void actionPerformed(WrappedGuiButton button) {
         if(button.getId() == 12) {
-            PlayerAPI.getAPI().openGuiScreen(new TransporterMenuLayout());
+            Laby.labyAPI().minecraft().minecraftWindow().displayScreen(new TransporterMenuLayout());
         }
     }
 
@@ -92,7 +94,7 @@ public class TransporterMenu extends WrappedGuiScreen {
         this.scrollableGrid.mouseClicked(mouseX, mouseY, mouseButton);
 
         if(buttonMenuOptions.isEnabled() && buttonMenuOptions.isMouseOver()) {
-          PlayerAPI.getAPI().openGuiScreen(new TransporterMenuSettingsGui());
+            Laby.labyAPI().minecraft().minecraftWindow().displayScreen(new TransporterMenuSettingsGui());
         }
     }
 

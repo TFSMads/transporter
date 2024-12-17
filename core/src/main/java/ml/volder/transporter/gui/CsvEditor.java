@@ -2,15 +2,14 @@ package ml.volder.transporter.gui;
 
 import ml.volder.transporter.classes.csv.CsvFile;
 import ml.volder.unikapi.api.draw.DrawAPI;
-import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.guisystem.elements.ModTextField;
 import ml.volder.unikapi.guisystem.elements.Scrollbar;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
-import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
 import net.labymod.api.Laby;
 import net.labymod.api.client.gui.screen.ScreenWrapper;
+import net.labymod.api.client.gui.screen.activity.AutoActivity;
 
 import java.awt.*;
 import java.io.File;
@@ -19,19 +18,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class CsvEditor extends WrappedGuiScreen {
+@AutoActivity
+public class CsvEditor extends TransporterActivity {
 
     private Consumer<CsvFile> saveCallback;
 
     public static void openEditor(InputStream inputStream) {
         CsvEditor csvEditor = new CsvEditor(new CsvFile(inputStream, ','), Laby.labyAPI().minecraft().minecraftWindow().currentScreen());
-        PlayerAPI.getAPI().openGuiScreen(csvEditor);
+        Laby.labyAPI().minecraft().minecraftWindow().displayScreen(csvEditor);
     }
 
     public static void openEditor(File file, char seperator, Consumer<CsvFile> saveCallback) {
         CsvEditor csvEditor = new CsvEditor(CsvFile.fromFile(file, seperator), Laby.labyAPI().minecraft().minecraftWindow().currentScreen());
         csvEditor.saveCallback = saveCallback;
-        PlayerAPI.getAPI().openGuiScreen(csvEditor);
+        Laby.labyAPI().minecraft().minecraftWindow().displayScreen(csvEditor);
     }
 
     /**
@@ -178,7 +178,7 @@ public class CsvEditor extends WrappedGuiScreen {
     public void mouseClicked(int mouseX, int mouseY, MouseButton mouseButton) {
         this.scrollbar.mouseAction(mouseX, mouseY, Scrollbar.EnumMouseAction.CLICKED);
         if(hoveredEntry != null) {
-            PlayerAPI.getAPI().openGuiScreen(new EntryEditor(hoveredEntry.csvEntry, this));
+            Laby.labyAPI().minecraft().minecraftWindow().displayScreen(new EntryEditor(hoveredEntry.csvEntry, this));
         }
     }
 
@@ -242,13 +242,14 @@ public class CsvEditor extends WrappedGuiScreen {
 
 
 
-    public class EntryEditor extends WrappedGuiScreen {
-        private WrappedGuiScreen backgroundScreen;
+    @AutoActivity
+    public class EntryEditor extends TransporterActivity {
+        private TransporterActivity backgroundScreen;
         private ModTextField expandedField;
 
         CsvFile.CsvEntry csvEntry;
 
-        public EntryEditor(CsvFile.CsvEntry csvEntry, WrappedGuiScreen backgroundScreen) {
+        public EntryEditor(CsvFile.CsvEntry csvEntry, TransporterActivity backgroundScreen) {
             this.backgroundScreen = backgroundScreen;
             this.csvEntry = csvEntry;
         }
@@ -287,7 +288,8 @@ public class CsvEditor extends WrappedGuiScreen {
 
         public void keyTyped(char typedChar, Key key) {
             if (key.equals(Key.ESCAPE)) {
-                PlayerAPI.getAPI().openGuiScreen(this.backgroundScreen);
+                Laby.labyAPI().minecraft().minecraftWindow().displayScreen(this.backgroundScreen);
+
             }
 
             if (this.expandedField.textboxKeyTyped(typedChar, key)) {
@@ -305,11 +307,11 @@ public class CsvEditor extends WrappedGuiScreen {
 
         public void actionPerformed(WrappedGuiButton button) {
             if (button.getId() == 1) {
-                PlayerAPI.getAPI().openGuiScreen(this.backgroundScreen);
+                Laby.labyAPI().minecraft().minecraftWindow().displayScreen(this.backgroundScreen);
             }
         }
 
-        public WrappedGuiScreen getBackgroundScreen() {
+        public TransporterActivity getBackgroundScreen() {
             return this.backgroundScreen;
         }
     }

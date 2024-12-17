@@ -6,8 +6,8 @@ import ml.volder.unikapi.api.ApiProvider;
 import ml.volder.unikapi.api.ApiReferenceStorage;
 import ml.volder.unikapi.event.*;
 import ml.volder.unikapi.logger.Logger;
-import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
 import ml.volder.unikapi.wrappers.tileentitysign.WrappedTileEntitySign;
+import net.labymod.api.client.gui.screen.ScreenInstance;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 public class OpenSignEvent extends Event implements Cancellable {
 
     WrappedTileEntitySign tileEntitySign;
-    WrappedGuiScreen newScreen;
+    ScreenInstance newScreen;
 
     private static List<Handler> handlerList = new ArrayList<>();
 
@@ -64,11 +64,11 @@ public class OpenSignEvent extends Event implements Cancellable {
         return tileEntitySign;
     }
 
-    public void setScreen(WrappedGuiScreen guiScreen) {
+    public void setScreen(ScreenInstance guiScreen) {
         this.newScreen = guiScreen;
     }
 
-    public WrappedGuiScreen getNewScreen() {
+    public ScreenInstance getNewScreen() {
         return newScreen;
     }
 

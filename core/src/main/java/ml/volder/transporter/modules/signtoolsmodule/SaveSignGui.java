@@ -3,19 +3,22 @@ package ml.volder.transporter.modules.signtoolsmodule;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import ml.volder.transporter.gui.TransporterActivity;
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.api.input.InputAPI;
-import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.datasystem.Data;
 import ml.volder.unikapi.datasystem.DataManager;
 import ml.volder.unikapi.guisystem.elements.ModTextField;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
-import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
+import net.labymod.api.Laby;
+import net.labymod.api.client.gui.screen.ScreenInstance;
+import net.labymod.api.client.gui.screen.activity.AutoActivity;
 
-public class SaveSignGui extends WrappedGuiScreen {
-    private WrappedGuiScreen lastScreen;
+@AutoActivity
+public class SaveSignGui extends TransporterActivity {
+    private ScreenInstance lastScreen;
     private ModTextField fieldServer;
     private WrappedGuiButton buttonAdd;
     private boolean displayError = false;
@@ -25,7 +28,7 @@ public class SaveSignGui extends WrappedGuiScreen {
 
     private boolean error = false;
 
-    public SaveSignGui(WrappedGuiScreen lastScreen, DataManager<Data> dataManager, SignBuffer signBuffer) {
+    public SaveSignGui(ScreenInstance lastScreen, DataManager<Data> dataManager, SignBuffer signBuffer) {
         this.lastScreen = lastScreen;
         this.dataManager = dataManager;
         this.signBuffer = signBuffer;
@@ -62,12 +65,12 @@ public class SaveSignGui extends WrappedGuiScreen {
     public void actionPerformed(WrappedGuiButton button) {
         switch (button.getId()) {
             case 1: {
-                PlayerAPI.getAPI().openGuiScreen(this.lastScreen);
+                Laby.labyAPI().minecraft().minecraftWindow().displayScreen(lastScreen);
                 break;
             }
             case 2: {
                 if(addSign()){
-                    PlayerAPI.getAPI().openGuiScreen(this.lastScreen);
+                    Laby.labyAPI().minecraft().minecraftWindow().displayScreen(lastScreen);
                 }else{
                     this.error = true;
                 }
@@ -134,7 +137,7 @@ public class SaveSignGui extends WrappedGuiScreen {
     @Override
     public void keyTyped(char typedChar, Key key) {
         if (key.equals(Key.ESCAPE)) {
-            PlayerAPI.getAPI().openGuiScreen(this.lastScreen);
+            Laby.labyAPI().minecraft().minecraftWindow().displayScreen(lastScreen);
             return;
         }
         if (key.equals(Key.ENTER) && this.buttonAdd.isEnabled()) {

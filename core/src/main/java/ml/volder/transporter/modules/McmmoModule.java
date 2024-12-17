@@ -5,7 +5,6 @@ import ml.volder.transporter.modules.mcmmomodule.McmmoManager;
 import ml.volder.transporter.settings.accesors.SettingRegistryAccessor;
 import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.api.minecraft.MinecraftAPI;
-import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.logger.Logger;
 import net.labymod.api.Laby;

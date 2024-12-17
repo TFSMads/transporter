@@ -9,7 +9,6 @@ import ml.volder.transporter.settings.classes.TransporterSettingElementFactory;
 import ml.volder.transporter.settings.classes.TransporterWidgetFactory;
 import ml.volder.unikapi.api.input.InputAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
-import ml.volder.unikapi.event.EventManager;
 import ml.volder.unikapi.event.Listener;
 import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.keysystem.Key;
@@ -151,9 +150,9 @@ public class TransporterMenuModule extends SimpleModule implements Listener {
     }
 
     private void open() {
-        if(PlayerAPI.getAPI().hasOpenScreen())
+        if(Laby.labyAPI().minecraft().minecraftWindow().isScreenOpened())
             return;
-        PlayerAPI.getAPI().openGuiScreen(new TransporterMenu());
+        Laby.labyAPI().minecraft().minecraftWindow().displayScreen(new TransporterMenu());
     }
 
     public void swap(int slot, int slot2) {

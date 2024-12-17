@@ -8,7 +8,6 @@ import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.event.EventImpl;
 import ml.volder.unikapi.keysystem.KeyMapper;
 import ml.volder.unikapi.wrappers.guibutton.IGuiButtonImpl;
-import ml.volder.unikapi.wrappers.guiscreen.IGuiScreenImpl;
 
 public interface ApiReferenceStorage {
     DrawAPI getDrawAPI();
@@ -23,5 +22,4 @@ public interface ApiReferenceStorage {
     KeyMapper getVersionedKeyMapper();
 
     Class<? extends IGuiButtonImpl> getVersionedGuiButton();
-    Class<? extends IGuiScreenImpl> getVersionedGuiScreen();
 }

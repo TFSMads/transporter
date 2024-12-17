@@ -7,11 +7,12 @@ import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
-import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
+import net.labymod.api.client.gui.screen.activity.AutoActivity;
 
 import java.util.List;
 
-public class UpdateScreen extends WrappedGuiScreen {
+@AutoActivity
+public class UpdateScreen extends TransporterActivity {
 
     @Override
     public void updateScreen() {

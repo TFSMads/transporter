@@ -9,6 +9,7 @@ import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.datasystem.Data;
 import ml.volder.unikapi.datasystem.DataManager;
+import net.labymod.api.Laby;
 
 import java.io.*;
 import java.net.URL;
@@ -142,7 +143,7 @@ public class UpdateManager {
         try {
             String javaHome = System.getProperty("java.home");
             if(javaHome == null){
-                PlayerAPI.getAPI().openGuiScreen(new UpdateFailedScreen());
+                Laby.labyAPI().minecraft().minecraftWindow().displayScreen(new UpdateFailedScreen());
                 return;
             }
             Path path = Paths.get(UnikAPI.getCommonDataFolder() + "/transporter/updater/");

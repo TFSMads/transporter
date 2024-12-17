@@ -13,6 +13,8 @@ import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.types.ResourceLocation;
+import net.labymod.api.Laby;
+import net.labymod.api.client.gui.screen.ScreenInstance;
 
 import java.util.Collections;
 
@@ -106,10 +108,10 @@ public class TransporterMenuEntry extends ScrollableGrid.Entry{
             } else {
                 item.get(ModuleManager.getInstance().getModule(TransporterMenuModule.class).getWithdrawAmount());
             }
-            PlayerAPI.getAPI().openGuiScreen(null);
+            Laby.labyAPI().minecraft().minecraftWindow().displayScreen((ScreenInstance) null);
         }else if (hoverPutButton) {
             item.put(-1);
-            PlayerAPI.getAPI().openGuiScreen(null);
+            Laby.labyAPI().minecraft().minecraftWindow().displayScreen((ScreenInstance) null);
         }
     }
 }

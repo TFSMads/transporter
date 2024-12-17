@@ -179,7 +179,7 @@ public class SignToolsModule extends SimpleModule implements Listener {
             return;
         if(toggleKey == null)
             return;
-        if (InputAPI.getAPI().isKeyDown(toggleKey) && !PlayerAPI.getAPI().hasOpenScreen()){
+        if (InputAPI.getAPI().isKeyDown(toggleKey) && !Laby.labyAPI().minecraft().minecraftWindow().isScreenOpened()) {
             this.openSignEditor = !this.openSignEditor;
             if(shouldOpenSignEditorWidget != null) {
                 shouldOpenSignEditorWidget.setValue(openSignEditor);

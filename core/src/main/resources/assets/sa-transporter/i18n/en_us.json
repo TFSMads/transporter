@@ -22,6 +22,7 @@
       "lobbyServers.name": "Lobbyer",
       "openValueSettings.name": "Værdi Indstillinger",
       "modules.name": "§fTransporter Addon §7- §fFeatures",
+      "openAddonInfo.name": "Addon Information",
       "advancedSubSettings": {
         "name": "Avanceret",
         "loggerOptions": {

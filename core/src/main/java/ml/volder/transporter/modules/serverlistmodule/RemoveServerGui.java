@@ -3,24 +3,27 @@ package ml.volder.transporter.modules.serverlistmodule;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import ml.volder.transporter.gui.TransporterActivity;
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.api.input.InputAPI;
-import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.datasystem.Data;
 import ml.volder.unikapi.datasystem.DataManager;
 import ml.volder.unikapi.guisystem.elements.ModTextField;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
-import ml.volder.unikapi.wrappers.guiscreen.WrappedGuiScreen;
+import net.labymod.api.Laby;
+import net.labymod.api.client.gui.screen.ScreenInstance;
+import net.labymod.api.client.gui.screen.activity.AutoActivity;
 
-public class RemoveServerGui extends WrappedGuiScreen {
-    private WrappedGuiScreen lastScreen;
+@AutoActivity
+public class RemoveServerGui extends TransporterActivity {
+    private ScreenInstance lastScreen;
     private ModTextField fieldServer;
     private WrappedGuiButton buttonDelete;
     private DataManager<Data> dataManager;
 
-    public RemoveServerGui(WrappedGuiScreen lastScreen, DataManager<Data> dataManager) {
+    public RemoveServerGui(ScreenInstance lastScreen, DataManager<Data> dataManager) {
         this.lastScreen = lastScreen;
         this.dataManager = dataManager;
     }
@@ -54,7 +57,7 @@ public class RemoveServerGui extends WrappedGuiScreen {
     public void actionPerformed(WrappedGuiButton button) {
         if(button.getId() == 2)
             this.removeServer();
-        PlayerAPI.getAPI().openGuiScreen(lastScreen);
+        Laby.labyAPI().minecraft().minecraftWindow().displayScreen(lastScreen);
     }
 
     private void removeServer() {
@@ -100,7 +103,7 @@ public class RemoveServerGui extends WrappedGuiScreen {
     @Override
     public void keyTyped(char typedChar, Key key) {
         if (key.equals(Key.ESCAPE)) {
-            PlayerAPI.getAPI().openGuiScreen(lastScreen);
+            Laby.labyAPI().minecraft().minecraftWindow().displayScreen(lastScreen);
             return;
         }
         if (key.equals(Key.ENTER) && this.buttonDelete.isEnabled()) {
