@@ -8,8 +8,8 @@ import ml.volder.unikapi.datasystem.DataManager;
 import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.logger.Logger;
-import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.types.ResourceLocation;
+import ml.volder.unikapi.utils.ColorUtils;
 
 import java.util.function.Consumer;
 
@@ -121,7 +121,7 @@ public class SliderElement extends ControlElement{
         DrawAPI drawAPI = DrawAPI.getAPI();
         int width = this.getObjectWidth();
         if (this.displayName != null) {
-            drawAPI.drawRectangle(x - 1, y, x, maxY, ModColor.toRGB(120, 120, 120, 120));
+            drawAPI.drawRectangle(x - 1, y, x, maxY, ColorUtils.toRGB(120, 120, 120, 120));
         }
 
         drawAPI.bindTexture(buttonTextures);

@@ -2,7 +2,7 @@ package ml.volder.transporter.modules.signtoolsmodule;
 
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.guisystem.ModTextures;
-import ml.volder.unikapi.types.ModColor;
+import net.labymod.api.client.component.format.NamedTextColor;
 
 public class SignInfoRenderer {
     private String title;
@@ -38,7 +38,7 @@ public class SignInfoRenderer {
     private void renderLine(String text, int lineNumber, int xSignCorner, int ySignCorner, boolean isSelected) {
         int xCenter = xSignCorner + 24*2;
         int y = ySignCorner + 4 + (10)*(lineNumber-1);
-        DrawAPI.getAPI().drawString(text, xCenter - DrawAPI.getAPI().getStringWidth(text)/2, y, ModColor.BLACK.getColor().getRGB());
+        DrawAPI.getAPI().drawString(text, xCenter - DrawAPI.getAPI().getStringWidth(text)/2, y, NamedTextColor.BLACK.color().getValue());
     }
 
     private void drawSign(int xSignCorner, int ySignCorner) {

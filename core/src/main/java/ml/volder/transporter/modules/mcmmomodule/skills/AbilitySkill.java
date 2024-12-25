@@ -2,8 +2,9 @@ package ml.volder.transporter.modules.mcmmomodule.skills;
 
 import ml.volder.unikapi.datasystem.Data;
 import ml.volder.unikapi.datasystem.DataManager;
-import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.widgets.ModuleSystem;
+import net.labymod.api.client.component.Component;
+import net.labymod.api.client.component.format.NamedTextColor;
 
 import java.time.Instant;
 
@@ -49,12 +50,12 @@ public class AbilitySkill extends SimpleSkill {
         registerModules(category);
         ModuleSystem.registerModule(skillId + "-powerup", skillId + " Ability", false, powerupCategory, icon, s -> {
             if (noLevelData)
-                return "Ingen data (Skriv /mcstats)";
+                return Component.text("Ingen data (Skriv /mcstats)");
             if (isActive())
-                return ModColor.GREEN + "Aktiv " + ModColor.GRAY + "(" + (powerUpDuration - (Instant.now().getEpochSecond() - lastActivated)) + " Sekunder)";
+                return Component.text("Aktiv ").color(NamedTextColor.GREEN).append(Component.text( "(" + (powerUpDuration - (Instant.now().getEpochSecond() - lastActivated)) + " Sekunder)").color(NamedTextColor.GRAY));
             if (isReady())
-                return ModColor.GREEN + "Klar!";
-            return ModColor.RED + "Klar om " + ((powerUpDuration + 239) - (Instant.now().getEpochSecond() - lastActivated)) + " Sekunder!";
+                return Component.text("Klar!").color(NamedTextColor.GREEN);
+            return Component.text("Klar om " + ((powerUpDuration + 239) - (Instant.now().getEpochSecond() - lastActivated)) + " Sekunder!").color(NamedTextColor.RED);
         });
     }
 }

@@ -3,7 +3,7 @@ package ml.volder.unikapi.guisystem.elements;
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.keysystem.MouseButton;
-import ml.volder.unikapi.types.ModColor;
+import ml.volder.unikapi.utils.ColorUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -40,21 +40,21 @@ public class CheckBox {
             DrawAPI drawAPI = DrawAPI.getAPI();
             drawAPI.drawCenteredString(this.title, (double)(this.x + this.width / 2), (double)(this.y - 5), 0.5D);
             boolean hover = this.isMouseOver(mouseX, mouseY);
-            drawAPI.drawRect(this.x, this.y, this.x + this.width, this.y + this.height, ModColor.toRGB(0, 0, 0, 255));
-            drawAPI.drawRect(this.x + 1, this.y + 1, this.x + this.width - 1, this.y + this.height - 1, ModColor.toRGB(170, 170, 170, 255));
-            drawAPI.drawRect(this.x + 2, this.y + 2, this.x + this.width - 2, this.y + this.height - 2, ModColor.toRGB(hover ? 100 : 120, hover ? 100 : 120, hover ? 100 : 120, 255));
+            drawAPI.drawRect(this.x, this.y, this.x + this.width, this.y + this.height, ColorUtils.toRGB(0, 0, 0, 255));
+            drawAPI.drawRect(this.x + 1, this.y + 1, this.x + this.width - 1, this.y + this.height - 1, ColorUtils.toRGB(170, 170, 170, 255));
+            drawAPI.drawRect(this.x + 2, this.y + 2, this.x + this.width - 2, this.y + this.height - 2, ColorUtils.toRGB(hover ? 100 : 120, hover ? 100 : 120, hover ? 100 : 120, 255));
             EnumCheckBoxValue value = this.currentValue;
             if (value == EnumCheckBoxValue.ENABLED) {
                 drawAPI.bindTexture(ModTextures.BUTTON_CHECKBOX);
                 drawAPI.drawTexture((double)(this.x + 1), (double)(this.y - 1), 256.0D, 256.0D, (double)this.width, (double)this.height);
             } else if (value == EnumCheckBoxValue.INDETERMINATE) {
-                drawAPI.drawRect(this.x + this.width / 3, this.y + this.height / 3, this.x + this.width - this.width / 3 + 1, this.y + this.height - this.height / 3 + 1, ModColor.toRGB(0, 100, 0, 255));
-                drawAPI.drawRect(this.x + this.width / 3 - 1, this.y + this.height / 3 - 1, this.x + this.width - this.width / 3, this.y + this.height - this.height / 3, ModColor.toRGB(0, 150, 0, 255));
+                drawAPI.drawRect(this.x + this.width / 3, this.y + this.height / 3, this.x + this.width - this.width / 3 + 1, this.y + this.height - this.height / 3 + 1, ColorUtils.toRGB(0, 100, 0, 255));
+                drawAPI.drawRect(this.x + this.width / 3 - 1, this.y + this.height / 3 - 1, this.x + this.width - this.width / 3, this.y + this.height - this.height / 3, ColorUtils.toRGB(0, 150, 0, 255));
             }
 
             if (this.hasDefault && this.currentValue == EnumCheckBoxValue.DEFAULT) {
                 if (this.getValue() == EnumCheckBoxValue.ENABLED) {
-                    drawAPI.drawRect(this.x + 2, this.y + 2, this.x + this.width - 2, this.y + this.height - 2, ModColor.toRGB(0, 150, 0, 155));
+                    drawAPI.drawRect(this.x + 2, this.y + 2, this.x + this.width - 2, this.y + this.height - 2, ColorUtils.toRGB(0, 150, 0, 155));
                 }
 
                 drawAPI.bindTexture(ModTextures.BUTTON_HOVER_DEFAULT);

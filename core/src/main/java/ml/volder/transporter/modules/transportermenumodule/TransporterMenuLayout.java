@@ -8,9 +8,12 @@ import ml.volder.transporter.modules.TransporterMenuModule;
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
-import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
 import net.labymod.api.Laby;
+import net.labymod.api.client.component.Component;
+import net.labymod.api.client.component.TextComponent;
+import net.labymod.api.client.component.format.NamedTextColor;
+import net.labymod.api.client.component.format.TextDecoration;
 import net.labymod.api.client.gui.screen.activity.AutoActivity;
 
 import java.util.ArrayList;
@@ -53,13 +56,21 @@ public class TransporterMenuLayout extends TransporterActivity {
         DrawAPI drawAPI = DrawAPI.getAPI();
         drawAPI.drawAutoDimmedBackground(0);
 
-        scrollableGrid.render(mouseX, mouseY);
+        scrollableGrid.render(mouseX, mouseY, getStack());
 
         drawAPI.drawOverlayBackground(0, 41);
         drawAPI.drawGradientShadowTop(41.0, 0.0, this.getWidth());
         drawAPI.drawOverlayBackground(this.getHeight() - 40, this.getHeight());
         drawAPI.drawGradientShadowBottom(this.getHeight() - 40, 0.0, this.getWidth());
-        drawAPI.drawCenteredString(ModColor.cl("a")+ModColor.cl("l")+"Transporter Menu", (double)(this.getWidth() / 2), 20.0D, 2.0D);
+
+        TextComponent component = Component.text("Transporter Menu Layout").color(NamedTextColor.GREEN).decorate(TextDecoration.BOLD);
+
+        Laby.references().renderPipeline().componentRenderer().builder()
+                .text(component)
+                .pos((float) getWidth() / 2, 20)
+                .scale(2)
+                .centered(true)
+                .render(getStack());
 
         scrollableGrid.renderHoverText();
     }

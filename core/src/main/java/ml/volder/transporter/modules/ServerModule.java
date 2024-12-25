@@ -5,6 +5,7 @@ import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.types.Material;
 import ml.volder.unikapi.widgets.ModuleSystem;
 import net.labymod.api.Laby;
+import net.labymod.api.client.component.Component;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import net.labymod.api.event.client.network.server.ServerDisconnectEvent;
@@ -98,6 +99,6 @@ public class ServerModule extends SimpleModule {
 
     private void registerModules() {
         ServerModule instance = ModuleManager.getInstance().getModule(ServerModule.class);
-        ModuleSystem.registerModule("server", "Server", false, GuiModulesModule.getModuleRegistry().getOtherCategory(), Material.PAPER, s -> instance.isFeatureActive ? instance.currentServer == null ? "Opdatere!" : instance.currentServer.substring(0, 1).toUpperCase() + currentServer.substring(1) : "Server Tracker featuren er ikke aktiv!");
+        ModuleSystem.registerModule("server", "Server", false, GuiModulesModule.getModuleRegistry().getOtherCategory(), Material.PAPER, s -> instance.isFeatureActive ? instance.currentServer == null ? Component.text("Opdatere!") : Component.text(instance.currentServer.substring(0, 1).toUpperCase() + currentServer.substring(1)) : Component.text("Server Tracker featuren er ikke aktiv!"));
     }
 }

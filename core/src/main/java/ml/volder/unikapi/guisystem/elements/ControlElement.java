@@ -6,8 +6,8 @@ import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.types.Material;
-import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.types.ResourceLocation;
+import ml.volder.unikapi.utils.ColorUtils;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
 
 import java.util.Iterator;
@@ -61,7 +61,7 @@ public class ControlElement extends SettingsElement{
         DrawAPI drawAPI = DrawAPI.getAPI();
         this.lastMaxX = maxX;
         if (this.displayName != null) {
-            drawAPI.drawRectangle(x, y, maxX, maxY, ModColor.toRGB(80, 80, 80, this.selected ? 130 : (this.hoverable && this.mouseOver ? 80 : 60)));
+            drawAPI.drawRectangle(x, y, maxX, maxY, ColorUtils.toRGB(80, 80, 80, this.selected ? 130 : (this.hoverable && this.mouseOver ? 80 : 60)));
             int iconWidth = this.iconData != null ? 25 : 2;
             if (this.iconData != null) {
                 if (this.iconData.hasTextureIcon()) {
@@ -72,7 +72,7 @@ public class ControlElement extends SettingsElement{
                 }
             }
 
-            List<String> list = drawAPI.listFormattedStringToWidth(this.getDisplayName().isEmpty() ? ModColor.cl("4") + "Unknown" : this.getDisplayName(), maxX - (x + iconWidth) - this.getObjectWidth() - 5 - (this.hasSubList() ? iconWidth : 0));
+            List<String> list = drawAPI.listFormattedStringToWidth(this.getDisplayName().isEmpty() ? "Unknown" : this.getDisplayName(), maxX - (x + iconWidth) - this.getObjectWidth() - 5 - (this.hasSubList() ? iconWidth : 0));
             int listY = y + 7 - ((list.size() > 2 ? 2 : list.size()) - 1) * 5;
             int i = 0;
             Iterator var11 = list.iterator();
@@ -133,8 +133,8 @@ public class ControlElement extends SettingsElement{
             }*/
 
             if (blocked) {
-                drawAPI.drawRectangle(x, y, maxX, maxY, ModColor.toRGB(0, 0, 0, 200));
-                drawAPI.drawString(ModColor.RED + "✖ " + "Fra" + " ✖", (double)(x + 5), (double)(y + (maxY - y) / 2 - 4));
+                drawAPI.drawRectangle(x, y, maxX, maxY, ColorUtils.toRGB(0, 0, 0, 200));
+                drawAPI.drawString("✖ " + "Fra" + " ✖", (double)(x + 5), (double)(y + (maxY - y) / 2 - 4));
             }
         }
 

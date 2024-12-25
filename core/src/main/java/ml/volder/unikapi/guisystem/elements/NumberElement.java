@@ -8,8 +8,8 @@ import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.logger.Logger;
-import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.types.ResourceLocation;
+import ml.volder.unikapi.utils.ColorUtils;
 import ml.volder.unikapi.utils.StringUtils;
 
 import java.util.function.Consumer;
@@ -105,7 +105,7 @@ public class NumberElement extends ControlElement {
             textField.xPosition = maxX - width - 2;
             textField.yPosition = y + 1;
             this.textField.drawTextBox();
-            drawAPI.drawRectangle(x - 1, y, x, maxY, ModColor.toRGB(120, 120, 120, 120));
+            drawAPI.drawRectangle(x - 1, y, x, maxY, ColorUtils.toRGB(120, 120, 120, 120));
             drawAPI.bindTexture(SERVER_SELECTION_BUTTONS);
             //drawAPI.glStateManagerColor(1.0F, 1.0F, 1.0F);
             this.hoverUp = mouseX > maxX - 15 && mouseX < maxX - 15 + 11 && mouseY > y + 2 && mouseY < y + 2 + 7;

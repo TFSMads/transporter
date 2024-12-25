@@ -8,7 +8,7 @@ import ml.volder.unikapi.datasystem.DataManager;
 import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
-import ml.volder.unikapi.types.ModColor;
+import ml.volder.unikapi.utils.ColorUtils;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
 import net.labymod.api.Laby;
 import net.labymod.api.client.gui.screen.ScreenWrapper;
@@ -61,7 +61,7 @@ public class StringElement extends ControlElement{
 
             DrawAPI drawAPI = DrawAPI.getAPI();
 
-            drawAPI.drawRectangle(x - 1, y, x, maxY, ModColor.toRGB(120, 120, 120, 120));
+            drawAPI.drawRectangle(x - 1, y, x, maxY, ColorUtils.toRGB(120, 120, 120, 120));
             //drawAPI.glStateManagerColor(1.0F, 1.0F, 1.0F);
             drawAPI.bindTexture(ModTextures.BUTTON_EXPAND);
             this.hoverExpandButton = mouseX > maxX - this.getObjectWidth() - 12 && mouseX < maxX - this.getObjectWidth() - 7 + 8 && mouseY > y + 1 && mouseY < y + 1 + 8;

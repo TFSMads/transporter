@@ -5,7 +5,6 @@ import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.api.minecraft.MinecraftAPI;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
-import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
 import net.labymod.api.client.gui.screen.activity.AutoActivity;
 
@@ -21,8 +20,8 @@ public class UpdateScreen extends TransporterActivity {
 
     @Override
     public void initGui() {
-        addButton(new WrappedGuiButton(2, getWidth() / 2 - 175, getHeight() - 50, 150, 20, ModColor.RED + "Opdatere senere!"));
-        addButton(new WrappedGuiButton(1, getWidth() / 2 + 25, getHeight() - 50, 150, 20, ModColor.GREEN + "Opdatere"));
+        addButton(new WrappedGuiButton(2, getWidth() / 2 - 175, getHeight() - 50, 150, 20, "Opdatere senere!"));
+        addButton(new WrappedGuiButton(1, getWidth() / 2 + 25, getHeight() - 50, 150, 20, "Opdatere"));
 
     }
 
@@ -39,8 +38,7 @@ public class UpdateScreen extends TransporterActivity {
         DrawAPI drawAPI = DrawAPI.getAPI();
         drawAPI.drawBackground(0);
         drawAPI.drawCenteredString("Transporter Addon - Opdaterings System!", getWidth() / 2, 50, 2);
-        String text = ModColor.WHITE +
-                "Der er en nye version af transporter addon tilgængelig. " +
+        String text = "Der er en nye version af transporter addon tilgængelig. " +
                 "Klik på opdatere for at opdatere til den seneste version. " +
                 "Vi anbefaler du opdatere med det samme men hvis du ønsker at vente så klik på opdater senere!";
         List<String> stringList =drawAPI.listFormattedStringToWidth(text, getWidth() / 2);

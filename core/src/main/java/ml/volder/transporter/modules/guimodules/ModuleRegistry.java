@@ -5,8 +5,9 @@ import ml.volder.transporter.classes.items.Item;
 import ml.volder.transporter.modules.*;
 import ml.volder.transporter.utils.FormatingUtils;
 import ml.volder.unikapi.types.Material;
-import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.widgets.ModuleSystem;
+import net.labymod.api.client.component.Component;
+import net.labymod.api.client.component.format.NamedTextColor;
 import net.labymod.api.util.I18n;
 
 public class ModuleRegistry {
@@ -53,8 +54,8 @@ public class ModuleRegistry {
                     item.getMaterial(),
                     s -> {
                         if(!TransporterAddon.getInstance().getTransporterItemManager().hasTransporterData())
-                            return NO_DATA_TRANSLATION;
-                        return ModuleManager.getInstance().getModule(MessagesModule.class).isFeatureActive() ? (item.getAmountInTransporter() == null ? "0" : FormatingUtils.formatNumber(item.getAmountInTransporter())) : "Besked featuren er deaktiveret!";
+                            return Component.text(NO_DATA_TRANSLATION);
+                        return ModuleManager.getInstance().getModule(MessagesModule.class).isFeatureActive() ? (item.getAmountInTransporter() == null ? Component.text("0") : Component.text(FormatingUtils.formatNumber(item.getAmountInTransporter()))) : Component.text("Besked featuren er deaktiveret!");
                     }
             );
         }
@@ -68,13 +69,12 @@ public class ModuleRegistry {
                     item.getMaterial(),
                     s -> {
                         if(!TransporterAddon.getInstance().getTransporterItemManager().hasTransporterData())
-                            return NO_DATA_TRANSLATION;
+                            return Component.text(NO_DATA_TRANSLATION);
                         return ModuleManager.getInstance().getModule(MessagesModule.class).isFeatureActive()
                                 ?   (item.getAmountInTransporter() == null
-                                ? "0 EMs"
-                                : FormatingUtils.formatNumber((long)((item.getAmountInTransporter().doubleValue() / 6400) * item.getSellValue().doubleValue())) + " EMs"
-                        )
-                                : I18n.translate("sa-transporter.guiModules.messageFeatureInactive");
+                                ? Component.text("0 EMs")
+                                : Component.text(FormatingUtils.formatNumber((long)((item.getAmountInTransporter().doubleValue() / 6400) * item.getSellValue().doubleValue())) + " EMs"))
+                                : Component.text(I18n.translate("sa-transporter.guiModules.messageFeatureInactive"));
                     }
             );
         }
@@ -87,8 +87,8 @@ public class ModuleRegistry {
                 Material.DIODE,
                 s -> {
                     if(!TransporterAddon.getInstance().getTransporterItemManager().hasTransporterData())
-                        return NO_DATA_TRANSLATION;
-                    return ModuleManager.getInstance().getModule(AutoTransporter.class).isFeatureActive() && ModuleManager.getInstance().getModule(AutoTransporter.class).isEnabled() ? ModColor.GREEN + "Til" : ModColor.RED + "Fra";
+                        return Component.text(NO_DATA_TRANSLATION);
+                    return ModuleManager.getInstance().getModule(AutoTransporter.class).isFeatureActive() && ModuleManager.getInstance().getModule(AutoTransporter.class).isEnabled() ? Component.text("Til").color(NamedTextColor.GREEN) : Component.text("Fra").color(NamedTextColor.RED);
                 }
         );
 
@@ -100,8 +100,8 @@ public class ModuleRegistry {
                 Material.REDSTONE_LAMP,
                 s -> {
                     if(!TransporterAddon.getInstance().getTransporterItemManager().hasTransporterData())
-                        return NO_DATA_TRANSLATION;
-                    return ModuleManager.getInstance().getModule(AutoGetModule.class).isFeatureActive() && ModuleManager.getInstance().getModule(AutoGetModule.class).isEnabled() ? ModColor.GREEN + "Til" : ModColor.RED + "Fra";
+                        return Component.text(NO_DATA_TRANSLATION);
+                    return ModuleManager.getInstance().getModule(AutoGetModule.class).isFeatureActive() && ModuleManager.getInstance().getModule(AutoGetModule.class).isEnabled() ? Component.text("Til").color(NamedTextColor.GREEN) : Component.text("Fra").color(NamedTextColor.RED);
                 }
         );
 
@@ -113,9 +113,9 @@ public class ModuleRegistry {
                 Material.EMERALD,
                 s -> {
                     if(!ModuleManager.getInstance().getModule(MessagesModule.class).isFeatureActive())
-                        return I18n.translate("sa-transporter.guiModules.messageFeatureInactive");
+                        return Component.text(I18n.translate("sa-transporter.guiModules.messageFeatureInactive"));
                     if(!TransporterAddon.getInstance().getTransporterItemManager().hasTransporterData())
-                        return NO_DATA_TRANSLATION;
+                        return Component.text(NO_DATA_TRANSLATION);
                     double value = 0;
                     for(Item item : TransporterAddon.getInstance().getTransporterItemManager().getItemList()) {
                         value += (item.getAmountInTransporter() == null
@@ -123,7 +123,7 @@ public class ModuleRegistry {
                                 : (item.getAmountInTransporter().doubleValue() / 6400) * item.getSellValue()
                         );
                     }
-                    return FormatingUtils.formatNumber((long) value) + " EMs";                }
+                    return Component.text(FormatingUtils.formatNumber((long) value) + " EMs");                }
         );
 
         ModuleSystem.registerModule(
@@ -133,8 +133,8 @@ public class ModuleRegistry {
                 otherCategory,
                 Material.EMERALD,
                 s -> ModuleManager.getInstance().getModule(BalanceModule.class).isFeatureActive()
-                            ? FormatingUtils.formatNumber(ModuleManager.getInstance().getModule(BalanceModule.class).getBalance().longValue()) + " EMs"
-                            : I18n.translate("sa-transporter.guiModules.balanceFeatureInactive")
+                            ? Component.text(FormatingUtils.formatNumber(ModuleManager.getInstance().getModule(BalanceModule.class).getBalance().longValue()) + " EMs")
+                            : Component.text(I18n.translate("sa-transporter.guiModules.balanceFeatureInactive"))
         );
 
         ModuleSystem.registerModule(
@@ -144,8 +144,8 @@ public class ModuleRegistry {
                 otherCategory,
                 Material.OAK_SIGN,
                 s -> ModuleManager.getInstance().getModule(SignToolsModule.class).isFeatureActive()
-                        ? ModuleManager.getInstance().getModule(SignToolsModule.class).isOpenSignEditor() ? ModColor.GREEN + "Ja" : ModColor.RED + "Nej"
-                        : I18n.translate("sa-transporter.guiModules.signtoolsFeatureInactive")
+                        ? ModuleManager.getInstance().getModule(SignToolsModule.class).isOpenSignEditor() ? Component.text( "Ja").color(NamedTextColor.GREEN) : Component.text("Nej").color(NamedTextColor.RED)
+                        : Component.text(I18n.translate("sa-transporter.guiModules.signtoolsFeatureInactive"))
         );
     }
 

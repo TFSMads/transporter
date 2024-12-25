@@ -2,6 +2,7 @@ package ml.volder.unikapi.widgets;
 
 import ml.volder.unikapi.api.minecraft.MinecraftAPI;
 import ml.volder.unikapi.types.Material;
+import net.labymod.api.client.component.Component;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
@@ -43,7 +44,7 @@ public class ModuleSystem {
      * @param icon the icon of the module
      * @param getDisplayValue the function that returns the display value of the module
      */
-    public static void registerModule(String key, String defaultPrefix, boolean defaultIsEnabled, Object category, Material icon, Function<String, String> getDisplayValue) {
+    public static void registerModule(String key, String defaultPrefix, boolean defaultIsEnabled, Object category, Material icon, Function<String, Component> getDisplayValue) {
         getModuleManager().registerModule(key, defaultPrefix, defaultIsEnabled, category, icon, getDisplayValue);
     }
 

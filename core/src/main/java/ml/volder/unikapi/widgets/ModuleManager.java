@@ -1,6 +1,7 @@
 package ml.volder.unikapi.widgets;
 
 import ml.volder.unikapi.types.Material;
+import net.labymod.api.client.component.Component;
 
 import java.util.function.Function;
 
@@ -19,7 +20,7 @@ public interface ModuleManager {
         return registerCategory(displayName, Material.PAPER, "");
     }
 
-    void registerModule(String key, String defaultPrefix, boolean defaultIsEnabled, Object category, Material icon, Function<String, String> getDisplayValue);
+    void registerModule(String key, String defaultPrefix, boolean defaultIsEnabled, Object category, Material icon, Function<String, Component> getDisplayValue);
 
     void openEditor();
 

@@ -6,6 +6,7 @@ import ml.volder.transporter.modules.MessagesModule;
 import ml.volder.transporter.utils.FormatingUtils;
 import ml.volder.transporter.utils.Parser;
 import ml.volder.unikapi.api.player.PlayerAPI;
+import net.labymod.api.Laby;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -43,10 +44,10 @@ public class TransporterPutMessageHandler implements IMessageHandler {
             if(mode == MessageModes.NO_MESSAGES) {
                 return true;
             }else if(mode == MessageModes.ACTIONBAR_MESSAGES){
-                PlayerAPI.getAPI().displayActionBarMessage(module.getMessage(module.getRawMessage("putFailed"), item.getDisplayName().toLowerCase(), null, null));
+                Laby.references().chatExecutor().displayActionBar(module.getMessage(module.getRawMessage("putFailed"), item.getDisplayName().toLowerCase(), null, null));
                 return true;
             }else if(mode == MessageModes.CHAT_MESSAGES){
-                PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("putFailed"), item.getDisplayName().toLowerCase(), null, null));
+                Laby.references().chatExecutor().displayClientMessage(module.getMessage(module.getRawMessage("putFailed"), item.getDisplayName().toLowerCase(), null, null));
                 return true;
             }
         }
@@ -67,10 +68,10 @@ public class TransporterPutMessageHandler implements IMessageHandler {
             if(mode == MessageModes.NO_MESSAGES) {
                 return true;
             }else if(mode == MessageModes.ACTIONBAR_MESSAGES){
-                PlayerAPI.getAPI().displayActionBarMessage(module.getMessage(module.getRawMessage("putSuccess"), item.getDisplayName().toLowerCase(), amountMatch, String.valueOf(item.getAmountInTransporter())));
+                Laby.references().chatExecutor().displayActionBar(module.getMessage(module.getRawMessage("putSuccess"), item.getDisplayName().toLowerCase(), amountMatch, String.valueOf(item.getAmountInTransporter())));
                 return true;
             }else if(mode == MessageModes.CHAT_MESSAGES){
-                PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("putSuccess"), item.getDisplayName().toLowerCase(), amountMatch, String.valueOf(item.getAmountInTransporter())));
+                Laby.references().chatExecutor().displayClientMessage(module.getMessage(module.getRawMessage("putSuccess"), item.getDisplayName().toLowerCase(), amountMatch, String.valueOf(item.getAmountInTransporter())));
                 return true;
             }
         }
@@ -96,7 +97,7 @@ public class TransporterPutMessageHandler implements IMessageHandler {
                         return false;
                     }
 
-                    PlayerAPI.getAPI().displayActionBarMessage(module.getMessage(module.getRawMessage("putAllMessage"), null, FormatingUtils.formatNumber(totalAdded), null));
+                    Laby.references().chatExecutor().displayActionBar(module.getMessage(module.getRawMessage("putAllMessage"), null, FormatingUtils.formatNumber(totalAdded), null));
                     return true;
                 }
             }
