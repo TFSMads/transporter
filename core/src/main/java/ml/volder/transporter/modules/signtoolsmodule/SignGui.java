@@ -12,11 +12,12 @@ import ml.volder.unikapi.guisystem.elements.ControlElement;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.types.Material;
-import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.types.ResourceLocation;
+import ml.volder.unikapi.utils.ColorUtils;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
 import ml.volder.unikapi.wrappers.tileentitysign.WrappedTileEntitySign;
 import net.labymod.api.Laby;
+import net.labymod.api.client.component.format.NamedTextColor;
 import net.labymod.api.client.gui.screen.ScreenInstance;
 import net.labymod.api.client.gui.screen.activity.AutoActivity;
 
@@ -100,10 +101,10 @@ public class SignGui extends TransporterActivity {
             int y = 120 - 12*4;
 
             drawAPI.drawRect(x, y, x + width, y + height, new Color(60, 63, 65, 140).getRGB());
-            drawAPI.drawRect(x, y, x + width, y + outlineWidth, ModColor.toRGB(128,128, 128, 255));
-            drawAPI.drawRect(x, y + height - outlineWidth, x + width, y + height, ModColor.toRGB(128,128, 128, 255));
-            drawAPI.drawRect(x, y, x + outlineWidth, y + height, ModColor.toRGB(128,128, 128, 255));
-            drawAPI.drawRect(x + width - outlineWidth, y, x + width, y + height, ModColor.toRGB(128,128, 128, 255));
+            drawAPI.drawRect(x, y, x + width, y + outlineWidth, ColorUtils.toRGB(128,128, 128, 255));
+            drawAPI.drawRect(x, y + height - outlineWidth, x + width, y + height, ColorUtils.toRGB(128,128, 128, 255));
+            drawAPI.drawRect(x, y, x + outlineWidth, y + height, ColorUtils.toRGB(128,128, 128, 255));
+            drawAPI.drawRect(x + width - outlineWidth, y, x + width, y + height, ColorUtils.toRGB(128,128, 128, 255));
 
             drawSign(x + width/2 - 24*2, 120 - 12*2);
             drawAPI.drawCenteredString("Sign Tools", x + width / 2, y + (((120 - 12*2) - y)/2) - drawAPI.getFontHeight() / 2);
@@ -136,7 +137,8 @@ public class SignGui extends TransporterActivity {
         if(isSelected && state){
             text = "> " + text + " <";
         }
-        DrawAPI.getAPI().drawString(text, xCenter - DrawAPI.getAPI().getStringWidth(text)/2, y, ModColor.BLACK.getColor().getRGB());
+
+        DrawAPI.getAPI().drawString(text, xCenter - DrawAPI.getAPI().getStringWidth(text)/2, y, NamedTextColor.BLACK.color().getValue());
     }
 
     private void drawSign(int xSignCorner, int ySignCorner) {
@@ -241,9 +243,9 @@ public class SignGui extends TransporterActivity {
     private boolean drawButton(ResourceLocation resourceLocation, int x, int y, int buttonSize, int mouseX, int mouseY) {
         DrawAPI drawAPI = DrawAPI.getAPI();
         boolean hover = mouseX > x && mouseX < x + buttonSize && mouseY > y && mouseY < y + buttonSize;
-        int colorA = hover ? ModColor.toRGB(10, 10, 10, 255) : ModColor.toRGB(220, 220, 220, 255);
-        int colorB = hover ? ModColor.toRGB(150, 150, 150, 255) : ModColor.toRGB(0, 0, 0, 255);
-        int colorC = hover ? ModColor.toRGB(150, 150, 150, 255) : ModColor.toRGB(180, 180, 180, 255);
+        int colorA = hover ? ColorUtils.toRGB(10, 10, 10, 255) : ColorUtils.toRGB(220, 220, 220, 255);
+        int colorB = hover ? ColorUtils.toRGB(150, 150, 150, 255) : ColorUtils.toRGB(0, 0, 0, 255);
+        int colorC = hover ? ColorUtils.toRGB(150, 150, 150, 255) : ColorUtils.toRGB(180, 180, 180, 255);
         drawAPI.drawRectangle(x, y, x + buttonSize, y + buttonSize, colorA);
         drawAPI.drawRectangle(x + 1, y + 1, x+ buttonSize + 1, y + buttonSize + 1, colorB);
         drawAPI.drawRectangle(x + 1, y + 1, x + buttonSize, y + buttonSize, colorC);
@@ -255,9 +257,9 @@ public class SignGui extends TransporterActivity {
     private boolean drawButton(ControlElement.IconData iconData, int x, int y, int buttonSize, int mouseX, int mouseY) {
         DrawAPI drawAPI = DrawAPI.getAPI();
         boolean hover = mouseX > x && mouseX < x + buttonSize && mouseY > y && mouseY < y + buttonSize;
-        int colorA = hover ? ModColor.toRGB(10, 10, 10, 255) : ModColor.toRGB(220, 220, 220, 255);
-        int colorB = hover ? ModColor.toRGB(150, 150, 150, 255) : ModColor.toRGB(0, 0, 0, 255);
-        int colorC = hover ? ModColor.toRGB(150, 150, 150, 255) : ModColor.toRGB(180, 180, 180, 255);
+        int colorA = hover ? ColorUtils.toRGB(10, 10, 10, 255) : ColorUtils.toRGB(220, 220, 220, 255);
+        int colorB = hover ? ColorUtils.toRGB(150, 150, 150, 255) : ColorUtils.toRGB(0, 0, 0, 255);
+        int colorC = hover ? ColorUtils.toRGB(150, 150, 150, 255) : ColorUtils.toRGB(180, 180, 180, 255);
         drawAPI.drawRectangle(x, y, x + buttonSize, y + buttonSize, colorA);
         drawAPI.drawRectangle(x + 1, y + 1, x+ buttonSize + 1, y + buttonSize + 1, colorB);
         drawAPI.drawRectangle(x + 1, y + 1, x + buttonSize, y + buttonSize, colorC);

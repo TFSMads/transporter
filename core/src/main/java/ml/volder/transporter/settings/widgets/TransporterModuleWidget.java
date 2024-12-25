@@ -4,9 +4,11 @@ import ml.volder.transporter.settings.classes.TransporterSettingRegistry;
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.api.draw.impl.Laby4DrawAPI;
 import ml.volder.unikapi.guisystem.ModTextures;
-import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.types.ResourceLocation;
+import ml.volder.unikapi.utils.ColorUtils;
 import net.labymod.api.Laby;
+import net.labymod.api.client.component.format.NamedTextColor;
+import net.labymod.api.client.component.format.TextColor;
 import net.labymod.api.client.gui.mouse.MutableMouse;
 import net.labymod.api.client.gui.screen.Parent;
 import net.labymod.api.client.gui.screen.activity.activities.labymod.child.SettingContentActivity;
@@ -63,8 +65,8 @@ public class TransporterModuleWidget extends SimpleWidget {
         float textLineY = y + 3;
 
         // Draw background
-        int color = isActive ? ModColor.toRGB(50, 100, 50, this.isHovered() ? 90 : 70)
-            : ModColor.toRGB(100, 50, 50, this.isHovered() ? 90 : 70);
+        int color = isActive ? ColorUtils.toRGB(50, 100, 50, this.isHovered() ? 90 : 70)
+            : ColorUtils.toRGB(100, 50, 50, this.isHovered() ? 90 : 70);
 
         Laby.references().rectangleRenderer()
                 .pos(x, y, maxX, maxY)
@@ -80,18 +82,20 @@ public class TransporterModuleWidget extends SimpleWidget {
                 .render(stack);
 
 
-        ModColor modColor = isActive ? ModColor.GREEN : ModColor.RED;
+        TextColor modColor = isActive ? NamedTextColor.GREEN : NamedTextColor.RED;
 
         // Draw Title
         textRenderer.pos(x + iconSize + 5, textLineY)
-                    .text(modColor + title)
+                    .text(title)
+                    .color(modColor.getValue())
                     .shadow(true)
                     .render(stack);
         textLineY += 15;
 
         // Draw active status
         textRenderer.pos(x + iconSize + 5, y + 12)
-                    .text(modColor + (isActive ? "Denne feature er aktiv!" : "Denne feature er deaktiveret!"))
+                    .text((isActive ? "Denne feature er aktiv!" : "Denne feature er deaktiveret!"))
+                    .color(modColor.getValue())
                     .scale(0.5F)
                     .shadow(true)
                     .render(stack);
@@ -119,12 +123,13 @@ public class TransporterModuleWidget extends SimpleWidget {
     }
 
     private void drawDescription(float x, float y, int wrapWidth, Stack stack) {
-        List<String> descriptionLines = DrawAPI.getAPI().listFormattedStringToWidth(ModColor.createColors(description), wrapWidth);
+        List<String> descriptionLines = DrawAPI.getAPI().listFormattedStringToWidth(description, wrapWidth);
         int lineCount = 0;
 
         for (String descriptionLine : descriptionLines) {
             Laby4DrawAPI.getTextRenderer().pos(x, y)
-                    .text(ModColor.GRAY + descriptionLine)
+                    .text(descriptionLine)
+                    .color(NamedTextColor.GRAY.getValue())
                     .scale(0.7F)
                     .render(stack);
             y += 7;
@@ -138,9 +143,9 @@ public class TransporterModuleWidget extends SimpleWidget {
     private boolean drawButton(ResourceLocation resourceLocation, int y, int buttonSize, int buttonPadding, int marginX, int marginY, int maxX, int maxY, int mouseX, int mouseY, Stack stack) {
         boolean hover = mouseX > maxX - buttonSize - marginX + 1 && mouseX < maxX - buttonSize + buttonSize - marginX + 1 && mouseY > y + marginY + 1 && mouseY < y + buttonSize + marginY + 1;
         marginX += hover ? 1 : 0;
-        int colorA = hover ? ModColor.toRGB(10, 10, 10, 255) : ModColor.toRGB(220, 220, 220, 255);
-        int colorB = hover ? ModColor.toRGB(150, 150, 150, 255) : ModColor.toRGB(0, 0, 0, 255);
-        int colorC = hover ? ModColor.toRGB(150, 150, 150, 255) : ModColor.toRGB(180, 180, 180, 255);
+        int colorA = hover ? ColorUtils.toRGB(10, 10, 10, 255) : ColorUtils.toRGB(220, 220, 220, 255);
+        int colorB = hover ? ColorUtils.toRGB(150, 150, 150, 255) : ColorUtils.toRGB(0, 0, 0, 255);
+        int colorC = hover ? ColorUtils.toRGB(150, 150, 150, 255) : ColorUtils.toRGB(180, 180, 180, 255);
 
         RectangleRenderer rectangleRenderer = Laby.references().rectangleRenderer();
 

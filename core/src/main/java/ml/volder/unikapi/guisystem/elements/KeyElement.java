@@ -9,7 +9,7 @@ import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.KeyMapper;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.logger.Logger;
-import ml.volder.unikapi.types.ModColor;
+import ml.volder.unikapi.utils.ColorUtils;
 
 import java.util.function.Consumer;
 
@@ -81,7 +81,7 @@ public class KeyElement extends ControlElement {
             this.textField.xPosition = maxX - width - 2;
             this.textField.yPosition = y + 1;
             this.textField.drawTextBox();
-            DrawAPI.getAPI().drawRectangle(x - 1, y, x, maxY, ModColor.toRGB(120, 120, 120, 120));
+            DrawAPI.getAPI().drawRectangle(x - 1, y, x, maxY, ColorUtils.toRGB(120, 120, 120, 120));
         }
     }
 

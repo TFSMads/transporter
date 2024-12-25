@@ -7,7 +7,7 @@ import ml.volder.unikapi.datasystem.Data;
 import ml.volder.unikapi.datasystem.DataManager;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.logger.Logger;
-import ml.volder.unikapi.types.ModColor;
+import ml.volder.unikapi.utils.ColorUtils;
 
 import java.util.function.Consumer;
 
@@ -59,7 +59,7 @@ public class DropDownElement<T> extends ControlElement {
             this.dropDownMenu.draw(mouseX, mouseY);
         } else {
             super.draw(x, y, maxX, maxY, mouseX, mouseY);
-            DrawAPI.getAPI().drawRectangle(x - 1, y, x, maxY, ModColor.toRGB(120, 120, 120, 120));
+            DrawAPI.getAPI().drawRectangle(x - 1, y, x, maxY, ColorUtils.toRGB(120, 120, 120, 120));
             int width = 100;
             this.dropDownMenu.setX(maxX - width - 5);
             this.dropDownMenu.setY(y + 3);

@@ -25,7 +25,6 @@ public class EventSubCommand extends SubCommand {
             }
             if(arguments[0].equalsIgnoreCase("fire") || arguments[0].equalsIgnoreCase("f")) {
                 //Laby.fireEvent(new TestEvent());
-                displayMessage("TestEvent fired");
             }
         } else {
             displayMessage("Usage: /" + prefix + " event <register|fire>");

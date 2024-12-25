@@ -2,13 +2,15 @@ package ml.volder.unikapi.guisystem.elements;
 
 
 import ml.volder.unikapi.api.draw.DrawAPI;
+import ml.volder.unikapi.api.draw.impl.Laby4DrawAPI;
 import ml.volder.unikapi.api.input.InputAPI;
 import ml.volder.unikapi.api.minecraft.MinecraftAPI;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
-import ml.volder.unikapi.types.ModColor;
+import ml.volder.unikapi.utils.ColorUtils;
 import ml.volder.unikapi.utils.MathUtils;
 import ml.volder.unikapi.utils.StringUtils;
+import net.labymod.api.Laby;
 
 import java.awt.*;
 import java.awt.datatransfer.ClipboardOwner;
@@ -41,7 +43,6 @@ public class ModTextField {
     private boolean modPasswordBox = false;
     private String modBlacklistWord = "";
     private boolean colorBarEnabled = false;
-    private ModColor hoveredModColor = null;
     private String colorAtCursor = null;
     private String placeHolder;
     private boolean backgroundColor = false;
@@ -363,8 +364,7 @@ public class ModTextField {
 
     public boolean mouseClicked(int p_146192_1_, int p_146192_2_, MouseButton mouseButton) {
         boolean flag = p_146192_1_ >= this.xPosition && p_146192_1_ < this.xPosition + this.width && p_146192_2_ >= this.yPosition && p_146192_2_ < this.yPosition + this.height;
-        if (this.colorBarEnabled && this.hoveredModColor != null) {
-            this.writeText("&" + this.hoveredModColor.getColorChar());
+        if (this.colorBarEnabled) {
             return true;
         } else {
             if (this.canLoseFocus) {
@@ -399,11 +399,11 @@ public class ModTextField {
                     drawAPI.drawRect(this.xPosition - 1, this.yPosition - 1, this.xPosition + this.width + 1, this.yPosition + this.height + 1, -6250336);
                     drawAPI.drawRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, -16777216);
                 } else if (this.isFocused) {
-                    drawAPI.drawRectBorder((double)(this.xPosition - 1), (double)(this.yPosition - 1), (double)(this.xPosition + this.width + 1), (double)(this.yPosition + this.height + 1), ModColor.toRGB(220, 220, 225, 62), 1.0D);
-                    drawAPI.drawRectangle(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, ModColor.toRGB(0, 0, 3, 180));
+                    drawAPI.drawRectBorder((double)(this.xPosition - 1), (double)(this.yPosition - 1), (double)(this.xPosition + this.width + 1), (double)(this.yPosition + this.height + 1), ColorUtils.toRGB(220, 220, 225, 62), 1.0D);
+                    drawAPI.drawRectangle(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, ColorUtils.toRGB(0, 0, 3, 180));
                 } else {
-                    drawAPI.drawRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, ModColor.toRGB(70, 60, 53, 122));
-                    drawAPI.drawRect(this.xPosition + 1, this.yPosition + 1, this.xPosition + this.width - 1, this.yPosition + this.height - 1, ModColor.toRGB(0, 0, 3, 180));
+                    drawAPI.drawRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, ColorUtils.toRGB(70, 60, 53, 122));
+                    drawAPI.drawRect(this.xPosition + 1, this.yPosition + 1, this.xPosition + this.width - 1, this.yPosition + this.height - 1, ColorUtils.toRGB(0, 0, 3, 180));
                 }
             }
 
@@ -428,7 +428,7 @@ public class ModTextField {
 
             if (s.length() > 0) {
                 String s1 = flag ? s.substring(0, j) : s;
-                j1 = l + drawAPI.getStringWidth(this.visualColorForText(s1, true));
+                j1 = l + drawAPI.getStringWidth(s);
             }
 
             boolean placeHolder = this.placeHolder != null && this.getText().isEmpty() && !this.isFocused;
@@ -441,11 +441,12 @@ public class ModTextField {
                 --j1;
             }
 
-            if (s.length() > 0 && flag && j < s.length()) {
-                int var10000 = j1 + drawAPI.getStringWidth(this.visualColorForText(s.substring(j), false));
-            }
+            Laby.references().componentRenderer().builder()
+                    .text(ColorUtils.createColoredComponent(s))
+                    .pos((float)l, (float)i1)
+                    .render(Laby4DrawAPI.getRenderStack());
 
-            drawAPI.drawStringWithShadow(this.visualColorForText(s, false), (float)l, (float)i1, i);
+            //drawAPI.drawStringWithShadow(s, (float)l, (float)i1, i);
             if (flag1 && !placeHolder) {
                 if (flag2) {
                     drawAPI.drawRect(k1, i1 - 1, k1 + 1, i1 + 1 + drawAPI.getFontHeight(), -3092272);
@@ -464,64 +465,6 @@ public class ModTextField {
             }
         }
 
-    }
-
-    public void drawColorBar(int mouseX, int mouseY) {
-        if (this.colorBarEnabled) {
-            this.hoveredModColor = null;
-            int ll = 9;
-            int pX = this.xPosition + this.width / 2 - (ModColor.values().length * ll - ll) / 2;
-            int pY = this.yPosition + this.height + 5;
-            ModColor[] var6 = ModColor.values();
-            int var7 = var6.length;
-
-            for(int var8 = 0; var8 < var7; ++var8) {
-                ModColor color = var6[var8];
-                boolean hovered = mouseX > pX - ll / 2 && mouseX < pX + ll / 2 && mouseY > pY - 1 && mouseY < pY + 9;
-                if (hovered) {
-                    this.hoveredModColor = color;
-                }
-
-                if (this.colorAtCursor != null && this.colorAtCursor.equals("" + color.getColorChar())) {
-                    hovered = true;
-                }
-
-                DrawAPI drawAPI = DrawAPI.getAPI();
-
-                drawAPI.drawRect(pX - ll / 2, pY - 1, pX + ll / 2, pY + 9, !hovered ? ModColor.toRGB(120, 120, 120, 120) : 2147483647);
-                drawAPI.drawCenteredString(color.toString() + color.getColorChar(), (double)pX, (double)pY);
-                pX += ll;
-            }
-        }
-
-    }
-
-    private String visualColorForText(String text, boolean saveCursorColor) {
-        String coloredString = "";
-        boolean foundColor = false;
-
-        for(int i = 0; i < text.length(); ++i) {
-            char c = text.charAt(i);
-            if (c == '&' && i != text.length() - 1) {
-                if (foundColor) {
-                    coloredString = coloredString + "&";
-                }
-
-                foundColor = true;
-            } else {
-                if (foundColor) {
-                    foundColor = false;
-                    coloredString = coloredString + "§" + c + '&';
-                    if (saveCursorColor) {
-                        this.colorAtCursor = "" + c;
-                    }
-                }
-
-                coloredString = coloredString + c;
-            }
-        }
-
-        return coloredString;
     }
 
     private void drawCursorVertical(int p_146188_1_, int p_146188_2_, int p_146188_3_, int p_146188_4_) {

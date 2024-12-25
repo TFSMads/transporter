@@ -5,6 +5,7 @@ import ml.volder.transporter.classes.items.Item;
 import ml.volder.transporter.modules.MessagesModule;
 import ml.volder.transporter.utils.Parser;
 import ml.volder.unikapi.api.player.PlayerAPI;
+import net.labymod.api.Laby;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -34,7 +35,7 @@ public class TransporterSendMessageHandler implements IMessageHandler {
 
             Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByDisplayName(itemMatch);
             item.setAmountInTransporter(Objects.requireNonNullElseGet(total, () -> item.getAmountInTransporter() - Parser.parseInt(amountMatch)));
-            PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("sendSuccess"), item.getDisplayName().toLowerCase(), amountMatch, String.valueOf(item.getAmountInTransporter()), playerMatch));
+            Laby.references().chatExecutor().displayClientMessage(module.getMessage(module.getRawMessage("sendSuccess"), item.getDisplayName().toLowerCase(), amountMatch, String.valueOf(item.getAmountInTransporter()), playerMatch));
             return true;
         }
         return false;
@@ -44,7 +45,7 @@ public class TransporterSendMessageHandler implements IMessageHandler {
         final Pattern pattern = Pattern.compile(module.getRegexByMessageId("send_offline"));
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
-            PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("sendOffline"), null, null, null));
+            Laby.references().chatExecutor().displayClientMessage(module.getMessage(module.getRawMessage("sendOffline"), null, null, null));
             return true;
         }
         return false;
@@ -54,7 +55,7 @@ public class TransporterSendMessageHandler implements IMessageHandler {
         final Pattern pattern = Pattern.compile(module.getRegexByMessageId("send_self"));
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
-            PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("sendSelf"), null, null, null));
+            Laby.references().chatExecutor().displayClientMessage(module.getMessage(module.getRawMessage("sendSelf"), null, null, null));
             return true;
         }
         return false;
@@ -71,7 +72,7 @@ public class TransporterSendMessageHandler implements IMessageHandler {
 
             Item item = TransporterAddon.getInstance().getTransporterItemManager().getItemByDisplayName(itemMatch);
             item.setAmountInTransporter(Objects.requireNonNullElseGet(total, () -> item.getAmountInTransporter() + Parser.parseInt(amountMatch)));
-            PlayerAPI.getAPI().displayChatMessage(module.getMessage(module.getRawMessage("modtagSuccess"), item.getDisplayName().toLowerCase(), amountMatch, String.valueOf(item.getAmountInTransporter()), playerMatch));
+            Laby.references().chatExecutor().displayClientMessage(module.getMessage(module.getRawMessage("modtagSuccess"), item.getDisplayName().toLowerCase(), amountMatch, String.valueOf(item.getAmountInTransporter()), playerMatch));
             return true;
         }
         return false;
