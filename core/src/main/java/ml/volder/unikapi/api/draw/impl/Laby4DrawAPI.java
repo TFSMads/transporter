@@ -203,7 +203,7 @@ public class Laby4DrawAPI implements DrawAPI {
     Texture texture = Laby.references().textureRepository().getTexture(resourceLocation);
     if(texture == null)
       return;
-    gfx.bindTexture2D(texture.getTextureId());
+    gfx.bindTexture2D(texture.getId());
   }
 
   //endregion
