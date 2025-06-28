@@ -207,7 +207,7 @@ public class BalanceModule extends SimpleModule{
 
 
     private boolean matchBalCommandMessage(String clean) {
-        final Pattern pattern = Pattern.compile("^\\[Money] Balance: ([0-9,.]+) Emeralds$");
+        final Pattern pattern = Pattern.compile("^\\[Money] Balance: ([0-9.,]+) Emeralder$");
         final Matcher matcher = pattern.matcher(clean);
         if (matcher.find()) {
             if (cancelNextBalanceCommand) {
