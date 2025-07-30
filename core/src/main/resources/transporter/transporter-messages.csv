@@ -9,7 +9,9 @@ put_missing,^Du har ikke noget (?<item>%item_regex%) at putte i\.$
 put_success,^Du har nu puttet (?<amount>[0-9.]+) (?<item>%item_regex%) \((?<total>[0-9.]+) i alt\) i din transporter\.$
 get_missing,^Du har ikke nok items i din transporter!$
 get_success,^Du har taget (?<amount>[0-9.]+) (?<item>%item_regex%) \((?<total>[0-9.]+) tilbage\) fra din transporter\.$
+get_success,^Tog (?<amount>[0-9.]+) (?<item>%item_regex%) fra din transporter \((?<total>[0-9.]+) tilbage\) og overførte det til Storage Box\.$
 failed_too_fast,^Du skriver kommandoer for hurtigt!$
+failed_too_fast,^Cooldown! Du kan først bruge staven om (?<tid>[0-9.]+) sekunder!$
 info_entry,^ (?<item>%item_regex%): (?<amount>[0-9.]+)$
 info_title,^Du har følgende i din transporter:$
 put_mine_entry,^ (?<item>[0-9A-Za-z:_ ]+): (?<amount>[0-9.]+) \((?<total>[0-9.]+) i alt\)$
