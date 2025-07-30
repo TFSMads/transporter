@@ -13,11 +13,13 @@ public class OpenSignEventListener {
     public void onGuiOpen(ScreenDisplayEvent event){
         if(event.getScreen() == null || event.getScreen().wrap() == null || event.getScreen().wrap().getVersionedScreen() == null)
             return;
-        if(SignUtils.getVersionedInstance().isSignScreen(event.getScreen().wrap().getVersionedScreen())){
-            WrappedTileEntitySign sign = SignUtils.getVersionedInstance().getSign(event.getScreen().wrap().getVersionedScreen());
+
+        SignUtils signUtils = SignUtils.getVersionedInstance();
+        if(signUtils != null && signUtils.isSignScreen(event.getScreen().wrap().getVersionedScreen())){
+            WrappedTileEntitySign sign = signUtils.getSign(event.getScreen().wrap().getVersionedScreen());
             OpenSignEvent openSignEvent = new OpenSignEvent(sign);
             Laby.fireEvent(openSignEvent);
-            if(openSignEvent.getNewScreen() != null && openSignEvent.getNewScreen() != null){
+            if(openSignEvent.getNewScreen() != null){
                 event.setScreen(openSignEvent.getNewScreen());
             }
             if(openSignEvent.isCancelled()) {
