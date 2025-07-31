@@ -54,8 +54,16 @@ public class TransporterActivity extends SimpleActivity {
 
     }
 
+    private Stack stack;
+
+    public Stack getStack() {
+        return stack;
+    }
+
+
     @Override
     public void render(ScreenContext context) {
+        this.stack = context.stack();
         Stack currentStack = Laby4DrawAPI.CURRENT_RENDER_STACK;
         Laby4DrawAPI.CURRENT_RENDER_STACK = context.stack();
 

@@ -8,11 +8,12 @@ import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.guisystem.elements.ModTextField;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
-import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.types.ResourceLocation;
+import ml.volder.unikapi.utils.ColorUtils;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
 import net.labymod.api.Laby;
 import net.labymod.api.client.gui.screen.activity.AutoActivity;
+import net.labymod.api.client.render.matrix.Stack;
 
 import java.util.Collections;
 
@@ -38,7 +39,7 @@ public class PriceMenuEntry extends ScrollableGrid.Entry {
         this.height = height;
     }
 
-    public void render(int x, int y, int mouseX, int mouseY) {
+    public void render(int x, int y, int mouseX, int mouseY, Stack stack) {
         hoverText = null;
         hoverTextX = -1000;
         hoverTextY = -1000;
@@ -50,17 +51,17 @@ public class PriceMenuEntry extends ScrollableGrid.Entry {
         DrawAPI drawAPI = DrawAPI.getAPI();
 
         int color = !item.getAutoUpdateSellValue()
-                ? ModColor.toRGB(100, 50, 50, isMouseOver ? 90 : 70)
-                : ModColor.toRGB(50, 100, 50, isMouseOver ? 90 : 70);
+                ? ColorUtils.toRGB(100, 50, 50, isMouseOver ? 90 : 70)
+                : ColorUtils.toRGB(50, 100, 50, isMouseOver ? 90 : 70);
 
         if(isUpdating)
-            color = ModColor.toRGB(150, 90, 50, isMouseOver ? 90 : 70);
+            color = ColorUtils.toRGB(150, 90, 50, isMouseOver ? 90 : 70);
 
         drawAPI.drawRect(x, y, x + width, y + height, color);
-        drawAPI.drawRect(x, y, x + width, y + outlineWidth, ModColor.toRGB(128,128, 128, 255));
-        drawAPI.drawRect(x, y + height - outlineWidth, x + width, y + height, ModColor.toRGB(128,128, 128, 255));
-        drawAPI.drawRect(x, y, x + outlineWidth, y + height, ModColor.toRGB(128,128, 128, 255));
-        drawAPI.drawRect(x + width - outlineWidth, y, x + width, y + height, ModColor.toRGB(128,128, 128, 255));
+        drawAPI.drawRect(x, y, x + width, y + outlineWidth, ColorUtils.toRGB(128,128, 128, 255));
+        drawAPI.drawRect(x, y + height - outlineWidth, x + width, y + height, ColorUtils.toRGB(128,128, 128, 255));
+        drawAPI.drawRect(x, y, x + outlineWidth, y + height, ColorUtils.toRGB(128,128, 128, 255));
+        drawAPI.drawRect(x + width - outlineWidth, y, x + width, y + height, ColorUtils.toRGB(128,128, 128, 255));
 
         drawAPI.drawItem(item.getMaterial(), item.getItemDamage(), x + 2, y + 3, "", 2);
         drawAPI.drawString(item.getDisplayName().length() >= 15 ? item.getDisplayName().substring(0, 14) : item.getDisplayName(), x + 32 + 4, y + 5, 0xFFFFFF);
@@ -99,9 +100,9 @@ public class PriceMenuEntry extends ScrollableGrid.Entry {
         boolean hover = mouseX > x && mouseX < x + buttonSize && mouseY > y && mouseY < y + buttonSize;
         if(backgroundScreen.isInBackground())
             hover = false;
-        int colorA = hover ? ModColor.toRGB(10, 10, 10, 255) : ModColor.toRGB(220, 220, 220, 255);
-        int colorB = hover ? ModColor.toRGB(150, 150, 150, 255) : ModColor.toRGB(0, 0, 0, 255);
-        int colorC = hover ? ModColor.toRGB(150, 150, 150, 255) : ModColor.toRGB(180, 180, 180, 255);
+        int colorA = hover ? ColorUtils.toRGB(10, 10, 10, 255) : ColorUtils.toRGB(220, 220, 220, 255);
+        int colorB = hover ? ColorUtils.toRGB(150, 150, 150, 255) : ColorUtils.toRGB(0, 0, 0, 255);
+        int colorC = hover ? ColorUtils.toRGB(150, 150, 150, 255) : ColorUtils.toRGB(180, 180, 180, 255);
         drawAPI.drawRectangle(x, y, x + buttonSize, y + buttonSize, colorA);
         drawAPI.drawRectangle(x + 1, y + 1, x+ buttonSize + 1, y + buttonSize + 1, colorB);
         drawAPI.drawRectangle(x + 1, y + 1, x + buttonSize, y + buttonSize, colorC);

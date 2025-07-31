@@ -18,9 +18,9 @@ public class UnikHudWidget extends TextHudWidget {
 
   private String namespace = Laby4Loader.namespace();
   private String prefix;
-  private Function<String, String> getDisplayValue;
+  private Function<String, Component> getDisplayValue;
 
-  public UnikHudWidget(String id, HudWidgetCategory category, String prefix, Material material, Function<String, String> getDisplayValue) {
+  public UnikHudWidget(String id, HudWidgetCategory category, String prefix, Material material, Function<String, Component> getDisplayValue) {
     super(id);
     this.bindCategory(category);
     this.prefix = prefix;

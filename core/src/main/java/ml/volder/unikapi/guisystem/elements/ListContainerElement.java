@@ -2,7 +2,7 @@ package ml.volder.unikapi.guisystem.elements;
 
 
 import ml.volder.unikapi.api.draw.DrawAPI;
-import ml.volder.unikapi.types.ModColor;
+import ml.volder.unikapi.utils.ColorUtils;
 
 public class ListContainerElement extends ControlElement{
 
@@ -16,7 +16,7 @@ public class ListContainerElement extends ControlElement{
 
     public void draw(int x, int y, int maxX, int maxY, int mouseX, int mouseY) {
         super.draw(x, y, maxX, maxY, mouseX, mouseY);
-        DrawAPI.getAPI().drawRectangle(x - 1, y, x, maxY, ModColor.toRGB(120, 120, 120, 120));
+        DrawAPI.getAPI().drawRectangle(x - 1, y, x, maxY, ColorUtils.toRGB(120, 120, 120, 120));
     }
 
     public int getObjectWidth() {

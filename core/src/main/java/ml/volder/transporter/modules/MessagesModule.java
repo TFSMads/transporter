@@ -10,7 +10,9 @@ import ml.volder.transporter.utils.FormatingUtils;
 import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.logger.Logger;
+import ml.volder.unikapi.utils.ColorUtils;
 import net.labymod.api.Laby;
+import net.labymod.api.client.component.Component;
 import net.labymod.api.client.gui.icon.Icon;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.input.TextFieldWidget;
@@ -257,7 +259,7 @@ public class MessagesModule extends SimpleModule {
         return messagesMap.getOrDefault(key, "");
     }
 
-    public String getMessage(String message, String item, String antal, String total, String spiller){
+    public Component getMessage(String message, String item, String antal, String total, String spiller){
 
         try {
             antal = FormatingUtils.formatNumber(Integer.parseInt(antal));
@@ -265,8 +267,6 @@ public class MessagesModule extends SimpleModule {
         try {
             total = FormatingUtils.formatNumber(Integer.parseInt(total));
         }catch (Exception ignored){}
-
-        message = message.replace('&','\u00a7');
 
         message = message.replace("%item%", item != null ? item : "%item%");
 
@@ -276,11 +276,10 @@ public class MessagesModule extends SimpleModule {
 
         message = message.replace("%spiller%", spiller != null ? spiller : "%spiller%");
 
-        return message;
-
+        return ColorUtils.createColoredComponent(message, true);
     }
 
-    public String getMessage(String message, String item, String antal, String total){
+    public Component getMessage(String message, String item, String antal, String total){
         return getMessage(message, item, antal, total, null);
     }
 

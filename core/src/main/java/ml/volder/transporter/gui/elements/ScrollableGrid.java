@@ -2,6 +2,7 @@ package ml.volder.transporter.gui.elements;
 
 import ml.volder.unikapi.guisystem.elements.Scrollbar;
 import ml.volder.unikapi.keysystem.MouseButton;
+import net.labymod.api.client.render.matrix.Stack;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,7 +37,7 @@ public class ScrollableGrid {
         this.scrollbar.setSpeed(39);
     }
 
-    public void render(int mouseX, int mouseY) {
+    public void render(int mouseX, int mouseY, Stack stack) {
         int entryAmountHorizontal = (int)Math.floor(width / (entryWidth + spacingHorizontal));
         double entriesWidth = entryAmountHorizontal * (entryWidth + spacingHorizontal); //Total width of all entries including spacing between them
         double startX = (width - entriesWidth) / 2 + x; //Start x position of the first entry so that all entries are centered
@@ -64,7 +65,7 @@ public class ScrollableGrid {
                 currentX = (int) startX;
                 currentY += entryHeight + spacingVertical;
             }
-            entry.render(currentX, currentY + offset, mouseX, mouseY);
+            entry.render(currentX, currentY + offset, mouseX, mouseY, stack);
             currentX += entryWidth + spacingHorizontal;
         }
 
@@ -126,7 +127,7 @@ public class ScrollableGrid {
     }
 
     public static abstract class Entry {
-        public abstract void render(int x, int y, int mouseX, int mouseY);
+        public abstract void render(int x, int y, int mouseX, int mouseY, Stack stack);
 
         public abstract void renderHoverText();
 

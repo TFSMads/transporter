@@ -5,13 +5,16 @@ import ml.volder.transporter.modules.SimpleModule;
 import ml.volder.transporter.updater.UpdateManager;
 import ml.volder.unikapi.UnikAPI;
 import ml.volder.unikapi.api.draw.DrawAPI;
+import ml.volder.unikapi.api.draw.impl.Laby4DrawAPI;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
 import ml.volder.unikapi.loader.Laby4Loader;
-import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
 import net.labymod.api.Laby;
 import net.labymod.api.LabyAPI;
+import net.labymod.api.client.component.Component;
+import net.labymod.api.client.component.TextComponent;
+import net.labymod.api.client.component.format.NamedTextColor;
 import net.labymod.api.client.gui.screen.ScreenInstance;
 import net.labymod.api.client.gui.screen.activity.AutoActivity;
 
@@ -64,14 +67,16 @@ public class AddonInfoScreen extends TransporterActivity {
     }
 
     int drawY;
-    private void drawDebugLine(String line, int x) {
-        DrawAPI drawAPI = DrawAPI.getAPI();
-        drawAPI.drawString(line, x, drawY);
-        drawY += drawAPI.getFontHeight()+2;
+    private void drawDebugLine(TextComponent line, int x) {
+        Laby.references().renderPipeline().componentRenderer().builder()
+                .text(line)
+                .pos(x, drawY)
+                .render(Laby4DrawAPI.getRenderStack());
+        drawY += DrawAPI.getAPI().getFontHeight()+2;
     }
 
     private void drawDebugLine(String line) {
-        drawDebugLine(line, 10);
+        drawDebugLine(Component.text(line), 10);
     }
 
     @Override
@@ -103,7 +108,16 @@ public class AddonInfoScreen extends TransporterActivity {
 
         drawDebugLine("Features:");
         for (SimpleModule module : ModuleManager.getInstance().getLoadedModules().values()) {
-            drawDebugLine(module.getDisplayName() + ": " + (module.isFeatureActive() ? ModColor.GREEN + "Aktiv" : ModColor.RED + "Deaktiveret"), 20);
+
+            TextComponent component = Component.text(module.getDisplayName() + ": ");
+            if(module.isFeatureActive()) {
+                component.append(Component.text("Aktiv").color(NamedTextColor.GREEN));
+            } else {
+                component.append(Component.text("Deaktiveret").color(NamedTextColor.RED));
+            }
+
+
+            drawDebugLine(component, 20);
         }
 
     }

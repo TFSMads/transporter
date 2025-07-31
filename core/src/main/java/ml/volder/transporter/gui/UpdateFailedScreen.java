@@ -1,10 +1,12 @@
 package ml.volder.transporter.gui;
 
 import ml.volder.unikapi.api.draw.DrawAPI;
+import ml.volder.unikapi.api.draw.impl.Laby4DrawAPI;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
-import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
+import net.labymod.api.Laby;
+import net.labymod.api.client.component.format.NamedTextColor;
 import net.labymod.api.client.gui.screen.activity.AutoActivity;
 
 import java.util.List;
@@ -32,13 +34,20 @@ public class UpdateFailedScreen extends TransporterActivity {
         DrawAPI drawAPI = DrawAPI.getAPI();
         drawAPI.drawBackground(0);
         drawAPI.drawCenteredString("Transporter Addon - Opdaterings System!", getWidth() / 2, 50, 2);
-        String text = ModColor.RED +
-                "Kunne ikke fuldføre opdatering da java ikke blev fundet!" +
+        String text = "Kunne ikke fuldføre opdatering da java ikke blev fundet!" +
                 "Prøv at installere java eller opdater Transporter Addon manuelt!";
         List<String> stringList =drawAPI.listFormattedStringToWidth(text, getWidth() / 2);
         int y = 80;
+
         for(String line : stringList) {
-            drawAPI.drawCenteredString(line, getWidth() / 2, y);
+
+            Laby.references().renderPipeline().componentRenderer().builder()
+                    .text(line)
+                    .color(NamedTextColor.RED.getValue())
+                    .pos(getWidth() / 2, y)
+                    .centered(true)
+                    .render(Laby4DrawAPI.getRenderStack());
+
             y += drawAPI.getFontHeight() + 1;
         }
     }

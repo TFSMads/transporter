@@ -4,8 +4,8 @@ import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
-import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.types.ResourceLocation;
+import ml.volder.unikapi.utils.ColorUtils;
 
 import java.util.Iterator;
 import java.util.List;
@@ -42,21 +42,21 @@ public class ModuleElement extends SettingsElement{
         int textLineY = y + 3;
 
         if(isActive) {
-            drawAPI.drawRectangle(x, y, maxX, maxY, ModColor.toRGB(50, 100, 50, this.isMouseOver() ? 90 : 70));
+            drawAPI.drawRectangle(x, y, maxX, maxY, ColorUtils.toRGB(50, 100, 50, this.isMouseOver() ? 90 : 70));
         } else {
-            drawAPI.drawRectangle(x, y, maxX, maxY, ModColor.toRGB(100, 50, 50, this.isMouseOver() ? 90 : 70));
+            drawAPI.drawRectangle(x, y, maxX, maxY, ColorUtils.toRGB(100, 50, 50, this.isMouseOver() ? 90 : 70));
         }
 
         this.drawIcon(icon, x, y, iconWidth, this.getEntryHeight());
 
-        ModColor modColor = isActive ? ModColor.GREEN : ModColor.RED;
 
-        String titleString = modColor + displayName;
+
+        String titleString = displayName;
         drawAPI.drawString(titleString, (double)(x + iconWidth + 5), (double)textLineY);
         textLineY += 15;
 
-        drawAPI.drawString(modColor + (isActive ? "Denne feature er aktiv!" : "Denne feature er deaktiveret!"), (double)(x + iconWidth + 5), (double)(y + 12), 0.5D);
-        List<String> descriptionLines = drawAPI.listFormattedStringToWidth(ModColor.createColors(this.getDescriptionText()), (int)((double)(maxX - x - iconWidth - 60) / 0.7D));
+        drawAPI.drawString((isActive ? "Denne feature er aktiv!" : "Denne feature er deaktiveret!"), (double)(x + iconWidth + 5), (double)(y + 12), 0.5D);
+        List<String> descriptionLines = drawAPI.listFormattedStringToWidth(this.getDescriptionText(), (int)((double)(maxX - x - iconWidth - 60) / 0.7D));
         int lineCount = 0;
         Iterator var18 = descriptionLines.iterator();
 
@@ -66,7 +66,7 @@ public class ModuleElement extends SettingsElement{
                 descriptionLine = descriptionLine + "...";
             }
 
-            drawAPI.drawString(ModColor.cl("7") + descriptionLine, (double)(x + iconWidth + 5), (double)textLineY, 0.7D);
+            drawAPI.drawString(descriptionLine, (double)(x + iconWidth + 5), (double)textLineY, 0.7D);
             textLineY = (int)((double)textLineY + 7.0D);
             ++lineCount;
             if (lineCount >= 3) {
@@ -92,9 +92,9 @@ public class ModuleElement extends SettingsElement{
         DrawAPI drawAPI = DrawAPI.getAPI();
         boolean hover = mouseX > maxX - buttonSize - marginX + 1 && mouseX < maxX - buttonSize + buttonSize - marginX + 1 && mouseY > y + marginY + 1 && mouseY < y + buttonSize + marginY + 1;
         marginX += hover ? 1 : 0;
-        int colorA = hover ? ModColor.toRGB(10, 10, 10, 255) : ModColor.toRGB(220, 220, 220, 255);
-        int colorB = hover ? ModColor.toRGB(150, 150, 150, 255) : ModColor.toRGB(0, 0, 0, 255);
-        int colorC = hover ? ModColor.toRGB(150, 150, 150, 255) : ModColor.toRGB(180, 180, 180, 255);
+        int colorA = hover ? ColorUtils.toRGB(10, 10, 10, 255) : ColorUtils.toRGB(220, 220, 220, 255);
+        int colorB = hover ? ColorUtils.toRGB(150, 150, 150, 255) : ColorUtils.toRGB(0, 0, 0, 255);
+        int colorC = hover ? ColorUtils.toRGB(150, 150, 150, 255) : ColorUtils.toRGB(180, 180, 180, 255);
         drawAPI.drawRectangle(maxX - buttonSize - marginX, y + marginY, maxX - marginX, y + buttonSize + marginY, colorA);
         drawAPI.drawRectangle(maxX - buttonSize - marginX + 1, y + marginY + 1, maxX - marginX + 1, y + buttonSize + marginY + 1, colorB);
         drawAPI.drawRectangle(maxX - buttonSize - marginX + 1, y + marginY + 1, maxX - marginX, y + buttonSize + marginY, colorC);

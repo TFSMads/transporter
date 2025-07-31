@@ -1,12 +1,11 @@
 package ml.volder.unikapi.guisystem.elements;
 
 
-
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.datasystem.Data;
 import ml.volder.unikapi.datasystem.DataManager;
 import ml.volder.unikapi.keysystem.MouseButton;
-import ml.volder.unikapi.types.ModColor;
+import ml.volder.unikapi.utils.ColorUtils;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
 
 import java.util.function.Consumer;
@@ -57,14 +56,14 @@ public class BooleanElement extends ControlElement {
             this.buttonToggle.setEnabled(true);
             int buttonWidth = this.buttonToggle.getWidth();
             int valueXPos = this.currentValue ? (buttonWidth - 4) / 2 : (buttonWidth - 4) / 2 + 6;
-            String displayString = (this.buttonToggle.isMouseOver() ? ModColor.YELLOW : (this.currentValue ? ModColor.WHITE : ModColor.GRAY)) + (this.currentValue ? this.stringEnabled : this.stringDisabled);
+            String displayString = (this.currentValue ? this.stringEnabled : this.stringDisabled);
             drawAPI.drawCenteredString(displayString, buttonToggle.getX() + valueXPos, buttonToggle.getY() + 6);
-            drawAPI.drawString(this.currentValue ? ModColor.GREEN.toString() : ModColor.RED.toString(), 0.0D, 0.0D);
+            //drawAPI.drawString(this.currentValue ? ModColor.GREEN.toString() : ModColor.RED.toString(), 0.0D, 0.0D);
             drawAPI.bindTexture(buttonTextures);
             int pos = (this.currentValue ? maxX - 8 : maxX - width) - 2;
             drawAPI.drawTexturedModalRect(pos, y + 1, 0, 66, 4, 20);
             drawAPI.drawTexturedModalRect(pos + 4, y + 1, 196, 66, 4, 20);
-            drawAPI.drawRectangle(x - 1, y, x, maxY, this.currentValue ? ModColor.toRGB(20, 120, 20, 120) : ModColor.toRGB(120, 20, 20, 120));
+            drawAPI.drawRectangle(x - 1, y, x, maxY, this.currentValue ? ColorUtils.toRGB(20, 120, 20, 120) : ColorUtils.toRGB(120, 20, 20, 120));
         }
     }
 

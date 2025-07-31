@@ -2,7 +2,7 @@ package ml.volder.unikapi.guisystem.elements;
 
 import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.keysystem.MouseButton;
-import ml.volder.unikapi.types.ModColor;
+import ml.volder.unikapi.utils.ColorUtils;
 
 import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
@@ -116,7 +116,7 @@ public class DropDownMenu<T> {
         drawAPI.drawRect(this.x - 1, this.y - 1, this.x + this.width + 1, this.y + this.height + 1, Color.GRAY.getRGB());
         drawAPI.drawRect(this.x, this.y, this.x + this.width, this.y + this.height, Color.BLACK.getRGB());
         if (this.selected != null) {
-            String trimmedEntry = drawAPI.trimStringToWidth(ModColor.cl("f") + getDisplayString(this.selected), this.width - 5);
+            String trimmedEntry = drawAPI.trimStringToWidth(getDisplayString(this.selected), this.width - 5);
             (this.entryDrawer == null ? defaultDrawer : this.entryDrawer).draw(this.selected, this.x + 5, this.y + this.height / 2 - 4, trimmedEntry);
         }
 
@@ -158,9 +158,9 @@ public class DropDownMenu<T> {
                 }
 
                 DrawAPI drawAPI = DrawAPI.getAPI();
-                drawAPI.drawRect(x - 1, yPositionList, x + this.width + 1, yPositionList + entryHeight, ModColor.toRGB(0, 30, 70, 250));
-                drawAPI.drawRect(x, yPositionList + (buildUp ? 1 : 0), x + this.width, yPositionList + entryHeight - 1 + (buildUp ? 1 : 0), hover ? ModColor.toRGB(55, 55, 155, 215) : ModColor.toRGB(0, 10, 10, 250));
-                String trimmedEntry = drawAPI.trimStringToWidth(ModColor.cl("f") + getDisplayString(option), this.width - 5);
+                drawAPI.drawRect(x - 1, yPositionList, x + this.width + 1, yPositionList + entryHeight, ColorUtils.toRGB(0, 30, 70, 250));
+                drawAPI.drawRect(x, yPositionList + (buildUp ? 1 : 0), x + this.width, yPositionList + entryHeight - 1 + (buildUp ? 1 : 0), hover ? ColorUtils.toRGB(55, 55, 155, 215) : ColorUtils.toRGB(0, 10, 10, 250));
+                String trimmedEntry = drawAPI.trimStringToWidth(getDisplayString(option), this.width - 5);
                 (this.entryDrawer == null ? defaultDrawer : this.entryDrawer).draw(option, x + 5, yPositionList + 3, trimmedEntry);
             }
         }

@@ -9,13 +9,13 @@ import ml.volder.transporter.settings.action.TransporterAction;
 import ml.volder.transporter.settings.classes.TransporterSettingElementFactory;
 import ml.volder.transporter.settings.classes.TransporterWidgetFactory;
 import ml.volder.unikapi.api.input.InputAPI;
-import ml.volder.unikapi.api.player.PlayerAPI;
 import ml.volder.unikapi.guisystem.ModTextures;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.impl.Laby4KeyMapper;
-import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.wrappers.tileentitysign.WrappedTileEntitySign;
 import net.labymod.api.Laby;
+import net.labymod.api.client.component.Component;
+import net.labymod.api.client.component.format.NamedTextColor;
 import net.labymod.api.client.gui.icon.Icon;
 import net.labymod.api.client.gui.screen.widget.widgets.input.KeybindWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SliderWidget;
@@ -144,7 +144,7 @@ public class SignToolsModule extends SimpleModule {
             return;
         if(!openSignEditor && hasCopiedText()) {
             if (isSendingUpdatePacket) {
-                PlayerAPI.getAPI().displayChatMessage(ModColor.RED + "Du placere skilte for hurtigt!");
+                Laby.references().chatExecutor().displayClientMessage(Component.text("Du placere skilte for hurtigt!").color(NamedTextColor.RED));
                 event.setCancelled(true);
                 return;
             }

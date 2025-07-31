@@ -8,7 +8,6 @@ import ml.volder.unikapi.api.draw.DrawAPI;
 import ml.volder.unikapi.guisystem.elements.ModTextField;
 import ml.volder.unikapi.keysystem.Key;
 import ml.volder.unikapi.keysystem.MouseButton;
-import ml.volder.unikapi.types.ModColor;
 import ml.volder.unikapi.wrappers.guibutton.WrappedGuiButton;
 import net.labymod.api.client.gui.screen.ScreenInstance;
 import net.labymod.api.client.gui.screen.activity.AutoActivity;
@@ -68,13 +67,13 @@ public class SelectItemMenu extends TransporterActivity {
         DrawAPI drawAPI = DrawAPI.getAPI();
         drawAPI.drawAutoDimmedBackground(0);
 
-        scrollableGrid.render(mouseX, mouseY);
+        scrollableGrid.render(mouseX, mouseY, getStack());
 
         drawAPI.drawOverlayBackground(0, 41);
         drawAPI.drawGradientShadowTop(41.0, 0.0, this.getWidth());
         drawAPI.drawOverlayBackground(this.getHeight() - 40, this.getHeight());
         drawAPI.drawGradientShadowBottom(this.getHeight() - 40, 0.0, this.getWidth());
-        drawAPI.drawCenteredString(ModColor.WHITE + "Vælg den item Auto Get skal tage fra din Transporter!", (double)(this.getWidth() / 2), 20.0D, 2.0D);
+        drawAPI.drawCenteredString("Vælg den item Auto Get skal tage fra din Transporter!", (double)(this.getWidth() / 2), 20.0D, 2.0D);
 
         if(searchField != null)
             searchField.drawTextBox();

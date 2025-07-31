@@ -6,6 +6,7 @@ import ml.volder.unikapi.datasystem.Data;
 import ml.volder.unikapi.datasystem.DataManager;
 import ml.volder.unikapi.types.Material;
 import ml.volder.unikapi.widgets.ModuleSystem;
+import net.labymod.api.client.component.Component;
 
 public class SimpleSkill implements McmmoSkill {
 
@@ -57,8 +58,8 @@ public class SimpleSkill implements McmmoSkill {
     public void registerModules(Object category) {
         ModuleSystem.registerModule(skillId + "-level", skillId + " Level", false, category, icon, s -> {
             if (noLevelData)
-                return "Ingen data (Skriv /mcstats)";
-            return String.valueOf(FormatingUtils.formatNumber(level));
+                return Component.text("Ingen data (Skriv /mcstats)");
+            return Component.text(String.valueOf(FormatingUtils.formatNumber(level)));
         });
     }
 }
